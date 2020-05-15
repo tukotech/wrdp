@@ -21,6 +21,8 @@ object FormMain: TFormMain
     ActivePage = TabSheetMain
     Align = alClient
     TabOrder = 0
+    ExplicitLeft = -8
+    ExplicitTop = 8
     object TabSheetMain: TTabSheet
       Caption = 'Main'
     end
