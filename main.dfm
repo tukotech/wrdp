@@ -13,4 +13,16 @@ object FormMain: TFormMain
   OldCreateOrder = False
   PixelsPerInch = 96
   TextHeight = 13
+  object PageControl1: TPageControl
+    Left = 0
+    Top = 0
+    Width = 635
+    Height = 258
+    ActivePage = TabSheetMain
+    Align = alClient
+    TabOrder = 0
+    object TabSheetMain: TTabSheet
+      Caption = 'Main'
+    end
+  end
 end
