@@ -1,0 +1,2 @@
+# wrdp
+Wicked RDP Manager
