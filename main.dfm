@@ -18,13 +18,15 @@ object FormMain: TFormMain
     Top = 0
     Width = 635
     Height = 258
-    ActivePage = TabSheetMain
+    ActivePage = TabSheet1
     Align = alClient
     TabOrder = 0
-    ExplicitLeft = -8
-    ExplicitTop = 8
     object TabSheetMain: TTabSheet
       Caption = 'Main'
+    end
+    object TabSheet1: TTabSheet
+      Caption = 'VM1'
+      ImageIndex = 1
     end
   end
 end

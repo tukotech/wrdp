@@ -10,6 +10,7 @@ type
   TFormMain = class(TForm)
     PageControl1: TPageControl;
     TabSheetMain: TTabSheet;
+    TabSheet1: TTabSheet;
   private
     { Private declarations }
   public
