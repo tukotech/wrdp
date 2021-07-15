@@ -6,6 +6,9 @@
         <Projects Include="wrdp.dproj">
             <Dependencies/>
         </Projects>
+        <Projects Include="components\rdp.dproj">
+            <Dependencies/>
+        </Projects>
     </ItemGroup>
     <ProjectExtensions>
         <Borland.Personality>Default.Personality.12</Borland.Personality>
@@ -23,14 +26,23 @@
     <Target Name="wrdp:Make">
         <MSBuild Projects="wrdp.dproj" Targets="Make"/>
     </Target>
+    <Target Name="rdp">
+        <MSBuild Projects="components\rdp.dproj"/>
+    </Target>
+    <Target Name="rdp:Clean">
+        <MSBuild Projects="components\rdp.dproj" Targets="Clean"/>
+    </Target>
+    <Target Name="rdp:Make">
+        <MSBuild Projects="components\rdp.dproj" Targets="Make"/>
+    </Target>
     <Target Name="Build">
-        <CallTarget Targets="wrdp"/>
+        <CallTarget Targets="wrdp;rdp"/>
     </Target>
     <Target Name="Clean">
-        <CallTarget Targets="wrdp:Clean"/>
+        <CallTarget Targets="wrdp:Clean;rdp:Clean"/>
     </Target>
     <Target Name="Make">
-        <CallTarget Targets="wrdp:Make"/>
+        <CallTarget Targets="wrdp:Make;rdp:Make"/>
     </Target>
     <Import Project="$(BDS)\Bin\CodeGear.Group.Targets" Condition="Exists('$(BDS)\Bin\CodeGear.Group.Targets')"/>
 </Project>
