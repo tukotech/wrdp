@@ -36,6 +36,7 @@ begin
   MsRdpClient9NotSafeForScripting1.Domain := '.';
   MsRdpClient9NotSafeForScripting1.UserName := 'z';
   MsRdpClient9NotSafeForScripting1.AdvancedSettings9.ClearTextPassword := 'P@$$w0rd';
+  MsRdpClient9NotSafeForScripting1.SecuredSettings3.KeyboardHookMode := 1;
   MsRdpClient9NotSafeForScripting1.Connect;
 end;
 

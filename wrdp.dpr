@@ -2,7 +2,8 @@ program wrdp;
 
 uses
   Vcl.Forms,
-  main in 'main.pas' {FormMain};
+  main in 'main.pas' {FormMain},
+  MSTSCLib_TLB in 'components\RdpControl\MSTSCLib_TLB.pas';
 
 {$R *.res}
 
