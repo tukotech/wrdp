@@ -46,16 +46,11 @@ object FormMain: TFormMain
       Caption = 'VM1'
       ImageIndex = 1
       object MsRdpClient9NotSafeForScripting1: TMsRdpClient9NotSafeForScripting
-        Left = 0
-        Top = 0
-        Width = 914
-        Height = 582
-        Align = alClient
+        Left = 200
+        Top = 136
+        Width = 192
+        Height = 192
         TabOrder = 0
-        ExplicitLeft = 288
-        ExplicitTop = 240
-        ExplicitWidth = 192
-        ExplicitHeight = 192
         ControlData = {0008000008000200000000000B0000000B000000}
       end
     end
