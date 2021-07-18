@@ -31,13 +31,18 @@ implementation
 {$R *.dfm}
 
 procedure TFormMain.Button1Click(Sender: TObject);
+var
+  as7 : IMsRdpClientAdvancedSettings7;
 begin
   MsRdpClient9NotSafeForScripting1.Server := '192.168.2.21';
   MsRdpClient9NotSafeForScripting1.Domain := '.';
   MsRdpClient9NotSafeForScripting1.UserName := 'z';
   MsRdpClient9NotSafeForScripting1.AdvancedSettings9.ClearTextPassword := 'P@$$w0rd';
   MsRdpClient9NotSafeForScripting1.SecuredSettings3.KeyboardHookMode := 1;
+  as7 := MsRdpClient9NotSafeForScripting1.AdvancedSettings as IMsRdpClientAdvancedSettings7;
+  as7.EnableCredSspSupport := true;
   MsRdpClient9NotSafeForScripting1.Connect;
+
 end;
 
 procedure TFormMain.Button2Click(Sender: TObject);
