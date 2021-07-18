@@ -1,9 +1,9 @@
 ﻿<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
     <PropertyGroup>
-        <ProjectGuid>{FDABEE2E-4C4E-4440-8A53-1CC44D4E8FE1}</ProjectGuid>
+        <ProjectGuid>{7E8D93CC-B1BE-4490-AD47-C68C98BE0F8E}</ProjectGuid>
     </PropertyGroup>
     <ItemGroup>
-        <Projects Include="wrdp.dproj">
+        <Projects Include="RdpControl.dproj">
             <Dependencies/>
         </Projects>
     </ItemGroup>
@@ -14,23 +14,23 @@
             <Default.Personality/>
         </BorlandProject>
     </ProjectExtensions>
-    <Target Name="wrdp">
-        <MSBuild Projects="wrdp.dproj"/>
+    <Target Name="RdpControl">
+        <MSBuild Projects="RdpControl.dproj"/>
     </Target>
-    <Target Name="wrdp:Clean">
-        <MSBuild Projects="wrdp.dproj" Targets="Clean"/>
+    <Target Name="RdpControl:Clean">
+        <MSBuild Projects="RdpControl.dproj" Targets="Clean"/>
     </Target>
-    <Target Name="wrdp:Make">
-        <MSBuild Projects="wrdp.dproj" Targets="Make"/>
+    <Target Name="RdpControl:Make">
+        <MSBuild Projects="RdpControl.dproj" Targets="Make"/>
     </Target>
     <Target Name="Build">
-        <CallTarget Targets="wrdp"/>
+        <CallTarget Targets="RdpControl"/>
     </Target>
     <Target Name="Clean">
-        <CallTarget Targets="wrdp:Clean"/>
+        <CallTarget Targets="RdpControl:Clean"/>
     </Target>
     <Target Name="Make">
-        <CallTarget Targets="wrdp:Make"/>
+        <CallTarget Targets="RdpControl:Make"/>
     </Target>
     <Import Project="$(BDS)\Bin\CodeGear.Group.Targets" Condition="Exists('$(BDS)\Bin\CodeGear.Group.Targets')"/>
 </Project>
