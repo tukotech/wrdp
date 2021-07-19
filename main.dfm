@@ -11,6 +11,8 @@ object FormMain: TFormMain
   Font.Name = 'Tahoma'
   Font.Style = []
   OldCreateOrder = False
+  OnClose = FormClose
+  OnCreate = FormCreate
   PixelsPerInch = 96
   TextHeight = 13
   object PageControl1: TPageControl
@@ -40,6 +42,17 @@ object FormMain: TFormMain
         Caption = 'Button2'
         TabOrder = 1
         OnClick = Button2Click
+      end
+      object sgConnectionInfo: TStringGrid
+        Left = 3
+        Top = 112
+        Width = 910
+        Height = 193
+        ColCount = 4
+        FixedCols = 0
+        RowCount = 2
+        Options = [goFixedVertLine, goFixedHorzLine, goVertLine, goHorzLine, goColSizing, goEditing, goTabs]
+        TabOrder = 2
       end
     end
     object TabSheet1: TTabSheet
