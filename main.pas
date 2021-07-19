@@ -17,14 +17,11 @@ type
     PageControl1: TPageControl;
     TabSheetMain: TTabSheet;
     TabSheet1: TTabSheet;
-    Button1: TButton;
-    Button2: TButton;
     MsRdpClient9NotSafeForScripting1: TMsRdpClient9NotSafeForScripting;
     sgConnectionInfo: TStringGrid;
-    procedure Button1Click(Sender: TObject);
-    procedure Button2Click(Sender: TObject);
     procedure FormCreate(Sender: TObject);
     procedure FormClose(Sender: TObject; var Action: TCloseAction);
+    procedure sgConnectionInfoKeyPress(Sender: TObject; var Key: Char);
   private
     { Private declarations }
   public
@@ -37,30 +34,6 @@ var
 implementation
 
 {$R *.dfm}
-
-procedure TFormMain.Button1Click(Sender: TObject);
-var
-  as7 : IMsRdpClientAdvancedSettings7;
-begin
-  MsRdpClient9NotSafeForScripting1.Server := '192.168.2.21';
-  MsRdpClient9NotSafeForScripting1.Domain := '.';
-  MsRdpClient9NotSafeForScripting1.UserName := 'z';
-  MsRdpClient9NotSafeForScripting1.AdvancedSettings9.ClearTextPassword := 'P@$$w0rd';
-  MsRdpClient9NotSafeForScripting1.SecuredSettings3.KeyboardHookMode := 1;
-  as7 := MsRdpClient9NotSafeForScripting1.AdvancedSettings as IMsRdpClientAdvancedSettings7;
-  as7.EnableCredSspSupport := true;
-  MsRdpClient9NotSafeForScripting1.Connect;
-
-end;
-
-procedure TFormMain.Button2Click(Sender: TObject);
-begin
-  MsRdpClient9NotSafeForScripting1.Server := '192.168.2.21';
-  MsRdpClient9NotSafeForScripting1.Domain := '.';
-  MsRdpClient9NotSafeForScripting1.UserName := 'z';
-  MsRdpClient9NotSafeForScripting1.AdvancedSettings9.ClearTextPassword := 'P@$$w0rd';
-  MsRdpClient9NotSafeForScripting1.Connect;
-end;
 
 // Save a TStringGrid to a file
 
@@ -160,6 +133,34 @@ begin
   cfg := ChangeFileExt( Application.ExeName, '.cfg' );
   if System.SysUtils.FileExists(cfg) then
     LoadStringGrid(sgConnectionInfo, cfg);
+end;
+
+procedure TFormMain.sgConnectionInfoKeyPress(Sender: TObject; var Key: Char);
+var
+  host : string;
+  domain : string;
+  username: string;
+  password: string;
+  row : Integer;
+  as7 : IMsRdpClientAdvancedSettings7;
+begin
+  if ord(Key) = VK_RETURN then
+  begin
+    row := sgConnectionInfo.Row;
+    host := sgConnectionInfo.Cells[0, row];
+    domain := sgConnectionInfo.Cells[1, row];
+    username := sgConnectionInfo.Cells[2, row];
+    password := sgConnectionInfo.Cells[3, row];
+    MsRdpClient9NotSafeForScripting1.Server := host;
+    MsRdpClient9NotSafeForScripting1.Domain := domain;
+    MsRdpClient9NotSafeForScripting1.UserName := username;
+    MsRdpClient9NotSafeForScripting1.AdvancedSettings9.ClearTextPassword := password;
+    MsRdpClient9NotSafeForScripting1.SecuredSettings3.KeyboardHookMode := 1;
+    as7 := MsRdpClient9NotSafeForScripting1.AdvancedSettings as IMsRdpClientAdvancedSettings7;
+    as7.EnableCredSspSupport := true;
+    MsRdpClient9NotSafeForScripting1.Connect;
+    PageControl1.ActivePage := TabSheet1;
+  end;
 end;
 
 end.

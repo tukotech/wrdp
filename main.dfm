@@ -25,43 +25,27 @@ object FormMain: TFormMain
     TabOrder = 0
     object TabSheetMain: TTabSheet
       Caption = 'Main'
-      object Button1: TButton
-        Left = 32
-        Top = 32
-        Width = 75
-        Height = 25
-        Caption = 'Button1'
-        TabOrder = 0
-        OnClick = Button1Click
-      end
-      object Button2: TButton
-        Left = 32
-        Top = 63
-        Width = 75
-        Height = 25
-        Caption = 'Button2'
-        TabOrder = 1
-        OnClick = Button2Click
-      end
       object sgConnectionInfo: TStringGrid
-        Left = 3
-        Top = 112
-        Width = 910
-        Height = 193
+        Left = 0
+        Top = 0
+        Width = 914
+        Height = 582
+        Align = alClient
         ColCount = 4
         FixedCols = 0
         RowCount = 2
         Options = [goFixedVertLine, goFixedHorzLine, goVertLine, goHorzLine, goColSizing, goEditing, goTabs]
-        TabOrder = 2
+        TabOrder = 0
+        OnKeyPress = sgConnectionInfoKeyPress
+        ExplicitLeft = 3
+        ExplicitTop = 112
+        ExplicitWidth = 910
+        ExplicitHeight = 193
       end
     end
     object TabSheet1: TTabSheet
       Caption = 'VM1'
       ImageIndex = 1
-      ExplicitLeft = 0
-      ExplicitTop = 0
-      ExplicitWidth = 0
-      ExplicitHeight = 0
       object MsRdpClient9NotSafeForScripting1: TMsRdpClient9NotSafeForScripting
         Left = 0
         Top = 0
