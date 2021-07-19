@@ -22,6 +22,7 @@ type
     procedure FormCreate(Sender: TObject);
     procedure FormClose(Sender: TObject; var Action: TCloseAction);
     procedure sgConnectionInfoKeyPress(Sender: TObject; var Key: Char);
+    procedure FormShow(Sender: TObject);
   private
     { Private declarations }
   public
@@ -133,6 +134,11 @@ begin
   cfg := ChangeFileExt( Application.ExeName, '.cfg' );
   if System.SysUtils.FileExists(cfg) then
     LoadStringGrid(sgConnectionInfo, cfg);
+end;
+
+procedure TFormMain.FormShow(Sender: TObject);
+begin
+  sgConnectionInfo.SetFocus;
 end;
 
 procedure TFormMain.sgConnectionInfoKeyPress(Sender: TObject; var Key: Char);
