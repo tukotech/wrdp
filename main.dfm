@@ -40,15 +40,16 @@ object FormMain: TFormMain
         OnDblClick = sgConnectionInfoDblClick
         OnKeyPress = sgConnectionInfoKeyPress
         OnKeyUp = sgConnectionInfoKeyUp
-        ExplicitLeft = 3
-        ExplicitTop = 112
-        ExplicitWidth = 910
-        ExplicitHeight = 193
+        OnSelectCell = sgConnectionInfoSelectCell
       end
     end
     object TabSheet1: TTabSheet
       Caption = 'VM1'
       ImageIndex = 1
+      ExplicitLeft = 0
+      ExplicitTop = 0
+      ExplicitWidth = 0
+      ExplicitHeight = 0
       object MsRdpClient9NotSafeForScripting1: TMsRdpClient9NotSafeForScripting
         Left = 0
         Top = 0

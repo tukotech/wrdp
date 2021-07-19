@@ -31,6 +31,8 @@ type
     procedure sgConnectionInfoDblClick(Sender: TObject);
     procedure sgConnectionInfoKeyUp(Sender: TObject; var Key: Word;
       Shift: TShiftState);
+    procedure sgConnectionInfoSelectCell(Sender: TObject; ACol, ARow: Integer;
+      var CanSelect: Boolean);
   private
     { Private declarations }
     procedure ConnectToServer;
@@ -194,11 +196,31 @@ procedure TFormMain.sgConnectionInfoKeyUp(Sender: TObject; var Key: Word;
 begin
   if Key = VK_DOWN then
   begin
-    sgConnectionInfo.RowCount := sgConnectionInfo.RowCount + 1;
+    if sgConnectionInfo.Cells[0,sgConnectionInfo.Row] <> '' then
+    begin
+      sgConnectionInfo.RowCount := sgConnectionInfo.RowCount + 1;
+      sgConnectionInfo.Options := sgConnectionInfo.Options + [goEditing] - [goRowSelect];
+      sgConnectionInfo.Row := sgConnectionInfo.RowCount - 1;
+      sgConnectionInfo.Col := 0;
+      sgConnectionInfo.EditorMode := true;
+    end else
+    begin
+      sgConnectionInfo.Options := sgConnectionInfo.Options + [goEditing] - [goRowSelect]
+    end;
   end
   else if Key = VK_DELETE then
   begin
+    sgConnectionInfo.Options := sgConnectionInfo.Options - [goEditing] + [goRowSelect];
     sgConnectionInfo.DelRow(sgConnectionInfo.Row);
+  end;
+end;
+
+procedure TFormMain.sgConnectionInfoSelectCell(Sender: TObject; ACol,
+  ARow: Integer; var CanSelect: Boolean);
+begin
+  if sgConnectionInfo.Cells[0,ARow] <> '' then
+  begin
+    sgConnectionInfo.Options := sgConnectionInfo.Options - [goEditing] + [goRowSelect]
   end;
 end;
 
