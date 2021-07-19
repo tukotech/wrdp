@@ -35,10 +35,11 @@ object FormMain: TFormMain
         ColCount = 4
         FixedCols = 0
         RowCount = 2
-        Options = [goFixedVertLine, goFixedHorzLine, goVertLine, goHorzLine, goColSizing, goEditing, goTabs]
+        Options = [goFixedVertLine, goFixedHorzLine, goVertLine, goHorzLine, goColSizing, goEditing, goTabs, goRowSelect]
         TabOrder = 0
         OnDblClick = sgConnectionInfoDblClick
         OnKeyPress = sgConnectionInfoKeyPress
+        OnKeyUp = sgConnectionInfoKeyUp
         ExplicitLeft = 3
         ExplicitTop = 112
         ExplicitWidth = 910

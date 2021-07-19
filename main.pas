@@ -13,6 +13,11 @@ uses
   Vcl.StdCtrls, Vcl.Grids, inifiles;
 
 type
+  TCustomGridHelper = class helper for TCustomGrid
+  public
+    procedure DelRow(ARow: Integer);
+  end;
+
   TFormMain = class(TForm)
     PageControl1: TPageControl;
     TabSheetMain: TTabSheet;
@@ -24,6 +29,8 @@ type
     procedure sgConnectionInfoKeyPress(Sender: TObject; var Key: Char);
     procedure FormShow(Sender: TObject);
     procedure sgConnectionInfoDblClick(Sender: TObject);
+    procedure sgConnectionInfoKeyUp(Sender: TObject; var Key: Word;
+      Shift: TShiftState);
   private
     { Private declarations }
     procedure ConnectToServer;
@@ -37,6 +44,10 @@ var
 implementation
 
 {$R *.dfm}
+procedure TCustomGridHelper.DelRow(ARow: Integer);
+begin
+  Self.DeleteRow(ARow);
+end;
 
 // Save a TStringGrid to a file
 
@@ -175,9 +186,19 @@ end;
 
 procedure TFormMain.sgConnectionInfoKeyPress(Sender: TObject; var Key: Char);
 begin
-  if ord(Key) = VK_RETURN then
+  if ord(Key) = VK_RETURN then begin ConnectToServer; end
+end;
+
+procedure TFormMain.sgConnectionInfoKeyUp(Sender: TObject; var Key: Word;
+  Shift: TShiftState);
+begin
+  if Key = VK_DOWN then
   begin
-    ConnectToServer;
+    sgConnectionInfo.RowCount := sgConnectionInfo.RowCount + 1;
+  end
+  else if Key = VK_DELETE then
+  begin
+    sgConnectionInfo.DelRow(sgConnectionInfo.Row);
   end;
 end;
 
