@@ -58,6 +58,10 @@ object FormMain: TFormMain
     object TabSheet1: TTabSheet
       Caption = 'VM1'
       ImageIndex = 1
+      ExplicitLeft = 0
+      ExplicitTop = 0
+      ExplicitWidth = 0
+      ExplicitHeight = 0
       object MsRdpClient9NotSafeForScripting1: TMsRdpClient9NotSafeForScripting
         Left = 0
         Top = 0

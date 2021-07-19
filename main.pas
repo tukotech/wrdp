@@ -3,7 +3,12 @@ unit main;
 interface
 
 uses
-  Winapi.Windows, Winapi.Messages, System.SysUtils, System.Variants, System.Classes, Vcl.Graphics,
+  Winapi.Windows,
+  Winapi.Messages,
+  System.SysUtils,
+  System.Variants,
+  System.Classes,
+  Vcl.Graphics,
   Vcl.Controls, Vcl.Forms, Vcl.Dialogs, Vcl.ComCtrls, Vcl.OleCtrls, MSTSCLib_TLB,
   Vcl.StdCtrls, Vcl.Grids, inifiles;
 
@@ -57,6 +62,57 @@ begin
   MsRdpClient9NotSafeForScripting1.Connect;
 end;
 
+// Save a TStringGrid to a file
+
+procedure SaveStringGrid(StringGrid: TStringGrid; const FileName: TFileName);
+var
+  f:    TextFile;
+  i, k: Integer;
+begin
+  AssignFile(f, FileName);
+  Rewrite(f);
+  with StringGrid do
+  begin
+    // Write number of Columns/Rows
+    Writeln(f, ColCount);
+    Writeln(f, RowCount);
+    // loop through cells
+    for i := 0 to ColCount - 1 do
+      for k := 0 to RowCount - 1 do
+        Writeln(F, Cells[i, k]);
+  end;
+  CloseFile(F);
+end;
+
+// Load a TStringGrid from a file
+
+procedure LoadStringGrid(StringGrid: TStringGrid; const FileName: TFileName);
+var
+  f:          TextFile;
+  iTmp, i, k: Integer;
+  strTemp:    String;
+begin
+  AssignFile(f, FileName);
+  Reset(f);
+  with StringGrid do
+  begin
+    // Get number of columns
+    Readln(f, iTmp);
+    ColCount := iTmp;
+    // Get number of rows
+    Readln(f, iTmp);
+    RowCount := iTmp;
+    // loop through cells & fill in values
+    for i := 0 to ColCount - 1 do
+      for k := 0 to RowCount - 1 do
+      begin
+        Readln(f, strTemp);
+        Cells[i, k] := strTemp;
+      end;
+  end;
+  CloseFile(f);
+end;
+
 procedure TFormMain.FormClose(Sender: TObject; var Action: TCloseAction);
 var
   Ini : TIniFile;
@@ -71,11 +127,14 @@ begin
   finally
      Ini.Free;
   end;
+
+  SaveStringGrid(sgConnectionInfo, ChangeFileExt( Application.ExeName, '.cfg' ));
 end;
 
 procedure TFormMain.FormCreate(Sender: TObject);
 var
   Ini : TIniFile;
+  cfg : TFileName;
   x : Integer;
 begin
   sgConnectionInfo.Cells[0,0] := 'Hostname/IP';
@@ -98,6 +157,9 @@ begin
   finally
     Ini.Free;
   end;
+  cfg := ChangeFileExt( Application.ExeName, '.cfg' );
+  if System.SysUtils.FileExists(cfg) then
+    LoadStringGrid(sgConnectionInfo, cfg);
 end;
 
 end.
