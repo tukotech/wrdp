@@ -37,6 +37,7 @@ object FormMain: TFormMain
         RowCount = 2
         Options = [goFixedVertLine, goFixedHorzLine, goVertLine, goHorzLine, goColSizing, goEditing, goTabs]
         TabOrder = 0
+        OnDblClick = sgConnectionInfoDblClick
         OnKeyPress = sgConnectionInfoKeyPress
         ExplicitLeft = 3
         ExplicitTop = 112

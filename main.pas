@@ -23,8 +23,10 @@ type
     procedure FormClose(Sender: TObject; var Action: TCloseAction);
     procedure sgConnectionInfoKeyPress(Sender: TObject; var Key: Char);
     procedure FormShow(Sender: TObject);
+    procedure sgConnectionInfoDblClick(Sender: TObject);
   private
     { Private declarations }
+    procedure ConnectToServer;
   public
     { Public declarations }
   end;
@@ -141,7 +143,7 @@ begin
   sgConnectionInfo.SetFocus;
 end;
 
-procedure TFormMain.sgConnectionInfoKeyPress(Sender: TObject; var Key: Char);
+procedure TFormMain.ConnectToServer();
 var
   host : string;
   domain : string;
@@ -150,22 +152,32 @@ var
   row : Integer;
   as7 : IMsRdpClientAdvancedSettings7;
 begin
+  row := sgConnectionInfo.Row;
+  host := sgConnectionInfo.Cells[0, row];
+  domain := sgConnectionInfo.Cells[1, row];
+  username := sgConnectionInfo.Cells[2, row];
+  password := sgConnectionInfo.Cells[3, row];
+  MsRdpClient9NotSafeForScripting1.Server := host;
+  MsRdpClient9NotSafeForScripting1.Domain := domain;
+  MsRdpClient9NotSafeForScripting1.UserName := username;
+  MsRdpClient9NotSafeForScripting1.AdvancedSettings9.ClearTextPassword := password;
+  MsRdpClient9NotSafeForScripting1.SecuredSettings3.KeyboardHookMode := 1;
+  as7 := MsRdpClient9NotSafeForScripting1.AdvancedSettings as IMsRdpClientAdvancedSettings7;
+  as7.EnableCredSspSupport := true;
+  MsRdpClient9NotSafeForScripting1.Connect;
+  PageControl1.ActivePage := TabSheet1;
+end;
+
+procedure TFormMain.sgConnectionInfoDblClick(Sender: TObject);
+begin
+  ConnectToServer;
+end;
+
+procedure TFormMain.sgConnectionInfoKeyPress(Sender: TObject; var Key: Char);
+begin
   if ord(Key) = VK_RETURN then
   begin
-    row := sgConnectionInfo.Row;
-    host := sgConnectionInfo.Cells[0, row];
-    domain := sgConnectionInfo.Cells[1, row];
-    username := sgConnectionInfo.Cells[2, row];
-    password := sgConnectionInfo.Cells[3, row];
-    MsRdpClient9NotSafeForScripting1.Server := host;
-    MsRdpClient9NotSafeForScripting1.Domain := domain;
-    MsRdpClient9NotSafeForScripting1.UserName := username;
-    MsRdpClient9NotSafeForScripting1.AdvancedSettings9.ClearTextPassword := password;
-    MsRdpClient9NotSafeForScripting1.SecuredSettings3.KeyboardHookMode := 1;
-    as7 := MsRdpClient9NotSafeForScripting1.AdvancedSettings as IMsRdpClientAdvancedSettings7;
-    as7.EnableCredSspSupport := true;
-    MsRdpClient9NotSafeForScripting1.Connect;
-    PageControl1.ActivePage := TabSheet1;
+    ConnectToServer;
   end;
 end;
 
