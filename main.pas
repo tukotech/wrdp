@@ -21,11 +21,7 @@ type
   TFormMain = class(TForm)
     PageControlMain: TPageControl;
     TabSheetMain: TTabSheet;
-    TabSheet1: TTabSheet;
-    MsRdpClient9NotSafeForScripting1: TMsRdpClient9NotSafeForScripting;
     sgConnectionInfo: TStringGrid;
-    TabSheet2: TTabSheet;
-    Button1: TButton;
     procedure FormCreate(Sender: TObject);
     procedure FormClose(Sender: TObject; var Action: TCloseAction);
     procedure sgConnectionInfoKeyPress(Sender: TObject; var Key: Char);
@@ -197,7 +193,6 @@ begin
   rdp := TMsRdpClient9NotSafeForScripting.Create(TabSheet);
   rdp.Parent := TabSheet;
   rdp.Align := alClient;
-//  rdp := TM
 
   rdp.Server := host;
   rdp.Domain := domain;

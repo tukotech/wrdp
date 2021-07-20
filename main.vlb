@@ -1,19 +1,4 @@
-﻿[MsRdpClient9NotSafeForScripting1]
-Coordinates=200,78,218,36
-
-[TabSheet1]
-Coordinates=10,78,77,36
-
-[TabSheetMain]
-Coordinates=238,10,98,36
-
-[]
-Coordinates=100,10,59,58
-
-[sgConnectionInfo]
-Coordinates=10,10,80,58
-Visible=True
-
-[PageControlMain]
+﻿[]
 Coordinates=97,78,93,36
+Visible=True
 

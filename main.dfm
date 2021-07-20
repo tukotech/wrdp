@@ -21,7 +21,7 @@ object FormMain: TFormMain
     Top = 0
     Width = 922
     Height = 610
-    ActivePage = TabSheet1
+    ActivePage = TabSheetMain
     Align = alClient
     TabOrder = 0
     object TabSheetMain: TTabSheet
@@ -41,36 +41,6 @@ object FormMain: TFormMain
         OnKeyPress = sgConnectionInfoKeyPress
         OnKeyUp = sgConnectionInfoKeyUp
         OnSelectCell = sgConnectionInfoSelectCell
-      end
-    end
-    object TabSheet1: TTabSheet
-      Caption = 'VM1'
-      ImageIndex = 1
-      object MsRdpClient9NotSafeForScripting1: TMsRdpClient9NotSafeForScripting
-        Left = 0
-        Top = 0
-        Width = 914
-        Height = 582
-        Align = alClient
-        TabOrder = 0
-        ExplicitLeft = 200
-        ExplicitTop = 136
-        ExplicitWidth = 192
-        ExplicitHeight = 192
-        ControlData = {0008000008000200000000000B0000000B000000}
-      end
-    end
-    object TabSheet2: TTabSheet
-      Caption = 'TabSheet2'
-      ImageIndex = 2
-      object Button1: TButton
-        Left = 104
-        Top = 88
-        Width = 75
-        Height = 25
-        Caption = 'Button1'
-        TabOrder = 0
-        OnClick = Button1Click
       end
     end
   end
