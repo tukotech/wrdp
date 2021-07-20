@@ -16,12 +16,12 @@ object FormMain: TFormMain
   OnShow = FormShow
   PixelsPerInch = 96
   TextHeight = 13
-  object PageControl1: TPageControl
+  object PageControlMain: TPageControl
     Left = 0
     Top = 0
     Width = 922
     Height = 610
-    ActivePage = TabSheetMain
+    ActivePage = TabSheet1
     Align = alClient
     TabOrder = 0
     object TabSheetMain: TTabSheet
@@ -46,10 +46,6 @@ object FormMain: TFormMain
     object TabSheet1: TTabSheet
       Caption = 'VM1'
       ImageIndex = 1
-      ExplicitLeft = 0
-      ExplicitTop = 0
-      ExplicitWidth = 0
-      ExplicitHeight = 0
       object MsRdpClient9NotSafeForScripting1: TMsRdpClient9NotSafeForScripting
         Left = 0
         Top = 0
@@ -62,6 +58,19 @@ object FormMain: TFormMain
         ExplicitWidth = 192
         ExplicitHeight = 192
         ControlData = {0008000008000200000000000B0000000B000000}
+      end
+    end
+    object TabSheet2: TTabSheet
+      Caption = 'TabSheet2'
+      ImageIndex = 2
+      object Button1: TButton
+        Left = 104
+        Top = 88
+        Width = 75
+        Height = 25
+        Caption = 'Button1'
+        TabOrder = 0
+        OnClick = Button1Click
       end
     end
   end
