@@ -32,7 +32,7 @@ object FormMain: TFormMain
         Left = 0
         Top = 0
         Width = 914
-        Height = 582
+        Height = 432
         Align = alClient
         ColCount = 4
         FixedCols = 0
@@ -40,15 +40,27 @@ object FormMain: TFormMain
         Options = [goFixedVertLine, goFixedHorzLine, goVertLine, goHorzLine, goColSizing, goEditing, goTabs, goRowSelect]
         TabOrder = 0
         OnDblClick = sgConnectionInfoDblClick
+        OnEnter = sgConnectionInfoEnter
+        OnGetEditText = sgConnectionInfoGetEditText
         OnKeyPress = sgConnectionInfoKeyPress
         OnKeyUp = sgConnectionInfoKeyUp
         OnSelectCell = sgConnectionInfoSelectCell
+        OnSetEditText = sgConnectionInfoSetEditText
+      end
+      object ListBoxInfo: TListBox
+        Left = 0
+        Top = 432
+        Width = 914
+        Height = 150
+        Align = alBottom
+        ItemHeight = 13
+        TabOrder = 1
       end
     end
   end
   object PopupMenuRDP: TPopupMenu
-    Left = 444
-    Top = 488
+    Left = 532
+    Top = 528
     object CloseTab: TMenuItem
       Caption = 'Close'
       OnClick = CloseTabClick

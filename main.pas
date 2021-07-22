@@ -5,9 +5,10 @@ interface
 uses
   Winapi.Windows,
   Winapi.Messages,
-  System.SysUtils,
-  System.Variants,
   System.Classes,
+  System.NetEncoding,
+  System.Variants,
+  System.SysUtils,
   Vcl.Graphics,
   Vcl.Controls, Vcl.Forms, Vcl.Dialogs, Vcl.ComCtrls, Vcl.OleCtrls, MSTSCLib_TLB,
   Vcl.StdCtrls, Vcl.Grids, inifiles, Vcl.Menus;
@@ -24,6 +25,7 @@ type
     sgConnectionInfo: TStringGrid;
     PopupMenuRDP: TPopupMenu;
     CloseTab: TMenuItem;
+    ListBoxInfo: TListBox;
     procedure FormCreate(Sender: TObject);
     procedure FormClose(Sender: TObject; var Action: TCloseAction);
     procedure sgConnectionInfoKeyPress(Sender: TObject; var Key: Char);
@@ -37,8 +39,16 @@ type
     procedure PageControlMainContextPopup(Sender: TObject; MousePos: TPoint;
       var Handled: Boolean);
     procedure CloseTabClick(Sender: TObject);
+    procedure sgConnectionInfoGetEditText(Sender: TObject; ACol, ARow: Integer;
+      var Value: string);
+    procedure sgConnectionInfoEnter(Sender: TObject);
+    procedure sgConnectionInfoSetEditText(Sender: TObject; ACol, ARow: Integer;
+      const Value: string);
   private
     { Private declarations }
+    editMode: Boolean;
+    isEditingPassword: Boolean;
+    EditingCol, EditingRow: Longint;
     procedure ConnectToServer;
   public
     { Public declarations }
@@ -137,7 +147,6 @@ begin
 
   Ini := TIniFile.Create( ChangeFileExt( Application.ExeName, '.INI' ) );
   try
-    x := Ini.ReadInteger('Position','Column1', 64);
     sgConnectionInfo.ColWidths[0] := Ini.ReadInteger('Position','Column1', 64);
     sgConnectionInfo.ColWidths[1] := Ini.ReadInteger('Position','Column2', 64);
     sgConnectionInfo.ColWidths[2] := Ini.ReadInteger('Position','Column3', 64);
@@ -175,8 +184,6 @@ begin
     CloseTab.Enabled := false
   else
     CloseTab.Enabled := true;
-
-
 end;
 
 procedure TFormMain.Button1Click(Sender: TObject);
@@ -207,12 +214,14 @@ var
   as7 : IMsRdpClientAdvancedSettings7;
   TabSheet : TTabSheet;
   rdp : TMsRdpClient9NotSafeForScripting;
+  Base64 : TBase64Encoding;
 begin
   row := sgConnectionInfo.Row;
   host := sgConnectionInfo.Cells[0, row];
   domain := sgConnectionInfo.Cells[1, row];
   username := sgConnectionInfo.Cells[2, row];
-  password := sgConnectionInfo.Cells[3, row];
+  Base64 := TBase64Encoding.Create;
+  password := Base64.Decode(sgConnectionInfo.Cells[3, row]);
 
   TabSheet := TTabSheet.Create(PageControlMain);
   TabSheet.Caption := host;
@@ -239,6 +248,26 @@ begin
   ConnectToServer;
 end;
 
+procedure TFormMain.sgConnectionInfoEnter(Sender: TObject);
+begin
+  EditingCol := -1;
+  EditingRow := -1
+end;
+
+procedure TFormMain.sgConnectionInfoGetEditText(Sender: TObject; ACol,
+  ARow: Integer; var Value: string);
+var
+  Base64 : TBase64Encoding;
+begin
+  if (sgConnectionInfo.Cells[ACol, 0] = 'Password')
+  and (isEditingPassword = false)
+  then
+  begin
+    Base64 := TBase64Encoding.Create;
+    Value := Base64.Decode(sgConnectionInfo.Cells[ACol, ARow]);
+  end;
+end;
+
 procedure TFormMain.sgConnectionInfoKeyPress(Sender: TObject; var Key: Char);
 begin
   if ord(Key) = VK_RETURN then begin ConnectToServer; end
@@ -249,31 +278,76 @@ procedure TFormMain.sgConnectionInfoKeyUp(Sender: TObject; var Key: Word;
 begin
   if Key = VK_DOWN then
   begin
-    if sgConnectionInfo.Cells[0,sgConnectionInfo.Row] <> '' then
+    if (sgConnectionInfo.Row+1 = sgConnectionInfo.RowCount) and
+      (sgConnectionInfo.Cells[0,sgConnectionInfo.Row] <> '')
+    then
     begin
       sgConnectionInfo.RowCount := sgConnectionInfo.RowCount + 1;
       sgConnectionInfo.Options := sgConnectionInfo.Options + [goEditing] - [goRowSelect];
       sgConnectionInfo.Row := sgConnectionInfo.RowCount - 1;
-      sgConnectionInfo.Col := 0;
       sgConnectionInfo.EditorMode := true;
-    end else
-    begin
-      sgConnectionInfo.Options := sgConnectionInfo.Options + [goEditing] - [goRowSelect]
     end;
   end
   else if Key = VK_DELETE then
   begin
     sgConnectionInfo.Options := sgConnectionInfo.Options - [goEditing] + [goRowSelect];
     sgConnectionInfo.DelRow(sgConnectionInfo.Row);
+  end
+  else if Key = VK_F2 then
+  begin
+    editMode := true;
+    sgConnectionInfo.Options := sgConnectionInfo.Options + [goEditing] - [goRowSelect];
+    sgConnectionInfo.EditorMode := true;
+    ListBoxInfo.items.Insert(0,'F2');
+  end
+  else if Key = VK_ESCAPE then
+  begin
+    editMode := false;
+    sgConnectionInfo.Options := sgConnectionInfo.Options - [goEditing] + [goRowSelect];
+    sgConnectionInfo.EditorMode := false;
   end;
 end;
 
 procedure TFormMain.sgConnectionInfoSelectCell(Sender: TObject; ACol,
   ARow: Integer; var CanSelect: Boolean);
+var
+  Base64 : TBase64Encoding;
 begin
-  if sgConnectionInfo.Cells[0,ARow] <> '' then
+  ListBoxInfo.items.Insert(0,'sgConnectionInfoSelectCell');
+
+  if editMode = true then
+      sgConnectionInfo.Options := sgConnectionInfo.Options + [goEditing] - [goRowSelect]
+  else
   begin
-    sgConnectionInfo.Options := sgConnectionInfo.Options - [goEditing] + [goRowSelect]
+    if sgConnectionInfo.Cells[0,ARow] <> '' then
+    begin
+      sgConnectionInfo.Options := sgConnectionInfo.Options - [goEditing] + [goRowSelect]
+    end;
+  end;
+
+  if isEditingPassword = true then
+  begin
+    Base64 := TBase64Encoding.Create;
+    sgConnectionInfo.Cells[EditingCol, EditingRow] := Base64.Encode(sgConnectionInfo.Cells[EditingCol, EditingRow]);
+    isEditingPassword := false;
+    EditingCol := ACol;
+    EditingRow := ARow;
+  end;
+
+end;
+
+procedure TFormMain.sgConnectionInfoSetEditText(Sender: TObject; ACol,
+  ARow: Integer; const Value: string);
+begin
+  if (sgConnectionInfo.Cells[ACol, 0] = 'Password') then
+  begin
+    isEditingPassword := true;
+    if ((ACol <> EditingCol) or (ARow <> EditingRow))
+    then
+    begin
+      EditingCol := ACol;
+      EditingRow := ARow;
+    end
   end;
 end;
 
