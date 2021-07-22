@@ -10,7 +10,7 @@ uses
   System.Classes,
   Vcl.Graphics,
   Vcl.Controls, Vcl.Forms, Vcl.Dialogs, Vcl.ComCtrls, Vcl.OleCtrls, MSTSCLib_TLB,
-  Vcl.StdCtrls, Vcl.Grids, inifiles;
+  Vcl.StdCtrls, Vcl.Grids, inifiles, Vcl.Menus;
 
 type
   TCustomGridHelper = class helper for TCustomGrid
@@ -22,6 +22,8 @@ type
     PageControlMain: TPageControl;
     TabSheetMain: TTabSheet;
     sgConnectionInfo: TStringGrid;
+    PopupMenuRDP: TPopupMenu;
+    CloseTab: TMenuItem;
     procedure FormCreate(Sender: TObject);
     procedure FormClose(Sender: TObject; var Action: TCloseAction);
     procedure sgConnectionInfoKeyPress(Sender: TObject; var Key: Char);
@@ -32,6 +34,9 @@ type
     procedure sgConnectionInfoSelectCell(Sender: TObject; ACol, ARow: Integer;
       var CanSelect: Boolean);
     procedure Button1Click(Sender: TObject);
+    procedure PageControlMainContextPopup(Sender: TObject; MousePos: TPoint;
+      var Handled: Boolean);
+    procedure CloseTabClick(Sender: TObject);
   private
     { Private declarations }
     procedure ConnectToServer;
@@ -156,6 +161,17 @@ begin
   sgConnectionInfo.SetFocus;
 end;
 
+procedure TFormMain.PageControlMainContextPopup(Sender: TObject;
+  MousePos: TPoint; var Handled: Boolean);
+begin
+  if PageControlMain.ActivePage = TabSheetMain then
+    CloseTab.Enabled := false
+  else
+    CloseTab.Enabled := true;
+
+
+end;
+
 procedure TFormMain.Button1Click(Sender: TObject);
 var
   TabSheet : TTabSheet;
@@ -167,6 +183,11 @@ begin
 
   rdp := TMsRdpClient9NotSafeForScripting.Create(TabSheet);
   rdp.Align := alClient;
+end;
+
+procedure TFormMain.CloseTabClick(Sender: TObject);
+begin
+  PageControlMain.ActivePage.Free;
 end;
 
 procedure TFormMain.ConnectToServer();
@@ -189,6 +210,7 @@ begin
   TabSheet := TTabSheet.Create(PageControlMain);
   TabSheet.Caption := host;
   TabSheet.PageControl := PageControlMain;
+  TabSheet.PopupMenu := PopupMenuRDP;
 
   rdp := TMsRdpClient9NotSafeForScripting.Create(TabSheet);
   rdp.Parent := TabSheet;

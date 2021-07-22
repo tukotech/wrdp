@@ -23,7 +23,9 @@ object FormMain: TFormMain
     Height = 610
     ActivePage = TabSheetMain
     Align = alClient
+    PopupMenu = PopupMenuRDP
     TabOrder = 0
+    OnContextPopup = PageControlMainContextPopup
     object TabSheetMain: TTabSheet
       Caption = 'Main'
       object sgConnectionInfo: TStringGrid
@@ -42,6 +44,14 @@ object FormMain: TFormMain
         OnKeyUp = sgConnectionInfoKeyUp
         OnSelectCell = sgConnectionInfoSelectCell
       end
+    end
+  end
+  object PopupMenuRDP: TPopupMenu
+    Left = 444
+    Top = 488
+    object CloseTab: TMenuItem
+      Caption = 'Close'
+      OnClick = CloseTabClick
     end
   end
 end
