@@ -164,6 +164,13 @@ end;
 procedure TFormMain.PageControlMainContextPopup(Sender: TObject;
   MousePos: TPoint; var Handled: Boolean);
 begin
+  with Sender as TPageControl do begin
+    if [htOnItem] * GetHitTestInfoAt(MousePos.X, MousePos.Y) <> [] then
+      PopupMenu := PopupMenuRDP
+    else
+      PopupMenu := nil;
+  end;
+
   if PageControlMain.ActivePage = TabSheetMain then
     CloseTab.Enabled := false
   else
