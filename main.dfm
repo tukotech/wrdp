@@ -101,8 +101,9 @@ object FormMain: TFormMain
   object PopupMenuVST: TPopupMenu
     Left = 676
     Top = 512
-    object AddGroup1: TMenuItem
+    object AddGroupMI: TMenuItem
       Caption = 'Add Group'
+      OnClick = AddGroupMIClick
     end
     object AddTraget1: TMenuItem
       Caption = 'Add Traget'

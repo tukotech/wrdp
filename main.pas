@@ -3,6 +3,7 @@ unit main;
 interface
 
 uses
+  ConnInfo,
   Winapi.Windows,
   Winapi.Messages,
   System.Classes,
@@ -29,7 +30,7 @@ type
     Panel1: TPanel;
     VST: TVirtualStringTree;
     PopupMenuVST: TPopupMenu;
-    AddGroup1: TMenuItem;
+    AddGroupMI: TMenuItem;
     AddTraget1: TMenuItem;
     procedure FormCreate(Sender: TObject);
     procedure FormClose(Sender: TObject; var Action: TCloseAction);
@@ -48,6 +49,7 @@ type
     procedure sgConnectionInfoEnter(Sender: TObject);
     procedure sgConnectionInfoSetEditText(Sender: TObject; ACol, ARow: Integer;
       const Value: string);
+    procedure AddGroupMIClick(Sender: TObject);
   private
     { Private declarations }
     editMode: Boolean;
@@ -196,6 +198,11 @@ begin
     CloseTab.Enabled := false
   else
     CloseTab.Enabled := true;
+end;
+
+procedure TFormMain.AddGroupMIClick(Sender: TObject);
+begin
+  FormConnInfo.Show;
 end;
 
 procedure TFormMain.CloseTabClick(Sender: TObject);
