@@ -79,6 +79,9 @@ object FormMain: TFormMain
           Header.MainColumn = -1
           PopupMenu = PopupMenuVST
           TabOrder = 1
+          OnFreeNode = VSTFreeNode
+          OnGetText = VSTGetText
+          OnInitNode = VSTInitNode
           Touch.InteractiveGestures = [igPan, igPressAndTap]
           Touch.InteractiveGestureOptions = [igoPanSingleFingerHorizontal, igoPanSingleFingerVertical, igoPanInertia, igoPanGutter, igoParentPassthrough]
           ExplicitLeft = 544
@@ -107,6 +110,12 @@ object FormMain: TFormMain
     end
     object AddTraget1: TMenuItem
       Caption = 'Add Traget'
+    end
+    object N1: TMenuItem
+      Caption = '-'
+    end
+    object Edit1: TMenuItem
+      Caption = 'Edit'
     end
   end
 end

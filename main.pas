@@ -20,6 +20,15 @@ type
     procedure DelRow(ARow: Integer);
   end;
 
+  PNodeRec = ^TNodeRec;
+  TNodeRec = record
+    Name: string;
+    HostOrIP : string;
+    Domain: string;
+    Username: string;
+    Password: string;
+  end;
+
   TFormMain = class(TForm)
     PageControlMain: TPageControl;
     TabSheetMain: TTabSheet;
@@ -32,6 +41,8 @@ type
     PopupMenuVST: TPopupMenu;
     AddGroupMI: TMenuItem;
     AddTraget1: TMenuItem;
+    N1: TMenuItem;
+    Edit1: TMenuItem;
     procedure FormCreate(Sender: TObject);
     procedure FormClose(Sender: TObject; var Action: TCloseAction);
     procedure sgConnectionInfoKeyPress(Sender: TObject; var Key: Char);
@@ -50,11 +61,17 @@ type
     procedure sgConnectionInfoSetEditText(Sender: TObject; ACol, ARow: Integer;
       const Value: string);
     procedure AddGroupMIClick(Sender: TObject);
+    procedure VSTGetText(Sender: TBaseVirtualTree; Node: PVirtualNode;
+      Column: TColumnIndex; TextType: TVSTTextType; var CellText: string);
+    procedure VSTFreeNode(Sender: TBaseVirtualTree; Node: PVirtualNode);
+    procedure VSTInitNode(Sender: TBaseVirtualTree; ParentNode,
+      Node: PVirtualNode; var InitialStates: TVirtualNodeInitStates);
   private
     { Private declarations }
     editMode: Boolean;
     isEditingPassword: Boolean;
     EditingCol, EditingRow: Longint;
+    FRecentNodeData : TNodeRec;
     procedure ConnectToServer;
   public
     { Public declarations }
@@ -64,15 +81,6 @@ var
   FormMain: TFormMain;
 
 implementation
-
-type
-  PNodeRec = ^TNodeRec;
-  TNodeRec = record
-    Name: string;
-    HostOrIP : string;
-    Domain: string;
-    Password: string;
-  end;
 
 {$R *.dfm}
 procedure TCustomGridHelper.DelRow(ARow: Integer);
@@ -176,6 +184,8 @@ begin
   cfg := ChangeFileExt( Application.ExeName, '.cfg' );
   if System.SysUtils.FileExists(cfg) then
     LoadStringGrid(sgConnectionInfo, cfg);
+  VST.NodeDataSize := SizeOf(TNodeRec);
+  VST.RootNodeCount := 0;
 end;
 
 procedure TFormMain.FormShow(Sender: TObject);
@@ -201,8 +211,26 @@ begin
 end;
 
 procedure TFormMain.AddGroupMIClick(Sender: TObject);
+var
+  Name, HostnameOrIp, Domain, Username, Password: string;
 begin
-  FormConnInfo.Show;
+  FormConnInfo.ShowModal;
+  Name := FormConnInfo.EditName.Text;
+  HostnameOrIp := FormConnInfo.EditHostnameOrIp.Text;
+  Domain := FormConnInfo.EditDomain.Text;
+  Username := FormConnInfo.EditUsername.Text;
+  Password := FormConnInfo.EditPassword.Text;
+
+  FRecentNodeData.Name := Name;
+  FRecentNodeData.HostOrIP := HostnameOrIp;
+  FRecentNodeData.Domain := Domain;
+  FRecentNodeData.Username := Username;
+  FRecentNodeData.Password := Password;
+
+  with VST do
+  begin
+    RootNodeCount := RootNodeCount + 1;
+  end;
 end;
 
 procedure TFormMain.CloseTabClick(Sender: TObject);
@@ -357,4 +385,43 @@ begin
   end;
 end;
 
+procedure TFormMain.VSTFreeNode(Sender: TBaseVirtualTree; Node: PVirtualNode);
+var
+  Data: PNodeRec;
+begin
+  Data := Sender.GetNodeData(Node);
+  // Explicitely free the string, the VCL cannot know that there is one but needs to free
+  // it nonetheless. For more fields in such a record which must be freed use Finalize(Data^) instead touching
+  // every member individually.
+  Finalize(Data^);
+end;
+
+procedure TFormMain.VSTGetText(Sender: TBaseVirtualTree; Node: PVirtualNode;
+  Column: TColumnIndex; TextType: TVSTTextType; var CellText: string);
+var
+  Data: PNodeRec;
+begin
+  // A handler for the OnGetText event is always needed as it provides the tree with the string data to display.
+  Data := Sender.GetNodeData(Node);
+  if Assigned(Data) then
+    CellText := Data.Name;
+end;
+
+procedure TFormMain.VSTInitNode(Sender: TBaseVirtualTree; ParentNode,
+  Node: PVirtualNode; var InitialStates: TVirtualNodeInitStates);
+var
+  Data: PNodeRec;
+begin
+  with Sender do
+  begin
+    Data := GetNodeData(Node);
+    // Construct a node caption. This event is triggered once for each node but
+    // appears asynchronously, which means when the node is displayed not when it is added.
+    Data.Name := self.FRecentNodeData.Name;
+    Data.HostOrIP := self.FRecentNodeData.HostOrIP;
+    Data.Domain := self.FRecentNodeData.Domain;
+    Data.Username := self.FRecentNodeData.Username;
+    Data.Password := self.FRecentNodeData.Password;
+  end;
+end;
 end.

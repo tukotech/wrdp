@@ -62,7 +62,7 @@ object FormConnInfo: TFormConnInfo
       Height = 13
       Caption = 'Password:'
     end
-    object Edit1: TEdit
+    object EditName: TEdit
       Left = 96
       Top = 8
       Width = 176
@@ -70,7 +70,7 @@ object FormConnInfo: TFormConnInfo
       Anchors = [akLeft, akTop, akRight]
       TabOrder = 0
     end
-    object Edit2: TEdit
+    object EditHostnameOrIp: TEdit
       Left = 96
       Top = 35
       Width = 176
@@ -78,7 +78,7 @@ object FormConnInfo: TFormConnInfo
       Anchors = [akLeft, akTop, akRight]
       TabOrder = 1
     end
-    object Edit3: TEdit
+    object EditDomain: TEdit
       Left = 96
       Top = 62
       Width = 176
@@ -86,7 +86,7 @@ object FormConnInfo: TFormConnInfo
       Anchors = [akLeft, akTop, akRight]
       TabOrder = 2
     end
-    object Edit4: TEdit
+    object EditUsername: TEdit
       Left = 96
       Top = 89
       Width = 176
@@ -94,12 +94,13 @@ object FormConnInfo: TFormConnInfo
       Anchors = [akLeft, akTop, akRight]
       TabOrder = 3
     end
-    object Edit5: TEdit
+    object EditPassword: TEdit
       Left = 96
       Top = 116
       Width = 176
       Height = 21
       Anchors = [akLeft, akTop, akRight]
+      PasswordChar = '*'
       TabOrder = 4
     end
   end
@@ -120,8 +121,11 @@ object FormConnInfo: TFormConnInfo
       Width = 75
       Height = 33
       Align = alRight
-      Caption = 'Button1'
+      Cancel = True
+      Caption = '&Cancel'
+      ModalResult = 2
       TabOrder = 0
+      OnClick = Button1Click
       ExplicitLeft = 346
       ExplicitTop = 14
       ExplicitHeight = 43
@@ -133,7 +137,9 @@ object FormConnInfo: TFormConnInfo
       Width = 75
       Height = 33
       Align = alRight
-      Caption = 'Button2'
+      Caption = '&Save'
+      Default = True
+      ModalResult = 1
       TabOrder = 1
       ExplicitLeft = 550
       ExplicitTop = 14

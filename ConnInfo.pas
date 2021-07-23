@@ -10,21 +10,22 @@ uses
 type
   TFormConnInfo = class(TForm)
     Label1: TLabel;
-    Edit1: TEdit;
+    EditName: TEdit;
     Label2: TLabel;
-    Edit2: TEdit;
+    EditHostnameOrIp: TEdit;
     Label3: TLabel;
-    Edit3: TEdit;
+    EditDomain: TEdit;
     Label4: TLabel;
-    Edit4: TEdit;
+    EditUsername: TEdit;
     Label5: TLabel;
-    Edit5: TEdit;
+    EditPassword: TEdit;
     Panel1: TPanel;
     Panel2: TPanel;
     Button1: TButton;
     Button2: TButton;
     procedure FormCreate(Sender: TObject);
     procedure FormClose(Sender: TObject; var Action: TCloseAction);
+    procedure Button1Click(Sender: TObject);
   private
     { Private declarations }
   public
@@ -37,6 +38,11 @@ var
 implementation
 
 {$R *.dfm}
+
+procedure TFormConnInfo.Button1Click(Sender: TObject);
+begin
+  ShowMessage(EditPassword.Text);
+end;
 
 procedure TFormConnInfo.FormClose(Sender: TObject; var Action: TCloseAction);
 var
