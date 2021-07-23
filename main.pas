@@ -204,7 +204,8 @@ end;
 procedure TFormMain.FormShow(Sender: TObject);
 begin
   PageControlMain.ActivePage := TabSheetMain;
-  sgConnectionInfo.SetFocus;
+//  sgConnectionInfo.SetFocus;
+  VST.SetFocus;
 end;
 
 procedure TFormMain.PageControlMainContextPopup(Sender: TObject;
