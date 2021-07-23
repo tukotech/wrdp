@@ -71,6 +71,7 @@ type
       Stream: TStream);
     procedure VSTSaveNode(Sender: TBaseVirtualTree; Node: PVirtualNode;
       Stream: TStream);
+    procedure VSTDblClick(Sender: TObject);
   private
     { Private declarations }
     editMode: Boolean;
@@ -430,6 +431,17 @@ begin
       EditingCol := ACol;
       EditingRow := ARow;
     end
+  end;
+end;
+
+procedure TFormMain.VSTDblClick(Sender: TObject);
+var
+  Data: PNodeRec;
+begin
+  with VST do
+  begin
+    Data := GetNodeData(FocusedNode);
+    ConnectToServer(Data);
   end;
 end;
 

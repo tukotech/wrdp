@@ -79,6 +79,7 @@ object FormMain: TFormMain
           Header.MainColumn = -1
           PopupMenu = PopupMenuVST
           TabOrder = 1
+          OnDblClick = VSTDblClick
           OnFreeNode = VSTFreeNode
           OnGetText = VSTGetText
           OnInitNode = VSTInitNode
