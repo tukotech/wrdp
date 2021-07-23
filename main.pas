@@ -39,10 +39,10 @@ type
     Panel1: TPanel;
     VST: TVirtualStringTree;
     PopupMenuVST: TPopupMenu;
-    AddGroupMI: TMenuItem;
-    AddTraget1: TMenuItem;
+    PopupMenuVST_AddGroupMI: TMenuItem;
+    PopupMenuVST_AddTraget: TMenuItem;
     N1: TMenuItem;
-    Edit1: TMenuItem;
+    PopupMenuVST_EditMI: TMenuItem;
     procedure FormCreate(Sender: TObject);
     procedure FormClose(Sender: TObject; var Action: TCloseAction);
     procedure sgConnectionInfoKeyPress(Sender: TObject; var Key: Char);
@@ -60,7 +60,7 @@ type
     procedure sgConnectionInfoEnter(Sender: TObject);
     procedure sgConnectionInfoSetEditText(Sender: TObject; ACol, ARow: Integer;
       const Value: string);
-    procedure AddGroupMIClick(Sender: TObject);
+    procedure PopupMenuVST_AddGroupMIClick(Sender: TObject);
     procedure VSTGetText(Sender: TBaseVirtualTree; Node: PVirtualNode;
       Column: TColumnIndex; TextType: TVSTTextType; var CellText: string);
     procedure VSTFreeNode(Sender: TBaseVirtualTree; Node: PVirtualNode);
@@ -72,6 +72,8 @@ type
     procedure VSTSaveNode(Sender: TBaseVirtualTree; Node: PVirtualNode;
       Stream: TStream);
     procedure VSTDblClick(Sender: TObject);
+    procedure VSTContextPopup(Sender: TObject; MousePos: TPoint;
+      var Handled: Boolean);
   private
     { Private declarations }
     editMode: Boolean;
@@ -224,7 +226,7 @@ begin
     CloseTab.Enabled := true;
 end;
 
-procedure TFormMain.AddGroupMIClick(Sender: TObject);
+procedure TFormMain.PopupMenuVST_AddGroupMIClick(Sender: TObject);
 var
   Name, HostnameOrIp, Domain, Username, Password: string;
 begin
@@ -432,6 +434,23 @@ begin
       EditingCol := ACol;
       EditingRow := ARow;
     end
+  end;
+end;
+
+procedure TFormMain.VSTContextPopup(Sender: TObject; MousePos: TPoint;
+  var Handled: Boolean);
+begin
+  if Assigned(VST.FocusedNode) then
+  begin
+    PopupMenuVST_AddGroupMI.Enabled := false;
+    PopupMenuVST_AddTraget.Enabled := false;
+    PopupMenuVST_EditMI.Enabled := true;
+  end
+  else
+  begin
+    PopupMenuVST_AddGroupMI.Enabled := true;
+    PopupMenuVST_AddTraget.Enabled := true;
+    PopupMenuVST_EditMI.Enabled := false;
   end;
 end;
 

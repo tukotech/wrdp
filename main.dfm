@@ -79,6 +79,7 @@ object FormMain: TFormMain
           Header.MainColumn = -1
           PopupMenu = PopupMenuVST
           TabOrder = 1
+          OnContextPopup = VSTContextPopup
           OnDblClick = VSTDblClick
           OnFreeNode = VSTFreeNode
           OnGetText = VSTGetText
@@ -108,17 +109,17 @@ object FormMain: TFormMain
   object PopupMenuVST: TPopupMenu
     Left = 676
     Top = 512
-    object AddGroupMI: TMenuItem
+    object PopupMenuVST_AddGroupMI: TMenuItem
       Caption = 'Add Group'
-      OnClick = AddGroupMIClick
+      OnClick = PopupMenuVST_AddGroupMIClick
     end
-    object AddTraget1: TMenuItem
+    object PopupMenuVST_AddTraget: TMenuItem
       Caption = 'Add Traget'
     end
     object N1: TMenuItem
       Caption = '-'
     end
-    object Edit1: TMenuItem
+    object PopupMenuVST_EditMI: TMenuItem
       Caption = 'Edit'
     end
   end
