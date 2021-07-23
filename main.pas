@@ -230,22 +230,24 @@ procedure TFormMain.PopupMenuVST_AddGroupMIClick(Sender: TObject);
 var
   Name, HostnameOrIp, Domain, Username, Password: string;
 begin
-  FormConnInfo.ShowModal;
-  Name := FormConnInfo.EditName.Text;
-  HostnameOrIp := FormConnInfo.EditHostnameOrIp.Text;
-  Domain := FormConnInfo.EditDomain.Text;
-  Username := FormConnInfo.EditUsername.Text;
-  Password := FormConnInfo.EditPassword.Text;
-
-  FRecentNodeData.Name := Name;
-  FRecentNodeData.HostOrIP := HostnameOrIp;
-  FRecentNodeData.Domain := Domain;
-  FRecentNodeData.Username := Username;
-  FRecentNodeData.Password := Password;
-
-  with VST do
+  if FormConnInfo.ShowModal = mrOk then
   begin
-    RootNodeCount := RootNodeCount + 1;
+    Name := FormConnInfo.EditName.Text;
+    HostnameOrIp := FormConnInfo.EditHostnameOrIp.Text;
+    Domain := FormConnInfo.EditDomain.Text;
+    Username := FormConnInfo.EditUsername.Text;
+    Password := FormConnInfo.EditPassword.Text;
+
+    FRecentNodeData.Name := Name;
+    FRecentNodeData.HostOrIP := HostnameOrIp;
+    FRecentNodeData.Domain := Domain;
+    FRecentNodeData.Username := Username;
+    FRecentNodeData.Password := Password;
+
+    with VST do
+    begin
+      RootNodeCount := RootNodeCount + 1;
+    end;
   end;
 end;
 
