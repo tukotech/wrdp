@@ -66,6 +66,7 @@ type
     procedure VSTFreeNode(Sender: TBaseVirtualTree; Node: PVirtualNode);
     procedure VSTInitNode(Sender: TBaseVirtualTree; ParentNode,
       Node: PVirtualNode; var InitialStates: TVirtualNodeInitStates);
+    procedure VSTKeyPress(Sender: TObject; var Key: Char);
   private
     { Private declarations }
     editMode: Boolean;
@@ -424,4 +425,19 @@ begin
     Data.Password := self.FRecentNodeData.Password;
   end;
 end;
+
+procedure TFormMain.VSTKeyPress(Sender: TObject; var Key: Char);
+var
+  Data: PNodeRec;
+begin
+  if ord(Key) = VK_RETURN then
+  begin
+    with VST do
+    begin
+      Data := GetNodeData(FocusedNode);
+    end;
+  end;
+
+end;
+
 end.
