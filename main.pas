@@ -73,7 +73,8 @@ type
     isEditingPassword: Boolean;
     EditingCol, EditingRow: Longint;
     FRecentNodeData : TNodeRec;
-    procedure ConnectToServer;
+    procedure ConnectToServer; overload;
+    procedure ConnectToServer(node: PNodeRec); overload;
   public
     { Public declarations }
   end;
@@ -278,6 +279,42 @@ begin
   PageControlMain.ActivePage := TabSheet;
 end;
 
+procedure TFormMain.ConnectToServer(node: PNodeRec);
+var
+  host : string;
+  domain : string;
+  username: string;
+  password: string;
+  row : Integer;
+  as7 : IMsRdpClientAdvancedSettings7;
+  TabSheet : TTabSheet;
+  rdp : TMsRdpClient9NotSafeForScripting;
+begin
+  host := node.HostOrIP;
+  domain := node.Domain;
+  username := node.Username;
+  password := node.Password;
+
+  TabSheet := TTabSheet.Create(PageControlMain);
+  TabSheet.Caption := host;
+  TabSheet.PageControl := PageControlMain;
+  TabSheet.PopupMenu := PopupMenuRDP;
+
+  rdp := TMsRdpClient9NotSafeForScripting.Create(TabSheet);
+  rdp.Parent := TabSheet;
+  rdp.Align := alClient;
+
+  rdp.Server := host;
+  rdp.Domain := domain;
+  rdp.UserName := username;
+  rdp.AdvancedSettings9.ClearTextPassword := password;
+  rdp.SecuredSettings3.KeyboardHookMode := 1;
+  as7 := rdp.AdvancedSettings as IMsRdpClientAdvancedSettings7;
+  as7.EnableCredSspSupport := true;
+  rdp.Connect;
+  PageControlMain.ActivePage := TabSheet;
+end;
+
 procedure TFormMain.sgConnectionInfoDblClick(Sender: TObject);
 begin
   ConnectToServer;
@@ -435,6 +472,7 @@ begin
     with VST do
     begin
       Data := GetNodeData(FocusedNode);
+      ConnectToServer(Data);
     end;
   end;
 
