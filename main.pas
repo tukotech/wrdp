@@ -11,7 +11,7 @@ uses
   System.SysUtils,
   Vcl.Graphics,
   Vcl.Controls, Vcl.Forms, Vcl.Dialogs, Vcl.ComCtrls, Vcl.OleCtrls, MSTSCLib_TLB,
-  Vcl.StdCtrls, Vcl.Grids, inifiles, Vcl.Menus;
+  Vcl.StdCtrls, Vcl.Grids, inifiles, Vcl.Menus, VirtualTrees, Vcl.ExtCtrls;
 
 type
   TCustomGridHelper = class helper for TCustomGrid
@@ -26,6 +26,11 @@ type
     PopupMenuRDP: TPopupMenu;
     CloseTab: TMenuItem;
     ListBoxInfo: TListBox;
+    Panel1: TPanel;
+    VST: TVirtualStringTree;
+    PopupMenuVST: TPopupMenu;
+    AddGroup1: TMenuItem;
+    AddTraget1: TMenuItem;
     procedure FormCreate(Sender: TObject);
     procedure FormClose(Sender: TObject; var Action: TCloseAction);
     procedure sgConnectionInfoKeyPress(Sender: TObject; var Key: Char);
@@ -35,7 +40,6 @@ type
       Shift: TShiftState);
     procedure sgConnectionInfoSelectCell(Sender: TObject; ACol, ARow: Integer;
       var CanSelect: Boolean);
-    procedure Button1Click(Sender: TObject);
     procedure PageControlMainContextPopup(Sender: TObject; MousePos: TPoint;
       var Handled: Boolean);
     procedure CloseTabClick(Sender: TObject);
@@ -58,6 +62,15 @@ var
   FormMain: TFormMain;
 
 implementation
+
+type
+  PNodeRec = ^TNodeRec;
+  TNodeRec = record
+    Name: string;
+    HostOrIP : string;
+    Domain: string;
+    Password: string;
+  end;
 
 {$R *.dfm}
 procedure TCustomGridHelper.DelRow(ARow: Integer);
@@ -138,7 +151,6 @@ procedure TFormMain.FormCreate(Sender: TObject);
 var
   Ini : TIniFile;
   cfg : TFileName;
-  x : Integer;
 begin
   sgConnectionInfo.Cells[0,0] := 'Hostname/IP';
   sgConnectionInfo.Cells[1,0] := 'Domain';
@@ -184,19 +196,6 @@ begin
     CloseTab.Enabled := false
   else
     CloseTab.Enabled := true;
-end;
-
-procedure TFormMain.Button1Click(Sender: TObject);
-var
-  TabSheet : TTabSheet;
-  rdp : TMsRdpClient9NotSafeForScripting;
-begin
-  TabSheet := TTabSheet.Create(PageControlMain);
-  TabSheet.Caption := 'New Page';
-  TabSheet.PageControl := PageControlMain;
-
-  rdp := TMsRdpClient9NotSafeForScripting.Create(TabSheet);
-  rdp.Align := alClient;
 end;
 
 procedure TFormMain.CloseTabClick(Sender: TObject);
