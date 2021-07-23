@@ -83,6 +83,8 @@ object FormMain: TFormMain
           OnGetText = VSTGetText
           OnInitNode = VSTInitNode
           OnKeyPress = VSTKeyPress
+          OnLoadNode = VSTLoadNode
+          OnSaveNode = VSTSaveNode
           Touch.InteractiveGestures = [igPan, igPressAndTap]
           Touch.InteractiveGestureOptions = [igoPanSingleFingerHorizontal, igoPanSingleFingerVertical, igoPanInertia, igoPanGutter, igoParentPassthrough]
           ExplicitLeft = 544

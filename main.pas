@@ -67,6 +67,10 @@ type
     procedure VSTInitNode(Sender: TBaseVirtualTree; ParentNode,
       Node: PVirtualNode; var InitialStates: TVirtualNodeInitStates);
     procedure VSTKeyPress(Sender: TObject; var Key: Char);
+    procedure VSTLoadNode(Sender: TBaseVirtualTree; Node: PVirtualNode;
+      Stream: TStream);
+    procedure VSTSaveNode(Sender: TBaseVirtualTree; Node: PVirtualNode;
+      Stream: TStream);
   private
     { Private declarations }
     editMode: Boolean;
@@ -157,6 +161,7 @@ begin
   end;
 
   SaveStringGrid(sgConnectionInfo, ChangeFileExt( Application.ExeName, '.cfg' ));
+  VST.SaveToFile('VST.cfg');
 end;
 
 procedure TFormMain.FormCreate(Sender: TObject);
@@ -186,8 +191,13 @@ begin
   cfg := ChangeFileExt( Application.ExeName, '.cfg' );
   if System.SysUtils.FileExists(cfg) then
     LoadStringGrid(sgConnectionInfo, cfg);
+
   VST.NodeDataSize := SizeOf(TNodeRec);
-  VST.RootNodeCount := 0;
+
+  if System.SysUtils.FileExists('VST.cfg') then
+    VST.LoadFromFile('VST.cfg')
+  else
+    VST.RootNodeCount := 0;
 end;
 
 procedure TFormMain.FormShow(Sender: TObject);
@@ -478,4 +488,62 @@ begin
 
 end;
 
+procedure TFormMain.VSTLoadNode(Sender: TBaseVirtualTree; Node: PVirtualNode;
+  Stream: TStream);
+var
+  Data: PNodeRec;
+  Len: Integer;
+begin
+
+  Data := VST.GetNodeData(Node);
+
+  Stream.ReadBuffer(Len, SizeOf(Len));
+  SetLength(Data^.Name, Len);
+  Stream.read(PChar(Data^.Name)^, Len*SizeOf(Char));
+
+  Stream.ReadBuffer(Len, SizeOf(Len));
+  SetLength(Data^.HostOrIP, Len);
+  Stream.read(PChar(Data^.HostOrIP)^, Len*SizeOf(Char));
+
+  Stream.ReadBuffer(Len, SizeOf(Len));
+  SetLength(Data^.Domain, Len);
+  Stream.read(PChar(Data^.Domain)^, Len*SizeOf(Char));
+
+  Stream.ReadBuffer(Len, SizeOf(Len));
+  SetLength(Data^.Username, Len);
+  Stream.read(PChar(Data^.Username)^, Len*SizeOf(Char));
+
+  Stream.ReadBuffer(Len, SizeOf(Len));
+  SetLength(Data^.Password, Len);
+  Stream.read(PChar(Data^.Password)^, Len*SizeOf(Char));
+end;
+
+procedure TFormMain.VSTSaveNode(Sender: TBaseVirtualTree; Node: PVirtualNode;
+  Stream: TStream);
+var
+  Data: PNodeRec;
+  Len: Integer;
+begin
+  Data := VST.GetNodeData(Node);
+
+  Len := Length(Data^.Name);
+  Stream.WriteBuffer(Len, SizeOf(Len));
+  Stream.WriteBuffer(PChar(Data^.Name)^, Len*SizeOf(Char));
+
+  Len := Length(Data^.HostOrIP);
+  Stream.WriteBuffer(Len, SizeOf(Len));
+  Stream.WriteBuffer(PChar(Data^.HostOrIP)^, Len*SizeOf(Char));
+
+  Len := Length(Data^.Domain);
+  Stream.WriteBuffer(Len, SizeOf(Len));
+  Stream.WriteBuffer(PChar(Data^.Domain)^, Len*SizeOf(Char));
+
+  Len := Length(Data^.Username);
+  Stream.WriteBuffer(Len, SizeOf(Len));
+  Stream.WriteBuffer(PChar(Data^.Username)^, Len*SizeOf(Char));
+
+  Len := Length(Data^.Password);
+  Stream.WriteBuffer(Len, SizeOf(Len));
+  Stream.WriteBuffer(PChar(Data^.Password)^, Len*SizeOf(Char));
+end;
 end.
