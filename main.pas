@@ -299,7 +299,6 @@ var
   domain : string;
   username: string;
   password: string;
-  row : Integer;
   as7 : IMsRdpClientAdvancedSettings7;
   TabSheet : TTabSheet;
   rdp : TMsRdpClient9NotSafeForScripting;
@@ -310,7 +309,7 @@ begin
   password := node.Password;
 
   TabSheet := TTabSheet.Create(PageControlMain);
-  TabSheet.Caption := host;
+  TabSheet.Caption := node.Name;
   TabSheet.PageControl := PageControlMain;
   TabSheet.PopupMenu := PopupMenuRDP;
 
@@ -439,8 +438,11 @@ end;
 
 procedure TFormMain.VSTContextPopup(Sender: TObject; MousePos: TPoint;
   var Handled: Boolean);
+var
+  aHitTest : THitInfo;
 begin
-  if Assigned(VST.FocusedNode) then
+  (Sender as TVirtualStringTree).GetHitTestInfoAt(MousePos.X, MousePos.Y, true, aHitTest);
+  if Assigned(aHitTest.HitNode) then
   begin
     PopupMenuVST_AddGroupMI.Enabled := false;
     PopupMenuVST_AddTraget.Enabled := false;
