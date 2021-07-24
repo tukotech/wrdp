@@ -39,62 +39,31 @@ object FormMain: TFormMain
         ItemHeight = 13
         TabOrder = 0
       end
-      object Panel1: TPanel
+      object VST: TVirtualStringTree
         Left = 0
         Top = 0
         Width = 914
         Height = 432
         Align = alClient
+        Header.AutoSizeIndex = 0
+        Header.MainColumn = -1
+        PopupMenu = PopupMenuVST
         TabOrder = 1
-        ExplicitLeft = 24
-        ExplicitTop = 80
-        ExplicitWidth = 873
-        ExplicitHeight = 337
-        object sgConnectionInfo: TStringGrid
-          Left = 1
-          Top = 1
-          Width = 352
-          Height = 430
-          Align = alLeft
-          ColCount = 4
-          FixedCols = 0
-          RowCount = 2
-          Options = [goFixedVertLine, goFixedHorzLine, goVertLine, goHorzLine, goColSizing, goEditing, goTabs, goRowSelect]
-          TabOrder = 0
-          OnDblClick = sgConnectionInfoDblClick
-          OnEnter = sgConnectionInfoEnter
-          OnGetEditText = sgConnectionInfoGetEditText
-          OnKeyPress = sgConnectionInfoKeyPress
-          OnKeyUp = sgConnectionInfoKeyUp
-          OnSelectCell = sgConnectionInfoSelectCell
-          OnSetEditText = sgConnectionInfoSetEditText
-        end
-        object VST: TVirtualStringTree
-          Left = 353
-          Top = 1
-          Width = 560
-          Height = 430
-          Align = alClient
-          Header.AutoSizeIndex = 0
-          Header.MainColumn = -1
-          PopupMenu = PopupMenuVST
-          TabOrder = 1
-          OnContextPopup = VSTContextPopup
-          OnDblClick = VSTDblClick
-          OnFreeNode = VSTFreeNode
-          OnGetText = VSTGetText
-          OnInitNode = VSTInitNode
-          OnKeyPress = VSTKeyPress
-          OnLoadNode = VSTLoadNode
-          OnSaveNode = VSTSaveNode
-          Touch.InteractiveGestures = [igPan, igPressAndTap]
-          Touch.InteractiveGestureOptions = [igoPanSingleFingerHorizontal, igoPanSingleFingerVertical, igoPanInertia, igoPanGutter, igoParentPassthrough]
-          ExplicitLeft = 544
-          ExplicitTop = 120
-          ExplicitWidth = 200
-          ExplicitHeight = 100
-          Columns = <>
-        end
+        OnContextPopup = VSTContextPopup
+        OnDblClick = VSTDblClick
+        OnFreeNode = VSTFreeNode
+        OnGetText = VSTGetText
+        OnInitNode = VSTInitNode
+        OnKeyPress = VSTKeyPress
+        OnLoadNode = VSTLoadNode
+        OnSaveNode = VSTSaveNode
+        Touch.InteractiveGestures = [igPan, igPressAndTap]
+        Touch.InteractiveGestureOptions = [igoPanSingleFingerHorizontal, igoPanSingleFingerVertical, igoPanInertia, igoPanGutter, igoParentPassthrough]
+        ExplicitLeft = 1
+        ExplicitTop = 1
+        ExplicitWidth = 583
+        ExplicitHeight = 335
+        Columns = <>
       end
     end
   end

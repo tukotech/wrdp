@@ -25,7 +25,6 @@ type
     Button2: TButton;
     procedure FormCreate(Sender: TObject);
     procedure FormClose(Sender: TObject; var Action: TCloseAction);
-    procedure Button1Click(Sender: TObject);
   private
     { Private declarations }
   public
@@ -38,11 +37,6 @@ var
 implementation
 
 {$R *.dfm}
-
-procedure TFormConnInfo.Button1Click(Sender: TObject);
-begin
-  ShowMessage(EditPassword.Text);
-end;
 
 procedure TFormConnInfo.FormClose(Sender: TObject; var Action: TCloseAction);
 var
@@ -67,7 +61,7 @@ begin
     self.Left := Ini.ReadInteger( 'FormConnInfo', 'Left', 0);
   finally
     Ini.Free;
-end;
+  end;
 end;
 
 end.
