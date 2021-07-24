@@ -15,11 +15,6 @@ uses
   Vcl.StdCtrls, Vcl.Grids, inifiles, Vcl.Menus, VirtualTrees, Vcl.ExtCtrls;
 
 type
-  TCustomGridHelper = class helper for TCustomGrid
-  public
-    procedure DelRow(ARow: Integer);
-  end;
-
   PNodeRec = ^TNodeRec;
   TNodeRec = record
     Name: string;
@@ -70,6 +65,8 @@ type
     FRecentNodeData : TNodeRec;
     procedure ConnectToServer(node: PNodeRec); overload;
     function GetInputHostInfo: Boolean;
+    procedure WMSysCommand(var Msg: TWMSysCommand);
+    message WM_SYSCOMMAND;
   public
     { Public declarations }
   end;
@@ -80,61 +77,8 @@ var
 implementation
 
 {$R *.dfm}
-procedure TCustomGridHelper.DelRow(ARow: Integer);
-begin
-  Self.DeleteRow(ARow);
-end;
-
-// Save a TStringGrid to a file
-
-procedure SaveStringGrid(StringGrid: TStringGrid; const FileName: TFileName);
-var
-  f:    TextFile;
-  i, k: Integer;
-begin
-  AssignFile(f, FileName);
-  Rewrite(f);
-  with StringGrid do
-  begin
-    // Write number of Columns/Rows
-    Writeln(f, ColCount);
-    Writeln(f, RowCount);
-    // loop through cells
-    for i := 0 to ColCount - 1 do
-      for k := 0 to RowCount - 1 do
-        Writeln(F, Cells[i, k]);
-  end;
-  CloseFile(F);
-end;
-
-// Load a TStringGrid from a file
-
-procedure LoadStringGrid(StringGrid: TStringGrid; const FileName: TFileName);
-var
-  f:          TextFile;
-  iTmp, i, k: Integer;
-  strTemp:    String;
-begin
-  AssignFile(f, FileName);
-  Reset(f);
-  with StringGrid do
-  begin
-    // Get number of columns
-    Readln(f, iTmp);
-    ColCount := iTmp;
-    // Get number of rows
-    Readln(f, iTmp);
-    RowCount := iTmp;
-    // loop through cells & fill in values
-    for i := 0 to ColCount - 1 do
-      for k := 0 to RowCount - 1 do
-      begin
-        Readln(f, strTemp);
-        Cells[i, k] := strTemp;
-      end;
-  end;
-  CloseFile(f);
-end;
+const
+  SC_AboutMenuItem = WM_USER + 1;
 
 procedure TFormMain.FormClose(Sender: TObject; var Action: TCloseAction);
 var
@@ -154,6 +98,12 @@ procedure TFormMain.FormCreate(Sender: TObject);
 var
   Ini : TIniFile;
 begin
+  AppendMenu(GetSystemMenu(Handle, FALSE), MF_SEPARATOR, 0, '');
+  AppendMenu(GetSystemMenu(Handle, FALSE),
+             MF_STRING,
+             SC_AboutMenuItem,
+             'About');
+
   Ini := TIniFile.Create( ChangeFileExt( Application.ExeName, '.INI' ) );
   try
     if Ini.ReadBool( 'Form', 'InitMax', false ) then
@@ -460,4 +410,12 @@ begin
   Stream.WriteBuffer(Len, SizeOf(Len));
   Stream.WriteBuffer(PChar(Data^.Password)^, Len*SizeOf(Char));
 end;
+
+procedure TFormMain.WMSysCommand(var Msg: TWMSysCommand);
+begin
+  if Msg.CmdType = SC_AboutMenuItem then
+    ShowMessage('Got the message') else
+    inherited;
+end;
+
 end.
