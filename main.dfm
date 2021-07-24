@@ -28,8 +28,6 @@ object FormMain: TFormMain
     OnContextPopup = PageControlMainContextPopup
     object TabSheetMain: TTabSheet
       Caption = 'Main'
-      ExplicitLeft = 8
-      ExplicitTop = 48
       object ListBoxInfo: TListBox
         Left = 0
         Top = 432
@@ -59,10 +57,6 @@ object FormMain: TFormMain
         OnSaveNode = VSTSaveNode
         Touch.InteractiveGestures = [igPan, igPressAndTap]
         Touch.InteractiveGestureOptions = [igoPanSingleFingerHorizontal, igoPanSingleFingerVertical, igoPanInertia, igoPanGutter, igoParentPassthrough]
-        ExplicitLeft = 1
-        ExplicitTop = 1
-        ExplicitWidth = 583
-        ExplicitHeight = 335
         Columns = <>
       end
     end
