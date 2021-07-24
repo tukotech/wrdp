@@ -3,6 +3,7 @@ unit main;
 interface
 
 uses
+  ConnInfo,
   Winapi.Windows,
   Winapi.Messages,
   System.Classes,
@@ -11,12 +12,21 @@ uses
   System.SysUtils,
   Vcl.Graphics,
   Vcl.Controls, Vcl.Forms, Vcl.Dialogs, Vcl.ComCtrls, Vcl.OleCtrls, MSTSCLib_TLB,
-  Vcl.StdCtrls, Vcl.Grids, inifiles, Vcl.Menus;
+  Vcl.StdCtrls, Vcl.Grids, inifiles, Vcl.Menus, VirtualTrees, Vcl.ExtCtrls;
 
 type
   TCustomGridHelper = class helper for TCustomGrid
   public
     procedure DelRow(ARow: Integer);
+  end;
+
+  PNodeRec = ^TNodeRec;
+  TNodeRec = record
+    Name: string;
+    HostOrIP : string;
+    Domain: string;
+    Username: string;
+    Password: string;
   end;
 
   TFormMain = class(TForm)
@@ -26,6 +36,14 @@ type
     PopupMenuRDP: TPopupMenu;
     CloseTab: TMenuItem;
     ListBoxInfo: TListBox;
+    Panel1: TPanel;
+    VST: TVirtualStringTree;
+    PopupMenuVST: TPopupMenu;
+    PopupMenuVST_AddHost: TMenuItem;
+    PopupMenuVST_AddSubHost: TMenuItem;
+    N1: TMenuItem;
+    PopupMenuVST_EditMI: TMenuItem;
+    PopupMenuVST_DeleteMI: TMenuItem;
     procedure FormCreate(Sender: TObject);
     procedure FormClose(Sender: TObject; var Action: TCloseAction);
     procedure sgConnectionInfoKeyPress(Sender: TObject; var Key: Char);
@@ -35,7 +53,6 @@ type
       Shift: TShiftState);
     procedure sgConnectionInfoSelectCell(Sender: TObject; ACol, ARow: Integer;
       var CanSelect: Boolean);
-    procedure Button1Click(Sender: TObject);
     procedure PageControlMainContextPopup(Sender: TObject; MousePos: TPoint;
       var Handled: Boolean);
     procedure CloseTabClick(Sender: TObject);
@@ -44,12 +61,32 @@ type
     procedure sgConnectionInfoEnter(Sender: TObject);
     procedure sgConnectionInfoSetEditText(Sender: TObject; ACol, ARow: Integer;
       const Value: string);
+    procedure PopupMenuVST_AddHostClick(Sender: TObject);
+    procedure VSTGetText(Sender: TBaseVirtualTree; Node: PVirtualNode;
+      Column: TColumnIndex; TextType: TVSTTextType; var CellText: string);
+    procedure VSTFreeNode(Sender: TBaseVirtualTree; Node: PVirtualNode);
+    procedure VSTInitNode(Sender: TBaseVirtualTree; ParentNode,
+      Node: PVirtualNode; var InitialStates: TVirtualNodeInitStates);
+    procedure VSTKeyPress(Sender: TObject; var Key: Char);
+    procedure VSTLoadNode(Sender: TBaseVirtualTree; Node: PVirtualNode;
+      Stream: TStream);
+    procedure VSTSaveNode(Sender: TBaseVirtualTree; Node: PVirtualNode;
+      Stream: TStream);
+    procedure VSTDblClick(Sender: TObject);
+    procedure VSTContextPopup(Sender: TObject; MousePos: TPoint;
+      var Handled: Boolean);
+    procedure PopupMenuVST_AddSubHostClick(Sender: TObject);
+    procedure PopupMenuVST_EditMIClick(Sender: TObject);
+    procedure PopupMenuVST_DeleteMIClick(Sender: TObject);
   private
     { Private declarations }
     editMode: Boolean;
     isEditingPassword: Boolean;
     EditingCol, EditingRow: Longint;
-    procedure ConnectToServer;
+    FRecentNodeData : TNodeRec;
+    procedure ConnectToServer; overload;
+    procedure ConnectToServer(node: PNodeRec); overload;
+    function GetInputHostInfo: Boolean;
   public
     { Public declarations }
   end;
@@ -132,13 +169,13 @@ begin
   end;
 
   SaveStringGrid(sgConnectionInfo, ChangeFileExt( Application.ExeName, '.cfg' ));
+  VST.SaveToFile('VST.cfg');
 end;
 
 procedure TFormMain.FormCreate(Sender: TObject);
 var
   Ini : TIniFile;
   cfg : TFileName;
-  x : Integer;
 begin
   sgConnectionInfo.Cells[0,0] := 'Hostname/IP';
   sgConnectionInfo.Cells[1,0] := 'Domain';
@@ -162,12 +199,20 @@ begin
   cfg := ChangeFileExt( Application.ExeName, '.cfg' );
   if System.SysUtils.FileExists(cfg) then
     LoadStringGrid(sgConnectionInfo, cfg);
+
+  VST.NodeDataSize := SizeOf(TNodeRec);
+
+  if System.SysUtils.FileExists('VST.cfg') then
+    VST.LoadFromFile('VST.cfg')
+  else
+    VST.RootNodeCount := 0;
 end;
 
 procedure TFormMain.FormShow(Sender: TObject);
 begin
   PageControlMain.ActivePage := TabSheetMain;
-  sgConnectionInfo.SetFocus;
+//  sgConnectionInfo.SetFocus;
+  VST.SetFocus;
 end;
 
 procedure TFormMain.PageControlMainContextPopup(Sender: TObject;
@@ -186,17 +231,85 @@ begin
     CloseTab.Enabled := true;
 end;
 
-procedure TFormMain.Button1Click(Sender: TObject);
+function TFormMain.GetInputHostInfo: Boolean;
 var
-  TabSheet : TTabSheet;
-  rdp : TMsRdpClient9NotSafeForScripting;
+  Name, HostnameOrIp, Domain, Username, Password: string;
+  ret : Boolean;
 begin
-  TabSheet := TTabSheet.Create(PageControlMain);
-  TabSheet.Caption := 'New Page';
-  TabSheet.PageControl := PageControlMain;
+  ret := false;
 
-  rdp := TMsRdpClient9NotSafeForScripting.Create(TabSheet);
-  rdp.Align := alClient;
+  if FormConnInfo.ShowModal = mrOk then
+  begin
+    Name := FormConnInfo.EditName.Text;
+    HostnameOrIp := FormConnInfo.EditHostnameOrIp.Text;
+    Domain := FormConnInfo.EditDomain.Text;
+    Username := FormConnInfo.EditUsername.Text;
+    Password := FormConnInfo.EditPassword.Text;
+
+    FRecentNodeData.Name := Name;
+    FRecentNodeData.HostOrIP := HostnameOrIp;
+    FRecentNodeData.Domain := Domain;
+    FRecentNodeData.Username := Username;
+    FRecentNodeData.Password := Password;
+    ret := true;
+  end;
+  Result := ret;
+end;
+
+procedure TFormMain.PopupMenuVST_AddHostClick(Sender: TObject);
+begin
+  if GetInputHostInfo = true then
+  begin
+    with VST do
+    begin
+      RootNodeCount := RootNodeCount + 1;
+    end;
+  end;
+end;
+
+procedure TFormMain.PopupMenuVST_AddSubHostClick(Sender: TObject);
+begin
+  if GetInputHostInfo = true then
+  begin
+    with VST do
+    begin
+      ChildCount[FocusedNode] := ChildCount[FocusedNode] + 1;
+      Expanded[FocusedNode] := True;
+      InvalidateToBottom(FocusedNode);
+    end;
+  end;
+end;
+
+procedure TFormMain.PopupMenuVST_DeleteMIClick(Sender: TObject);
+begin
+  with VST do
+  begin
+    DeleteNode(FocusedNode);
+  end;
+end;
+
+procedure TFormMain.PopupMenuVST_EditMIClick(Sender: TObject);
+var
+  Data: PNodeRec;
+begin
+  Data := VST.GetNodeData(VST.FocusedNode);
+
+  FormConnInfo.EditName.Text := Data.Name;
+  FormConnInfo.EditHostnameOrIp.Text := Data.HostOrIP;
+  FormConnInfo.EditDomain.Text := Data.Domain;
+  FormConnInfo.EditUsername.Text := Data.Username;
+  FormConnInfo.EditPassword.Text := Data.Password;
+
+  if FormConnInfo.ShowModal = mrOk then
+  begin
+    Data.Name := FormConnInfo.EditName.Text;
+    Data.HostOrIP := FormConnInfo.EditHostnameOrIp.Text;
+    Data.Domain := FormConnInfo.EditDomain.Text;
+    Data.Username := FormConnInfo.EditUsername.Text;
+    Data.Password := FormConnInfo.EditPassword.Text;
+
+    VST.SetNodeData(VST.FocusedNode, Data^);
+  end;
 end;
 
 procedure TFormMain.CloseTabClick(Sender: TObject);
@@ -225,6 +338,41 @@ begin
 
   TabSheet := TTabSheet.Create(PageControlMain);
   TabSheet.Caption := host;
+  TabSheet.PageControl := PageControlMain;
+  TabSheet.PopupMenu := PopupMenuRDP;
+
+  rdp := TMsRdpClient9NotSafeForScripting.Create(TabSheet);
+  rdp.Parent := TabSheet;
+  rdp.Align := alClient;
+
+  rdp.Server := host;
+  rdp.Domain := domain;
+  rdp.UserName := username;
+  rdp.AdvancedSettings9.ClearTextPassword := password;
+  rdp.SecuredSettings3.KeyboardHookMode := 1;
+  as7 := rdp.AdvancedSettings as IMsRdpClientAdvancedSettings7;
+  as7.EnableCredSspSupport := true;
+  rdp.Connect;
+  PageControlMain.ActivePage := TabSheet;
+end;
+
+procedure TFormMain.ConnectToServer(node: PNodeRec);
+var
+  host : string;
+  domain : string;
+  username: string;
+  password: string;
+  as7 : IMsRdpClientAdvancedSettings7;
+  TabSheet : TTabSheet;
+  rdp : TMsRdpClient9NotSafeForScripting;
+begin
+  host := node.HostOrIP;
+  domain := node.Domain;
+  username := node.Username;
+  password := node.Password;
+
+  TabSheet := TTabSheet.Create(PageControlMain);
+  TabSheet.Caption := node.Name;
   TabSheet.PageControl := PageControlMain;
   TabSheet.PopupMenu := PopupMenuRDP;
 
@@ -351,4 +499,148 @@ begin
   end;
 end;
 
+procedure TFormMain.VSTContextPopup(Sender: TObject; MousePos: TPoint;
+  var Handled: Boolean);
+var
+  aHitTest : THitInfo;
+begin
+  (Sender as TVirtualStringTree).GetHitTestInfoAt(MousePos.X, MousePos.Y, true, aHitTest);
+  if Assigned(aHitTest.HitNode) then
+  begin
+    PopupMenuVST_AddHost.Enabled := false;
+    PopupMenuVST_AddSubHost.Enabled := true;
+    PopupMenuVST_EditMI.Enabled := true;
+  end
+  else
+  begin
+    PopupMenuVST_AddHost.Enabled := true;
+    PopupMenuVST_AddSubHost.Enabled := true;
+    PopupMenuVST_EditMI.Enabled := false;
+  end;
+end;
+
+procedure TFormMain.VSTDblClick(Sender: TObject);
+var
+  Data: PNodeRec;
+begin
+  with VST do
+  begin
+    Data := GetNodeData(FocusedNode);
+    ConnectToServer(Data);
+  end;
+end;
+
+procedure TFormMain.VSTFreeNode(Sender: TBaseVirtualTree; Node: PVirtualNode);
+var
+  Data: PNodeRec;
+begin
+  Data := Sender.GetNodeData(Node);
+  // Explicitely free the string, the VCL cannot know that there is one but needs to free
+  // it nonetheless. For more fields in such a record which must be freed use Finalize(Data^) instead touching
+  // every member individually.
+  Finalize(Data^);
+end;
+
+procedure TFormMain.VSTGetText(Sender: TBaseVirtualTree; Node: PVirtualNode;
+  Column: TColumnIndex; TextType: TVSTTextType; var CellText: string);
+var
+  Data: PNodeRec;
+begin
+  // A handler for the OnGetText event is always needed as it provides the tree with the string data to display.
+  Data := Sender.GetNodeData(Node);
+  if Assigned(Data) then
+    CellText := Data.Name;
+end;
+
+procedure TFormMain.VSTInitNode(Sender: TBaseVirtualTree; ParentNode,
+  Node: PVirtualNode; var InitialStates: TVirtualNodeInitStates);
+var
+  Data: PNodeRec;
+begin
+  with Sender do
+  begin
+    Data := GetNodeData(Node);
+    // Construct a node caption. This event is triggered once for each node but
+    // appears asynchronously, which means when the node is displayed not when it is added.
+    Data.Name := self.FRecentNodeData.Name;
+    Data.HostOrIP := self.FRecentNodeData.HostOrIP;
+    Data.Domain := self.FRecentNodeData.Domain;
+    Data.Username := self.FRecentNodeData.Username;
+    Data.Password := self.FRecentNodeData.Password;
+  end;
+end;
+
+procedure TFormMain.VSTKeyPress(Sender: TObject; var Key: Char);
+var
+  Data: PNodeRec;
+begin
+  if ord(Key) = VK_RETURN then
+  begin
+    with VST do
+    begin
+      Data := GetNodeData(FocusedNode);
+      ConnectToServer(Data);
+    end;
+  end;
+
+end;
+
+procedure TFormMain.VSTLoadNode(Sender: TBaseVirtualTree; Node: PVirtualNode;
+  Stream: TStream);
+var
+  Data: PNodeRec;
+  Len: Integer;
+begin
+
+  Data := VST.GetNodeData(Node);
+
+  Stream.ReadBuffer(Len, SizeOf(Len));
+  SetLength(Data^.Name, Len);
+  Stream.read(PChar(Data^.Name)^, Len*SizeOf(Char));
+
+  Stream.ReadBuffer(Len, SizeOf(Len));
+  SetLength(Data^.HostOrIP, Len);
+  Stream.read(PChar(Data^.HostOrIP)^, Len*SizeOf(Char));
+
+  Stream.ReadBuffer(Len, SizeOf(Len));
+  SetLength(Data^.Domain, Len);
+  Stream.read(PChar(Data^.Domain)^, Len*SizeOf(Char));
+
+  Stream.ReadBuffer(Len, SizeOf(Len));
+  SetLength(Data^.Username, Len);
+  Stream.read(PChar(Data^.Username)^, Len*SizeOf(Char));
+
+  Stream.ReadBuffer(Len, SizeOf(Len));
+  SetLength(Data^.Password, Len);
+  Stream.read(PChar(Data^.Password)^, Len*SizeOf(Char));
+end;
+
+procedure TFormMain.VSTSaveNode(Sender: TBaseVirtualTree; Node: PVirtualNode;
+  Stream: TStream);
+var
+  Data: PNodeRec;
+  Len: Integer;
+begin
+  Data := VST.GetNodeData(Node);
+
+  Len := Length(Data^.Name);
+  Stream.WriteBuffer(Len, SizeOf(Len));
+  Stream.WriteBuffer(PChar(Data^.Name)^, Len*SizeOf(Char));
+
+  Len := Length(Data^.HostOrIP);
+  Stream.WriteBuffer(Len, SizeOf(Len));
+  Stream.WriteBuffer(PChar(Data^.HostOrIP)^, Len*SizeOf(Char));
+
+  Len := Length(Data^.Domain);
+  Stream.WriteBuffer(Len, SizeOf(Len));
+  Stream.WriteBuffer(PChar(Data^.Domain)^, Len*SizeOf(Char));
+
+  Len := Length(Data^.Username);
+  Stream.WriteBuffer(Len, SizeOf(Len));
+  Stream.WriteBuffer(PChar(Data^.Username)^, Len*SizeOf(Char));
+
+  Len := Length(Data^.Password);
+  Stream.WriteBuffer(Len, SizeOf(Len));
+  Stream.WriteBuffer(PChar(Data^.Password)^, Len*SizeOf(Char));
+end;
 end.

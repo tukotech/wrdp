@@ -28,25 +28,8 @@ object FormMain: TFormMain
     OnContextPopup = PageControlMainContextPopup
     object TabSheetMain: TTabSheet
       Caption = 'Main'
-      object sgConnectionInfo: TStringGrid
-        Left = 0
-        Top = 0
-        Width = 914
-        Height = 432
-        Align = alClient
-        ColCount = 4
-        FixedCols = 0
-        RowCount = 2
-        Options = [goFixedVertLine, goFixedHorzLine, goVertLine, goHorzLine, goColSizing, goEditing, goTabs, goRowSelect]
-        TabOrder = 0
-        OnDblClick = sgConnectionInfoDblClick
-        OnEnter = sgConnectionInfoEnter
-        OnGetEditText = sgConnectionInfoGetEditText
-        OnKeyPress = sgConnectionInfoKeyPress
-        OnKeyUp = sgConnectionInfoKeyUp
-        OnSelectCell = sgConnectionInfoSelectCell
-        OnSetEditText = sgConnectionInfoSetEditText
-      end
+      ExplicitLeft = 8
+      ExplicitTop = 48
       object ListBoxInfo: TListBox
         Left = 0
         Top = 432
@@ -54,16 +37,96 @@ object FormMain: TFormMain
         Height = 150
         Align = alBottom
         ItemHeight = 13
+        TabOrder = 0
+      end
+      object Panel1: TPanel
+        Left = 0
+        Top = 0
+        Width = 914
+        Height = 432
+        Align = alClient
         TabOrder = 1
+        ExplicitLeft = 24
+        ExplicitTop = 80
+        ExplicitWidth = 873
+        ExplicitHeight = 337
+        object sgConnectionInfo: TStringGrid
+          Left = 1
+          Top = 1
+          Width = 352
+          Height = 430
+          Align = alLeft
+          ColCount = 4
+          FixedCols = 0
+          RowCount = 2
+          Options = [goFixedVertLine, goFixedHorzLine, goVertLine, goHorzLine, goColSizing, goEditing, goTabs, goRowSelect]
+          TabOrder = 0
+          OnDblClick = sgConnectionInfoDblClick
+          OnEnter = sgConnectionInfoEnter
+          OnGetEditText = sgConnectionInfoGetEditText
+          OnKeyPress = sgConnectionInfoKeyPress
+          OnKeyUp = sgConnectionInfoKeyUp
+          OnSelectCell = sgConnectionInfoSelectCell
+          OnSetEditText = sgConnectionInfoSetEditText
+        end
+        object VST: TVirtualStringTree
+          Left = 353
+          Top = 1
+          Width = 560
+          Height = 430
+          Align = alClient
+          Header.AutoSizeIndex = 0
+          Header.MainColumn = -1
+          PopupMenu = PopupMenuVST
+          TabOrder = 1
+          OnContextPopup = VSTContextPopup
+          OnDblClick = VSTDblClick
+          OnFreeNode = VSTFreeNode
+          OnGetText = VSTGetText
+          OnInitNode = VSTInitNode
+          OnKeyPress = VSTKeyPress
+          OnLoadNode = VSTLoadNode
+          OnSaveNode = VSTSaveNode
+          Touch.InteractiveGestures = [igPan, igPressAndTap]
+          Touch.InteractiveGestureOptions = [igoPanSingleFingerHorizontal, igoPanSingleFingerVertical, igoPanInertia, igoPanGutter, igoParentPassthrough]
+          ExplicitLeft = 544
+          ExplicitTop = 120
+          ExplicitWidth = 200
+          ExplicitHeight = 100
+          Columns = <>
+        end
       end
     end
   end
   object PopupMenuRDP: TPopupMenu
-    Left = 532
-    Top = 528
+    Left = 508
+    Top = 504
     object CloseTab: TMenuItem
       Caption = 'Close'
       OnClick = CloseTabClick
+    end
+  end
+  object PopupMenuVST: TPopupMenu
+    Left = 676
+    Top = 512
+    object PopupMenuVST_AddHost: TMenuItem
+      Caption = 'Add &Host'
+      OnClick = PopupMenuVST_AddHostClick
+    end
+    object PopupMenuVST_AddSubHost: TMenuItem
+      Caption = 'Add &Sub Host'
+      OnClick = PopupMenuVST_AddSubHostClick
+    end
+    object N1: TMenuItem
+      Caption = '-'
+    end
+    object PopupMenuVST_EditMI: TMenuItem
+      Caption = '&Edit'
+      OnClick = PopupMenuVST_EditMIClick
+    end
+    object PopupMenuVST_DeleteMI: TMenuItem
+      Caption = '&Delete'
+      OnClick = PopupMenuVST_DeleteMIClick
     end
   end
 end
