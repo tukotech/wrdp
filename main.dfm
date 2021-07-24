@@ -110,19 +110,23 @@ object FormMain: TFormMain
     Left = 676
     Top = 512
     object PopupMenuVST_AddHost: TMenuItem
-      Caption = 'Add Host'
+      Caption = 'Add &Host'
       OnClick = PopupMenuVST_AddHostClick
     end
     object PopupMenuVST_AddSubHost: TMenuItem
-      Caption = 'Add Sub Host'
+      Caption = 'Add &Sub Host'
       OnClick = PopupMenuVST_AddSubHostClick
     end
     object N1: TMenuItem
       Caption = '-'
     end
     object PopupMenuVST_EditMI: TMenuItem
-      Caption = 'Edit'
+      Caption = '&Edit'
       OnClick = PopupMenuVST_EditMIClick
+    end
+    object PopupMenuVST_DeleteMI: TMenuItem
+      Caption = '&Delete'
+      OnClick = PopupMenuVST_DeleteMIClick
     end
   end
 end

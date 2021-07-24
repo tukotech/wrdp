@@ -43,6 +43,7 @@ type
     PopupMenuVST_AddSubHost: TMenuItem;
     N1: TMenuItem;
     PopupMenuVST_EditMI: TMenuItem;
+    PopupMenuVST_DeleteMI: TMenuItem;
     procedure FormCreate(Sender: TObject);
     procedure FormClose(Sender: TObject; var Action: TCloseAction);
     procedure sgConnectionInfoKeyPress(Sender: TObject; var Key: Char);
@@ -76,6 +77,7 @@ type
       var Handled: Boolean);
     procedure PopupMenuVST_AddSubHostClick(Sender: TObject);
     procedure PopupMenuVST_EditMIClick(Sender: TObject);
+    procedure PopupMenuVST_DeleteMIClick(Sender: TObject);
   private
     { Private declarations }
     editMode: Boolean;
@@ -275,6 +277,14 @@ begin
       Expanded[FocusedNode] := True;
       InvalidateToBottom(FocusedNode);
     end;
+  end;
+end;
+
+procedure TFormMain.PopupMenuVST_DeleteMIClick(Sender: TObject);
+begin
+  with VST do
+  begin
+    DeleteNode(FocusedNode);
   end;
 end;
 
