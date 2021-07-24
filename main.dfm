@@ -122,6 +122,7 @@ object FormMain: TFormMain
     end
     object PopupMenuVST_EditMI: TMenuItem
       Caption = 'Edit'
+      OnClick = PopupMenuVST_EditMIClick
     end
   end
 end

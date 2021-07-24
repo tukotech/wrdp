@@ -75,6 +75,7 @@ type
     procedure VSTContextPopup(Sender: TObject; MousePos: TPoint;
       var Handled: Boolean);
     procedure PopupMenuVST_AddSubHostClick(Sender: TObject);
+    procedure PopupMenuVST_EditMIClick(Sender: TObject);
   private
     { Private declarations }
     editMode: Boolean;
@@ -274,6 +275,30 @@ begin
       Expanded[FocusedNode] := True;
       InvalidateToBottom(FocusedNode);
     end;
+  end;
+end;
+
+procedure TFormMain.PopupMenuVST_EditMIClick(Sender: TObject);
+var
+  Data: PNodeRec;
+begin
+  Data := VST.GetNodeData(VST.FocusedNode);
+
+  FormConnInfo.EditName.Text := Data.Name;
+  FormConnInfo.EditHostnameOrIp.Text := Data.HostOrIP;
+  FormConnInfo.EditDomain.Text := Data.Domain;
+  FormConnInfo.EditUsername.Text := Data.Username;
+  FormConnInfo.EditPassword.Text := Data.Password;
+
+  if FormConnInfo.ShowModal = mrOk then
+  begin
+    Data.Name := FormConnInfo.EditName.Text;
+    Data.HostOrIP := FormConnInfo.EditHostnameOrIp.Text;
+    Data.Domain := FormConnInfo.EditDomain.Text;
+    Data.Username := FormConnInfo.EditUsername.Text;
+    Data.Password := FormConnInfo.EditPassword.Text;
+
+    VST.SetNodeData(VST.FocusedNode, Data^);
   end;
 end;
 
