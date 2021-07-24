@@ -29,7 +29,7 @@ type
     PageControlMain: TPageControl;
     TabSheetMain: TTabSheet;
     PopupMenuRDP: TPopupMenu;
-    CloseTab: TMenuItem;
+    PopupMenuRDP_CloseTabMI: TMenuItem;
     ListBoxInfo: TListBox;
     VST: TVirtualStringTree;
     PopupMenuVST: TPopupMenu;
@@ -38,12 +38,13 @@ type
     N1: TMenuItem;
     PopupMenuVST_EditMI: TMenuItem;
     PopupMenuVST_DeleteMI: TMenuItem;
+    PopupMenuRDP_DetachMI: TMenuItem;
     procedure FormCreate(Sender: TObject);
     procedure FormClose(Sender: TObject; var Action: TCloseAction);
     procedure FormShow(Sender: TObject);
     procedure PageControlMainContextPopup(Sender: TObject; MousePos: TPoint;
       var Handled: Boolean);
-    procedure CloseTabClick(Sender: TObject);
+    procedure PopupMenuRDP_CloseTabMIClick(Sender: TObject);
     procedure PopupMenuVST_AddHostClick(Sender: TObject);
     procedure VSTGetText(Sender: TBaseVirtualTree; Node: PVirtualNode;
       Column: TColumnIndex; TextType: TVSTTextType; var CellText: string);
@@ -141,9 +142,15 @@ begin
   end;
 
   if PageControlMain.ActivePage = TabSheetMain then
-    CloseTab.Enabled := false
+  begin
+    PopupMenuRDP_CloseTabMI.Enabled := false;
+    PopupMenuRDP_DetachMI.Enabled := false;
+  end
   else
-    CloseTab.Enabled := true;
+  begin
+    PopupMenuRDP_CloseTabMI.Enabled := true;
+    PopupMenuRDP_DetachMI.Enabled := true;
+  end;
 end;
 
 function TFormMain.GetInputHostInfo: Boolean;
@@ -227,7 +234,7 @@ begin
   end;
 end;
 
-procedure TFormMain.CloseTabClick(Sender: TObject);
+procedure TFormMain.PopupMenuRDP_CloseTabMIClick(Sender: TObject);
 begin
   PageControlMain.ActivePage.Free;
 end;

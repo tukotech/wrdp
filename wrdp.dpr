@@ -5,7 +5,8 @@ uses
   main in 'main.pas' {FormMain},
   MSTSCLib_TLB in 'components\RdpControl\MSTSCLib_TLB.pas',
   ConnInfo in 'ConnInfo.pas' {FormConnInfo},
-  About in 'About.pas' {FormAbout};
+  About in 'About.pas' {FormAbout},
+  Detached in 'Detached.pas' {FormDetached};
 
 {$R *.res}
 
@@ -15,5 +16,6 @@ begin
   Application.CreateForm(TFormMain, FormMain);
   Application.CreateForm(TFormConnInfo, FormConnInfo);
   Application.CreateForm(TFormAbout, FormAbout);
+  Application.CreateForm(TFormDetached, FormDetached);
   Application.Run;
 end.

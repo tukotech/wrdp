@@ -64,9 +64,12 @@ object FormMain: TFormMain
   object PopupMenuRDP: TPopupMenu
     Left = 508
     Top = 504
-    object CloseTab: TMenuItem
+    object PopupMenuRDP_CloseTabMI: TMenuItem
       Caption = 'Close'
-      OnClick = CloseTabClick
+      OnClick = PopupMenuRDP_CloseTabMIClick
+    end
+    object PopupMenuRDP_DetachMI: TMenuItem
+      Caption = 'Detach'
     end
   end
   object PopupMenuVST: TPopupMenu
