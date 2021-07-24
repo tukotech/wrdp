@@ -3,6 +3,7 @@ unit main;
 interface
 
 uses
+  About,
   ConnInfo,
   Winapi.Windows,
   Winapi.Messages,
@@ -414,7 +415,7 @@ end;
 procedure TFormMain.WMSysCommand(var Msg: TWMSysCommand);
 begin
   if Msg.CmdType = SC_AboutMenuItem then
-    ShowMessage('Got the message') else
+    FormAbout.ShowModal else
     inherited;
 end;
 
