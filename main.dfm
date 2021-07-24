@@ -109,12 +109,12 @@ object FormMain: TFormMain
   object PopupMenuVST: TPopupMenu
     Left = 676
     Top = 512
-    object PopupMenuVST_AddGroupMI: TMenuItem
-      Caption = 'Add Group'
-      OnClick = PopupMenuVST_AddGroupMIClick
+    object PopupMenuVST_AddHost: TMenuItem
+      Caption = 'Add Host'
+      OnClick = PopupMenuVST_AddHostClick
     end
-    object PopupMenuVST_AddTraget: TMenuItem
-      Caption = 'Add Traget'
+    object PopupMenuVST_AddSubHost: TMenuItem
+      Caption = 'Add Sub Host'
     end
     object N1: TMenuItem
       Caption = '-'

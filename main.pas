@@ -39,8 +39,8 @@ type
     Panel1: TPanel;
     VST: TVirtualStringTree;
     PopupMenuVST: TPopupMenu;
-    PopupMenuVST_AddGroupMI: TMenuItem;
-    PopupMenuVST_AddTraget: TMenuItem;
+    PopupMenuVST_AddHost: TMenuItem;
+    PopupMenuVST_AddSubHost: TMenuItem;
     N1: TMenuItem;
     PopupMenuVST_EditMI: TMenuItem;
     procedure FormCreate(Sender: TObject);
@@ -60,7 +60,7 @@ type
     procedure sgConnectionInfoEnter(Sender: TObject);
     procedure sgConnectionInfoSetEditText(Sender: TObject; ACol, ARow: Integer;
       const Value: string);
-    procedure PopupMenuVST_AddGroupMIClick(Sender: TObject);
+    procedure PopupMenuVST_AddHostClick(Sender: TObject);
     procedure VSTGetText(Sender: TBaseVirtualTree; Node: PVirtualNode;
       Column: TColumnIndex; TextType: TVSTTextType; var CellText: string);
     procedure VSTFreeNode(Sender: TBaseVirtualTree; Node: PVirtualNode);
@@ -226,7 +226,7 @@ begin
     CloseTab.Enabled := true;
 end;
 
-procedure TFormMain.PopupMenuVST_AddGroupMIClick(Sender: TObject);
+procedure TFormMain.PopupMenuVST_AddHostClick(Sender: TObject);
 var
   Name, HostnameOrIp, Domain, Username, Password: string;
 begin
@@ -446,14 +446,14 @@ begin
   (Sender as TVirtualStringTree).GetHitTestInfoAt(MousePos.X, MousePos.Y, true, aHitTest);
   if Assigned(aHitTest.HitNode) then
   begin
-    PopupMenuVST_AddGroupMI.Enabled := false;
-    PopupMenuVST_AddTraget.Enabled := false;
+    PopupMenuVST_AddHost.Enabled := false;
+    PopupMenuVST_AddSubHost.Enabled := true;
     PopupMenuVST_EditMI.Enabled := true;
   end
   else
   begin
-    PopupMenuVST_AddGroupMI.Enabled := true;
-    PopupMenuVST_AddTraget.Enabled := true;
+    PopupMenuVST_AddHost.Enabled := true;
+    PopupMenuVST_AddSubHost.Enabled := true;
     PopupMenuVST_EditMI.Enabled := false;
   end;
 end;
