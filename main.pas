@@ -83,6 +83,7 @@ type
     FRecentNodeData : TNodeRec;
     procedure ConnectToServer; overload;
     procedure ConnectToServer(node: PNodeRec); overload;
+    function GetInputHostInfo: Boolean;
   public
     { Public declarations }
   end;
@@ -227,10 +228,13 @@ begin
     CloseTab.Enabled := true;
 end;
 
-procedure TFormMain.PopupMenuVST_AddHostClick(Sender: TObject);
+function TFormMain.GetInputHostInfo: Boolean;
 var
   Name, HostnameOrIp, Domain, Username, Password: string;
+  ret : Boolean;
 begin
+  ret := false;
+
   if FormConnInfo.ShowModal = mrOk then
   begin
     Name := FormConnInfo.EditName.Text;
@@ -244,7 +248,15 @@ begin
     FRecentNodeData.Domain := Domain;
     FRecentNodeData.Username := Username;
     FRecentNodeData.Password := Password;
+    ret := true;
+  end;
+  Result := ret;
+end;
 
+procedure TFormMain.PopupMenuVST_AddHostClick(Sender: TObject);
+begin
+  if GetInputHostInfo = true then
+  begin
     with VST do
     begin
       RootNodeCount := RootNodeCount + 1;
@@ -253,23 +265,9 @@ begin
 end;
 
 procedure TFormMain.PopupMenuVST_AddSubHostClick(Sender: TObject);
-var
-  Name, HostnameOrIp, Domain, Username, Password: string;
 begin
-  if FormConnInfo.ShowModal = mrOk then
+  if GetInputHostInfo = true then
   begin
-    Name := FormConnInfo.EditName.Text;
-    HostnameOrIp := FormConnInfo.EditHostnameOrIp.Text;
-    Domain := FormConnInfo.EditDomain.Text;
-    Username := FormConnInfo.EditUsername.Text;
-    Password := FormConnInfo.EditPassword.Text;
-
-    FRecentNodeData.Name := Name;
-    FRecentNodeData.HostOrIP := HostnameOrIp;
-    FRecentNodeData.Domain := Domain;
-    FRecentNodeData.Username := Username;
-    FRecentNodeData.Password := Password;
-
     with VST do
     begin
       ChildCount[FocusedNode] := ChildCount[FocusedNode] + 1;
