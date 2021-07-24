@@ -36,9 +36,9 @@ object FormAbout: TFormAbout
     Top = 46
     Width = 166
     Height = 64
-    Caption = 
-      'This work is dedicated to:'#13#10'>Pedro M. Hernan'#13#10'>Pesarlito T. Hern' +
-      'an'#13#10'>Percival T. Hernan'
+    Caption =
+      'This work is dedicated to:'#13#10' Pedro M. Hernan'#13#10' Sarah I. Hernan'#13#10' Pesarlito T. Hern' +
+      'an'#13#10' Percival T. Hernan'
     Font.Charset = DEFAULT_CHARSET
     Font.Color = clWindowText
     Font.Height = -13
