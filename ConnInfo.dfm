@@ -22,8 +22,6 @@ object FormConnInfo: TFormConnInfo
     Height = 152
     Align = alClient
     TabOrder = 0
-    ExplicitWidth = 634
-    ExplicitHeight = 185
     DesignSize = (
       276
       152)
@@ -112,8 +110,6 @@ object FormConnInfo: TFormConnInfo
     Margins.Top = 5
     Align = alBottom
     TabOrder = 1
-    ExplicitTop = 216
-    ExplicitWidth = 634
     object Button1: TButton
       AlignWithMargins = True
       Left = 116
@@ -125,10 +121,6 @@ object FormConnInfo: TFormConnInfo
       Caption = '&Cancel'
       ModalResult = 2
       TabOrder = 0
-      OnClick = Button1Click
-      ExplicitLeft = 346
-      ExplicitTop = 14
-      ExplicitHeight = 43
     end
     object Button2: TButton
       AlignWithMargins = True
@@ -141,9 +133,6 @@ object FormConnInfo: TFormConnInfo
       Default = True
       ModalResult = 1
       TabOrder = 1
-      ExplicitLeft = 550
-      ExplicitTop = 14
-      ExplicitHeight = 67
     end
   end
 end
