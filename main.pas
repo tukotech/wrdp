@@ -259,7 +259,8 @@ begin
   rdp.Server := host;
   rdp.Domain := domain;
   rdp.UserName := username;
-  rdp.AdvancedSettings9.ClearTextPassword := password;
+  if Length(password)>0 then
+    rdp.AdvancedSettings9.ClearTextPassword := password;
   rdp.SecuredSettings3.KeyboardHookMode := 1;
   as7 := rdp.AdvancedSettings as IMsRdpClientAdvancedSettings7;
   as7.EnableCredSspSupport := true;

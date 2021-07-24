@@ -11,22 +11,26 @@ type
   TFormConnInfo = class(TForm)
     Label1: TLabel;
     EditName: TEdit;
-    Label2: TLabel;
+    LabelHostOrIp: TLabel;
     EditHostnameOrIp: TEdit;
     Label3: TLabel;
     EditDomain: TEdit;
-    Label4: TLabel;
+    LabelUsername: TLabel;
     EditUsername: TEdit;
     Label5: TLabel;
     EditPassword: TEdit;
     Panel1: TPanel;
     Panel2: TPanel;
-    Button1: TButton;
-    Button2: TButton;
+    ButtonCancel: TButton;
+    ButtonSave: TButton;
     procedure FormCreate(Sender: TObject);
     procedure FormClose(Sender: TObject; var Action: TCloseAction);
+    procedure ButtonSaveClick(Sender: TObject);
+    procedure FormCloseQuery(Sender: TObject; var CanClose: Boolean);
+    procedure ButtonCancelClick(Sender: TObject);
   private
     { Private declarations }
+    FCancelClose : Boolean;
   public
     { Public declarations }
   end;
@@ -37,6 +41,38 @@ var
 implementation
 
 {$R *.dfm}
+
+
+procedure TFormConnInfo.ButtonCancelClick(Sender: TObject);
+begin
+  self.FCancelClose := true;
+  self.ModalResult := mrCancel;
+end;
+
+procedure TFormConnInfo.ButtonSaveClick(Sender: TObject);
+begin
+  if (EditHostnameOrIp.GetTextLen = 0) then
+    LabelHostOrIp.Font.Color := clRed
+  else
+    LabelHostOrIp.Font.Color := clWindowText;
+
+  if (EditUsername.GetTextLen = 0) then
+    LabelUsername.Font.Color := clRed
+  else
+    LabelUsername.Font.Color := clWindowText;
+
+
+  if (EditHostnameOrIp.GetTextLen > 0)
+  and (EditUsername.GetTextLen > 0)
+  then
+  begin
+    self.FCancelClose := true;
+    self.ModalResult := mrOk;
+  end
+  else
+    self.FCancelClose := false;
+
+end;
 
 procedure TFormConnInfo.FormClose(Sender: TObject; var Action: TCloseAction);
 var
@@ -49,6 +85,11 @@ begin
   finally
      Ini.Free;
   end;
+end;
+
+procedure TFormConnInfo.FormCloseQuery(Sender: TObject; var CanClose: Boolean);
+begin
+  CanClose := FCancelClose;
 end;
 
 procedure TFormConnInfo.FormCreate(Sender: TObject);
