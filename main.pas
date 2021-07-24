@@ -74,6 +74,7 @@ type
     procedure VSTDblClick(Sender: TObject);
     procedure VSTContextPopup(Sender: TObject; MousePos: TPoint;
       var Handled: Boolean);
+    procedure PopupMenuVST_AddSubHostClick(Sender: TObject);
   private
     { Private declarations }
     editMode: Boolean;
@@ -247,6 +248,33 @@ begin
     with VST do
     begin
       RootNodeCount := RootNodeCount + 1;
+    end;
+  end;
+end;
+
+procedure TFormMain.PopupMenuVST_AddSubHostClick(Sender: TObject);
+var
+  Name, HostnameOrIp, Domain, Username, Password: string;
+begin
+  if FormConnInfo.ShowModal = mrOk then
+  begin
+    Name := FormConnInfo.EditName.Text;
+    HostnameOrIp := FormConnInfo.EditHostnameOrIp.Text;
+    Domain := FormConnInfo.EditDomain.Text;
+    Username := FormConnInfo.EditUsername.Text;
+    Password := FormConnInfo.EditPassword.Text;
+
+    FRecentNodeData.Name := Name;
+    FRecentNodeData.HostOrIP := HostnameOrIp;
+    FRecentNodeData.Domain := Domain;
+    FRecentNodeData.Username := Username;
+    FRecentNodeData.Password := Password;
+
+    with VST do
+    begin
+      ChildCount[FocusedNode] := ChildCount[FocusedNode] + 1;
+      Expanded[FocusedNode] := True;
+      InvalidateToBottom(FocusedNode);
     end;
   end;
 end;

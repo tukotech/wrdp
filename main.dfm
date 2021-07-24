@@ -115,6 +115,7 @@ object FormMain: TFormMain
     end
     object PopupMenuVST_AddSubHost: TMenuItem
       Caption = 'Add Sub Host'
+      OnClick = PopupMenuVST_AddSubHostClick
     end
     object N1: TMenuItem
       Caption = '-'
