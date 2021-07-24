@@ -12,6 +12,7 @@ object FormConnInfo: TFormConnInfo
   Font.Style = []
   OldCreateOrder = False
   OnClose = FormClose
+  OnCloseQuery = FormCloseQuery
   OnCreate = FormCreate
   PixelsPerInch = 96
   TextHeight = 13
@@ -32,12 +33,18 @@ object FormConnInfo: TFormConnInfo
       Height = 13
       Caption = 'Name:'
     end
-    object Label2: TLabel
+    object LabelHostOrIp: TLabel
       Left = 12
       Top = 38
       Width = 78
       Height = 13
       Caption = 'Hostname or IP:'
+      Font.Charset = DEFAULT_CHARSET
+      Font.Color = clWindowText
+      Font.Height = -11
+      Font.Name = 'Tahoma'
+      Font.Style = []
+      ParentFont = False
     end
     object Label3: TLabel
       Left = 51
@@ -46,7 +53,7 @@ object FormConnInfo: TFormConnInfo
       Height = 13
       Caption = 'Domain:'
     end
-    object Label4: TLabel
+    object LabelUsername: TLabel
       Left = 38
       Top = 92
       Width = 52
@@ -110,7 +117,7 @@ object FormConnInfo: TFormConnInfo
     Margins.Top = 5
     Align = alBottom
     TabOrder = 1
-    object Button1: TButton
+    object ButtonCancel: TButton
       AlignWithMargins = True
       Left = 116
       Top = 4
@@ -119,10 +126,10 @@ object FormConnInfo: TFormConnInfo
       Align = alRight
       Cancel = True
       Caption = '&Cancel'
-      ModalResult = 2
       TabOrder = 0
+      OnClick = ButtonCancelClick
     end
-    object Button2: TButton
+    object ButtonSave: TButton
       AlignWithMargins = True
       Left = 197
       Top = 4
@@ -131,8 +138,8 @@ object FormConnInfo: TFormConnInfo
       Align = alRight
       Caption = '&Save'
       Default = True
-      ModalResult = 1
       TabOrder = 1
+      OnClick = ButtonSaveClick
     end
   end
 end
