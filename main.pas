@@ -265,6 +265,9 @@ begin
     FormDetached.Rdp.Disconnect;
   end;
 
+  FormDetached.Rdp.DesktopWidth := FormDetached.ClientWidth;
+  FormDetached.Rdp.DesktopHeight := FormDetached.ClientHeight;
+
   FormDetached.Rdp.Server := node.HostOrIP;
   FormDetached.Rdp.Domain := node.Domain;
   FormDetached.Rdp.UserName := node.Username;
