@@ -23,6 +23,7 @@ type
     Panel2: TPanel;
     ButtonCancel: TButton;
     ButtonSave: TButton;
+    CheckBox1: TCheckBox;
     procedure FormCreate(Sender: TObject);
     procedure FormClose(Sender: TObject; var Action: TCloseAction);
     procedure ButtonSaveClick(Sender: TObject);

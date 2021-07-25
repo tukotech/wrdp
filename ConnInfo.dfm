@@ -2,7 +2,7 @@ object FormConnInfo: TFormConnInfo
   Left = 0
   Top = 0
   Caption = 'Connection Info'
-  ClientHeight = 193
+  ClientHeight = 212
   ClientWidth = 276
   Color = clBtnFace
   Font.Charset = DEFAULT_CHARSET
@@ -20,12 +20,13 @@ object FormConnInfo: TFormConnInfo
     Left = 0
     Top = 0
     Width = 276
-    Height = 152
+    Height = 171
     Align = alClient
     TabOrder = 0
+    ExplicitHeight = 152
     DesignSize = (
       276
-      152)
+      171)
     object Label1: TLabel
       Left = 59
       Top = 11
@@ -48,21 +49,21 @@ object FormConnInfo: TFormConnInfo
     end
     object Label3: TLabel
       Left = 51
-      Top = 65
+      Top = 88
       Width = 39
       Height = 13
       Caption = 'Domain:'
     end
     object LabelUsername: TLabel
       Left = 38
-      Top = 92
+      Top = 115
       Width = 52
       Height = 13
       Caption = 'Username:'
     end
     object Label5: TLabel
       Left = 40
-      Top = 119
+      Top = 142
       Width = 50
       Height = 13
       Caption = 'Password:'
@@ -85,38 +86,47 @@ object FormConnInfo: TFormConnInfo
     end
     object EditDomain: TEdit
       Left = 96
-      Top = 62
-      Width = 176
-      Height = 21
-      Anchors = [akLeft, akTop, akRight]
-      TabOrder = 2
-    end
-    object EditUsername: TEdit
-      Left = 96
-      Top = 89
+      Top = 85
       Width = 176
       Height = 21
       Anchors = [akLeft, akTop, akRight]
       TabOrder = 3
     end
+    object EditUsername: TEdit
+      Left = 96
+      Top = 112
+      Width = 176
+      Height = 21
+      Anchors = [akLeft, akTop, akRight]
+      TabOrder = 4
+    end
     object EditPassword: TEdit
       Left = 96
-      Top = 116
+      Top = 139
       Width = 176
       Height = 21
       Anchors = [akLeft, akTop, akRight]
       PasswordChar = '*'
-      TabOrder = 4
+      TabOrder = 5
+    end
+    object CheckBox1: TCheckBox
+      Left = 96
+      Top = 62
+      Width = 97
+      Height = 17
+      Caption = 'Inherit'
+      TabOrder = 2
     end
   end
   object Panel2: TPanel
     Left = 0
-    Top = 152
+    Top = 171
     Width = 276
     Height = 41
     Margins.Top = 5
     Align = alBottom
     TabOrder = 1
+    ExplicitTop = 152
     object ButtonCancel: TButton
       AlignWithMargins = True
       Left = 116
