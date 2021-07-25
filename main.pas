@@ -333,12 +333,14 @@ begin
     PopupMenuVST_AddHost.Enabled := false;
     PopupMenuVST_AddSubHost.Enabled := true;
     PopupMenuVST_EditMI.Enabled := true;
+    PopupMenuVST_DeleteMI.Enabled := true;
   end
   else
   begin
     PopupMenuVST_AddHost.Enabled := true;
-    PopupMenuVST_AddSubHost.Enabled := true;
+    PopupMenuVST_AddSubHost.Enabled := false;
     PopupMenuVST_EditMI.Enabled := false;
+    PopupMenuVST_DeleteMI.Enabled := false;
   end;
 end;
 
