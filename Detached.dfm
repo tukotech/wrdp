@@ -11,6 +11,8 @@ object FormDetached: TFormDetached
   Font.Name = 'Tahoma'
   Font.Style = []
   OldCreateOrder = False
+  OnClose = FormClose
+  OnCreate = FormCreate
   PixelsPerInch = 96
   TextHeight = 13
   object Rdp: TMsRdpClient9NotSafeForScripting
