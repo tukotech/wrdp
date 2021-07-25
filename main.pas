@@ -40,8 +40,6 @@ type
     PopupMenuVST_EditMI: TMenuItem;
     PopupMenuVST_DeleteMI: TMenuItem;
     PopupMenuRDP_DetachMI: TMenuItem;
-    TabSheet1: TTabSheet;
-    Button1: TButton;
     procedure FormCreate(Sender: TObject);
     procedure FormClose(Sender: TObject; var Action: TCloseAction);
     procedure FormShow(Sender: TObject);
@@ -267,6 +265,9 @@ begin
     FormDetached.Rdp.Disconnect;
   end;
 
+  FormDetached.Rdp.DesktopWidth := FormDetached.ClientWidth;
+  FormDetached.Rdp.DesktopHeight := FormDetached.ClientHeight;
+
   FormDetached.Rdp.Server := node.HostOrIP;
   FormDetached.Rdp.Domain := node.Domain;
   FormDetached.Rdp.UserName := node.Username;
@@ -276,8 +277,10 @@ begin
   FormDetached.Rdp.SecuredSettings3.KeyboardHookMode := 1;
   as7 := FormDetached.Rdp.AdvancedSettings as IMsRdpClientAdvancedSettings7;
   as7.EnableCredSspSupport := true;
+  as7.SmartSizing := true;
   FormDetached.Rdp.Connect;
 
+  FormDetached.Caption := node.Name;
   FormDetached.Show;
   PageControlMain.ActivePage.Free;
 end;
