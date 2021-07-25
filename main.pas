@@ -248,26 +248,17 @@ end;
 procedure TFormMain.PopupMenuRDP_DetachMIClick(Sender: TObject);
 var
   I: Integer;
-  rdp : TMsRdpClient9NotSafeForScripting;
   node : PNodeRec;
   as7: IMsRdpClientAdvancedSettings7;
 begin
-//  Button1.Parent := FormDetached;
-//  FormDetached.Show;
-  I := 0;
+  node := nil;
+
   for I := 0 to PageControlMain.ActivePage.ControlCount-1 do
   begin
     if PageControlMain.ActivePage.Controls[I].ClassName = 'TMsRdpClient9NotSafeForScripting' then
     begin
       node := PNodeRec(PageControlMain.ActivePage.Controls[I].Tag);
-//      rdp := PageControlMain.ActivePage.Controls[I] as TMsRdpClient9NotSafeForScripting;
-//      PageControlMain.ActivePage.Controls[I].Parent := FormDetached;
-//      self.FRDPHandle := (PageControlMain.ActivePage.Controls[I] as TMsRdpClient9NotSafeForScripting).Handle;
-
-//      rdp.Parent := FormDetached;
-//      FormDetached.Show;
       break;
-      //ListBoxInfo.Items.Insert(0,PageControlMain.ActivePage.Controls[I].ClassName);
     end;
   end;
 
