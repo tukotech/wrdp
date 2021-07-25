@@ -106,10 +106,10 @@
         <AppDPIAwarenessMode>PerMonitorV2</AppDPIAwarenessMode>
         <VerInfo_IncludeVerInfo>true</VerInfo_IncludeVerInfo>
         <VerInfo_Keys>CompanyName=;FileDescription=$(MSBuildProjectName);FileVersion=1.0.0.7;InternalName=;LegalCopyright=;LegalTrademarks=;OriginalFilename=;ProgramID=com.embarcadero.$(MSBuildProjectName);ProductName=$(MSBuildProjectName);ProductVersion=1.0.0.0;Comments=</VerInfo_Keys>
-        <Icon_MainIcon>wrdp_Icon4.ico</Icon_MainIcon>
+        <Icon_MainIcon>icons8_Connect_Develop.ico</Icon_MainIcon>
         <VerInfo_AutoIncVersion>true</VerInfo_AutoIncVersion>
-        <UWP_DelphiLogo44>C:\Users\pe\Documents\icons8_Network-w10_64.png</UWP_DelphiLogo44>
-        <UWP_DelphiLogo150>C:\Users\pe\Documents\icons8_Network-w10_48.png</UWP_DelphiLogo150>
+        <UWP_DelphiLogo44>C:\Users\pe\Documents\icons8_Connect_Develop_64.png</UWP_DelphiLogo44>
+        <UWP_DelphiLogo150>C:\Users\pe\Documents\icons8_Connect_Develop_48.png</UWP_DelphiLogo150>
         <VerInfo_Build>7</VerInfo_Build>
     </PropertyGroup>
     <PropertyGroup Condition="'$(Cfg_1_Win64)'!=''">
@@ -129,9 +129,11 @@
         <VerInfo_MajorVer>0</VerInfo_MajorVer>
         <VerInfo_MinorVer>2</VerInfo_MinorVer>
         <VerInfo_AutoIncVersion>true</VerInfo_AutoIncVersion>
-        <VerInfo_Keys>CompanyName=Tuko Tech;FileDescription=Wicked RDP;FileVersion=0.2.0.1;InternalName=Wicked RDP;LegalCopyright=© Tuko Tech;LegalTrademarks=;OriginalFilename=;ProgramID=us.tuko.$(MSBuildProjectName);ProductName=Wicked RDP;ProductVersion=0.2.0;Comments=</VerInfo_Keys>
-        <Icon_MainIcon>wrdp_Icon5.ico</Icon_MainIcon>
-        <VerInfo_Build>1</VerInfo_Build>
+        <VerInfo_Keys>CompanyName=Tuko Tech;FileDescription=Wicked RDP;FileVersion=0.2.0.4;InternalName=Wicked RDP;LegalCopyright=© Tuko Tech;LegalTrademarks=;OriginalFilename=;ProgramID=us.tuko.$(MSBuildProjectName);ProductName=Wicked RDP;ProductVersion=0.2.0;Comments=</VerInfo_Keys>
+        <Icon_MainIcon>icons8_Connect_Develop.ico</Icon_MainIcon>
+        <VerInfo_Build>4</VerInfo_Build>
+        <UWP_DelphiLogo44>C:\Users\pe\Documents\icons8_Connect_Develop_64.png</UWP_DelphiLogo44>
+        <UWP_DelphiLogo150>C:\Users\pe\Documents\icons8_Connect_Develop_48.png</UWP_DelphiLogo150>
     </PropertyGroup>
     <PropertyGroup Condition="'$(Cfg_2_Win64)'!=''">
         <AppEnableRuntimeThemes>true</AppEnableRuntimeThemes>
@@ -152,6 +154,10 @@
         </DCCReference>
         <DCCReference Include="About.pas">
             <Form>FormAbout</Form>
+            <FormType>dfm</FormType>
+        </DCCReference>
+        <DCCReference Include="Detached.pas">
+            <Form>FormDetached</Form>
             <FormType>dfm</FormType>
         </DCCReference>
         <BuildConfiguration Include="Release">
@@ -180,6 +186,13 @@
                 </Excluded_Packages>
             </Delphi.Personality>
             <Deployment Version="3">
+                <DeployFile LocalName="C:\Users\pe\Documents\icons8_Network-w10_48.png" Configuration="Debug" Class="UWP_DelphiLogo150">
+                    <Platform Name="Win32">
+                        <RemoteDir>Assets\</RemoteDir>
+                        <RemoteName>Logo150x150.png</RemoteName>
+                        <Overwrite>true</Overwrite>
+                    </Platform>
+                </DeployFile>
                 <DeployFile LocalName="C:\Users\pe\Documents\icons8_Network-w10_64.png" Configuration="Debug" Class="UWP_DelphiLogo44">
                     <Platform Name="Win32">
                         <RemoteDir>Assets\</RemoteDir>
@@ -187,10 +200,23 @@
                         <Overwrite>true</Overwrite>
                     </Platform>
                 </DeployFile>
-                <DeployFile LocalName="C:\Users\pe\Documents\icons8_Network-w10_48.png" Configuration="Debug" Class="UWP_DelphiLogo150">
+                <DeployFile LocalName="C:\Users\pe\Documents\icons8_Connect_Develop_64.png" Configuration="Release" Class="UWP_DelphiLogo44">
+                    <Platform Name="Win32">
+                        <RemoteDir>Assets\</RemoteDir>
+                        <RemoteName>Logo44x44.png</RemoteName>
+                        <Overwrite>true</Overwrite>
+                    </Platform>
+                </DeployFile>
+                <DeployFile LocalName="C:\Users\pe\Documents\icons8_Connect_Develop_48.png" Configuration="Release" Class="UWP_DelphiLogo150">
                     <Platform Name="Win32">
                         <RemoteDir>Assets\</RemoteDir>
                         <RemoteName>Logo150x150.png</RemoteName>
+                        <Overwrite>true</Overwrite>
+                    </Platform>
+                </DeployFile>
+                <DeployFile LocalName="Win32\Release\wrdp.exe" Configuration="Release" Class="ProjectOutput">
+                    <Platform Name="Win32">
+                        <RemoteName>wrdp.exe</RemoteName>
                         <Overwrite>true</Overwrite>
                     </Platform>
                 </DeployFile>

@@ -5,6 +5,7 @@ interface
 uses
   About,
   ConnInfo,
+  Detached,
   Winapi.Windows,
   Winapi.Messages,
   System.Classes,
@@ -29,7 +30,7 @@ type
     PageControlMain: TPageControl;
     TabSheetMain: TTabSheet;
     PopupMenuRDP: TPopupMenu;
-    CloseTab: TMenuItem;
+    PopupMenuRDP_CloseTabMI: TMenuItem;
     ListBoxInfo: TListBox;
     VST: TVirtualStringTree;
     PopupMenuVST: TPopupMenu;
@@ -38,12 +39,15 @@ type
     N1: TMenuItem;
     PopupMenuVST_EditMI: TMenuItem;
     PopupMenuVST_DeleteMI: TMenuItem;
+    PopupMenuRDP_DetachMI: TMenuItem;
+    TabSheet1: TTabSheet;
+    Button1: TButton;
     procedure FormCreate(Sender: TObject);
     procedure FormClose(Sender: TObject; var Action: TCloseAction);
     procedure FormShow(Sender: TObject);
     procedure PageControlMainContextPopup(Sender: TObject; MousePos: TPoint;
       var Handled: Boolean);
-    procedure CloseTabClick(Sender: TObject);
+    procedure PopupMenuRDP_CloseTabMIClick(Sender: TObject);
     procedure PopupMenuVST_AddHostClick(Sender: TObject);
     procedure VSTGetText(Sender: TBaseVirtualTree; Node: PVirtualNode;
       Column: TColumnIndex; TextType: TVSTTextType; var CellText: string);
@@ -61,13 +65,16 @@ type
     procedure PopupMenuVST_AddSubHostClick(Sender: TObject);
     procedure PopupMenuVST_EditMIClick(Sender: TObject);
     procedure PopupMenuVST_DeleteMIClick(Sender: TObject);
+    procedure PopupMenuRDP_DetachMIClick(Sender: TObject);
   private
     { Private declarations }
     FRecentNodeData : TNodeRec;
     procedure ConnectToServer(node: PNodeRec); overload;
     function GetInputHostInfo: Boolean;
-    procedure WMSysCommand(var Msg: TWMSysCommand);
-    message WM_SYSCOMMAND;
+
+    //Add About dialog box
+    procedure WMSysCommand(var Msg: TWMSysCommand); message WM_SYSCOMMAND;
+
   public
     { Public declarations }
   end;
@@ -141,9 +148,15 @@ begin
   end;
 
   if PageControlMain.ActivePage = TabSheetMain then
-    CloseTab.Enabled := false
+  begin
+    PopupMenuRDP_CloseTabMI.Enabled := false;
+    PopupMenuRDP_DetachMI.Enabled := false;
+  end
   else
-    CloseTab.Enabled := true;
+  begin
+    PopupMenuRDP_CloseTabMI.Enabled := true;
+    PopupMenuRDP_DetachMI.Enabled := true;
+  end;
 end;
 
 function TFormMain.GetInputHostInfo: Boolean;
@@ -227,8 +240,45 @@ begin
   end;
 end;
 
-procedure TFormMain.CloseTabClick(Sender: TObject);
+procedure TFormMain.PopupMenuRDP_CloseTabMIClick(Sender: TObject);
 begin
+  PageControlMain.ActivePage.Free;
+end;
+
+procedure TFormMain.PopupMenuRDP_DetachMIClick(Sender: TObject);
+var
+  I: Integer;
+  node : PNodeRec;
+  as7: IMsRdpClientAdvancedSettings7;
+begin
+  node := nil;
+
+  for I := 0 to PageControlMain.ActivePage.ControlCount-1 do
+  begin
+    if PageControlMain.ActivePage.Controls[I].ClassName = 'TMsRdpClient9NotSafeForScripting' then
+    begin
+      node := PNodeRec(PageControlMain.ActivePage.Controls[I].Tag);
+      break;
+    end;
+  end;
+
+  if FormDetached.Rdp.Connected = 1 then
+  begin
+    FormDetached.Rdp.Disconnect;
+  end;
+
+  FormDetached.Rdp.Server := node.HostOrIP;
+  FormDetached.Rdp.Domain := node.Domain;
+  FormDetached.Rdp.UserName := node.Username;
+  FormDetached.Rdp.Server := node.HostOrIP;
+  if Length(node.password)>0 then
+    FormDetached.Rdp.AdvancedSettings9.ClearTextPassword := node.password;
+  FormDetached.Rdp.SecuredSettings3.KeyboardHookMode := 1;
+  as7 := FormDetached.Rdp.AdvancedSettings as IMsRdpClientAdvancedSettings7;
+  as7.EnableCredSspSupport := true;
+  FormDetached.Rdp.Connect;
+
+  FormDetached.Show;
   PageControlMain.ActivePage.Free;
 end;
 
@@ -264,6 +314,7 @@ begin
   rdp.SecuredSettings3.KeyboardHookMode := 1;
   as7 := rdp.AdvancedSettings as IMsRdpClientAdvancedSettings7;
   as7.EnableCredSspSupport := true;
+  rdp.Tag := Integer(node); //Store NodeRec for detaching
   rdp.Connect;
   PageControlMain.ActivePage := TabSheet;
 end;
