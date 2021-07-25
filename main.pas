@@ -262,6 +262,11 @@ begin
     end;
   end;
 
+  if FormDetached.Rdp.Connected = 1 then
+  begin
+    FormDetached.Rdp.Disconnect;
+  end;
+
   FormDetached.Rdp.Server := node.HostOrIP;
   FormDetached.Rdp.Domain := node.Domain;
   FormDetached.Rdp.UserName := node.Username;
