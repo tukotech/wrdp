@@ -21,7 +21,7 @@ object FormMain: TFormMain
     Top = 0
     Width = 922
     Height = 610
-    ActivePage = TabSheetMain
+    ActivePage = TabSheet1
     Align = alClient
     PopupMenu = PopupMenuRDP
     TabOrder = 0
@@ -60,6 +60,18 @@ object FormMain: TFormMain
         Columns = <>
       end
     end
+    object TabSheet1: TTabSheet
+      Caption = 'TabSheet1'
+      ImageIndex = 1
+      object Button1: TButton
+        Left = 112
+        Top = 80
+        Width = 75
+        Height = 25
+        Caption = 'Button1'
+        TabOrder = 0
+      end
+    end
   end
   object PopupMenuRDP: TPopupMenu
     Left = 508
@@ -70,6 +82,7 @@ object FormMain: TFormMain
     end
     object PopupMenuRDP_DetachMI: TMenuItem
       Caption = 'Detach'
+      OnClick = PopupMenuRDP_DetachMIClick
     end
   end
   object PopupMenuVST: TPopupMenu

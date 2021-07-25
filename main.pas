@@ -5,6 +5,7 @@ interface
 uses
   About,
   ConnInfo,
+  Detached,
   Winapi.Windows,
   Winapi.Messages,
   System.Classes,
@@ -39,6 +40,8 @@ type
     PopupMenuVST_EditMI: TMenuItem;
     PopupMenuVST_DeleteMI: TMenuItem;
     PopupMenuRDP_DetachMI: TMenuItem;
+    TabSheet1: TTabSheet;
+    Button1: TButton;
     procedure FormCreate(Sender: TObject);
     procedure FormClose(Sender: TObject; var Action: TCloseAction);
     procedure FormShow(Sender: TObject);
@@ -62,13 +65,16 @@ type
     procedure PopupMenuVST_AddSubHostClick(Sender: TObject);
     procedure PopupMenuVST_EditMIClick(Sender: TObject);
     procedure PopupMenuVST_DeleteMIClick(Sender: TObject);
+    procedure PopupMenuRDP_DetachMIClick(Sender: TObject);
   private
     { Private declarations }
     FRecentNodeData : TNodeRec;
     procedure ConnectToServer(node: PNodeRec); overload;
     function GetInputHostInfo: Boolean;
-    procedure WMSysCommand(var Msg: TWMSysCommand);
-    message WM_SYSCOMMAND;
+
+    //Add About dialog box
+    procedure WMSysCommand(var Msg: TWMSysCommand); message WM_SYSCOMMAND;
+
   public
     { Public declarations }
   end;
@@ -239,6 +245,47 @@ begin
   PageControlMain.ActivePage.Free;
 end;
 
+procedure TFormMain.PopupMenuRDP_DetachMIClick(Sender: TObject);
+var
+  I: Integer;
+  rdp : TMsRdpClient9NotSafeForScripting;
+  node : PNodeRec;
+  as7: IMsRdpClientAdvancedSettings7;
+begin
+//  Button1.Parent := FormDetached;
+//  FormDetached.Show;
+  I := 0;
+  for I := 0 to PageControlMain.ActivePage.ControlCount-1 do
+  begin
+    if PageControlMain.ActivePage.Controls[I].ClassName = 'TMsRdpClient9NotSafeForScripting' then
+    begin
+      node := PNodeRec(PageControlMain.ActivePage.Controls[I].Tag);
+//      rdp := PageControlMain.ActivePage.Controls[I] as TMsRdpClient9NotSafeForScripting;
+//      PageControlMain.ActivePage.Controls[I].Parent := FormDetached;
+//      self.FRDPHandle := (PageControlMain.ActivePage.Controls[I] as TMsRdpClient9NotSafeForScripting).Handle;
+
+//      rdp.Parent := FormDetached;
+//      FormDetached.Show;
+      break;
+      //ListBoxInfo.Items.Insert(0,PageControlMain.ActivePage.Controls[I].ClassName);
+    end;
+  end;
+
+  FormDetached.Rdp.Server := node.HostOrIP;
+  FormDetached.Rdp.Domain := node.Domain;
+  FormDetached.Rdp.UserName := node.Username;
+  FormDetached.Rdp.Server := node.HostOrIP;
+  if Length(node.password)>0 then
+    FormDetached.Rdp.AdvancedSettings9.ClearTextPassword := node.password;
+  FormDetached.Rdp.SecuredSettings3.KeyboardHookMode := 1;
+  as7 := FormDetached.Rdp.AdvancedSettings as IMsRdpClientAdvancedSettings7;
+  as7.EnableCredSspSupport := true;
+  FormDetached.Rdp.Connect;
+
+  FormDetached.Show;
+  PageControlMain.ActivePage.Free;
+end;
+
 procedure TFormMain.ConnectToServer(node: PNodeRec);
 var
   host : string;
@@ -271,6 +318,7 @@ begin
   rdp.SecuredSettings3.KeyboardHookMode := 1;
   as7 := rdp.AdvancedSettings as IMsRdpClientAdvancedSettings7;
   as7.EnableCredSspSupport := true;
+  rdp.Tag := Integer(node); //Store NodeRec for detaching
   rdp.Connect;
   PageControlMain.ActivePage := TabSheet;
 end;
