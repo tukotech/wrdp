@@ -280,6 +280,7 @@ begin
   as7.SmartSizing := true;
   FormDetached.Rdp.Connect;
 
+  FormDetached.Caption := node.Name;
   FormDetached.Show;
   PageControlMain.ActivePage.Free;
 end;
