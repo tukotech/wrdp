@@ -61,6 +61,8 @@ type
   private
     { Private declarations }
     FRecentNodeData : TNodeRec;
+    FAddHostSelected : Boolean;
+
     procedure ConnectToServer;
     function GetInputHostInfo: Boolean;
 
@@ -159,7 +161,9 @@ var
 begin
   ret := false;
 
-  if VST.FocusedNode = nil then
+  if (VST.FocusedNode = nil)
+  or (FAddHostSelected = true)
+  then
   begin
     FormConnInfo.CheckBoxInherit.State := cbGrayed;
     FormConnInfo.CheckBoxInherit.Enabled := false;
@@ -205,6 +209,7 @@ end;
 
 procedure TFormMain.PopupMenuVST_AddHostClick(Sender: TObject);
 begin
+  FAddHostSelected := true;
   if GetInputHostInfo = true then
   begin
     with VST do
@@ -414,6 +419,8 @@ procedure TFormMain.VSTContextPopup(Sender: TObject; MousePos: TPoint;
 var
   aHitTest : THitInfo;
 begin
+  FAddHostSelected := false;
+
   (Sender as TVirtualStringTree).GetHitTestInfoAt(MousePos.X, MousePos.Y, true, aHitTest);
   if Assigned(aHitTest.HitNode) then
   begin
