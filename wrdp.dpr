@@ -6,7 +6,8 @@ uses
   MSTSCLib_TLB in 'components\RdpControl\MSTSCLib_TLB.pas',
   ConnInfo in 'ConnInfo.pas' {FormConnInfo},
   About in 'About.pas' {FormAbout},
-  Detached in 'Detached.pas' {FormDetached};
+  Detached in 'Detached.pas' {FormDetached},
+  Shared in 'Shared.pas';
 
 {$R *.res}
 

@@ -23,11 +23,13 @@ type
     Panel2: TPanel;
     ButtonCancel: TButton;
     ButtonSave: TButton;
+    CheckBoxInherit: TCheckBox;
     procedure FormCreate(Sender: TObject);
     procedure FormClose(Sender: TObject; var Action: TCloseAction);
     procedure ButtonSaveClick(Sender: TObject);
     procedure FormCloseQuery(Sender: TObject; var CanClose: Boolean);
     procedure ButtonCancelClick(Sender: TObject);
+    procedure CheckBoxInheritClick(Sender: TObject);
   private
     { Private declarations }
     FCancelClose : Boolean;
@@ -51,19 +53,25 @@ end;
 
 procedure TFormConnInfo.ButtonSaveClick(Sender: TObject);
 begin
-  if (EditHostnameOrIp.GetTextLen = 0) then
+  if (EditHostnameOrIp.GetTextLen = 0)
+  and (CheckBoxInherit.State = cbUnchecked)
+  then
     LabelHostOrIp.Font.Color := clRed
   else
     LabelHostOrIp.Font.Color := clWindowText;
 
-  if (EditUsername.GetTextLen = 0) then
+  if (EditUsername.GetTextLen = 0)
+  and (CheckBoxInherit.State <> cbChecked)
+  then
     LabelUsername.Font.Color := clRed
   else
     LabelUsername.Font.Color := clWindowText;
 
 
   if (EditHostnameOrIp.GetTextLen > 0)
-  and (EditUsername.GetTextLen > 0)
+  and ((EditUsername.GetTextLen > 0)
+    or (CheckBoxInherit.State = cbChecked)
+    )
   then
   begin
     self.FCancelClose := true;
@@ -72,6 +80,21 @@ begin
   else
     self.FCancelClose := false;
 
+end;
+
+procedure TFormConnInfo.CheckBoxInheritClick(Sender: TObject);
+begin
+  if CheckBoxInherit.State = cbUnchecked then
+  begin
+    EditDomain.Enabled := true;
+    EditUsername.Enabled := true;
+    EditPassword.Enabled := true;
+  end else
+  begin
+    EditDomain.Enabled := false;
+    EditUsername.Enabled := false;
+    EditPassword.Enabled := false;
+  end;
 end;
 
 procedure TFormConnInfo.FormClose(Sender: TObject; var Action: TCloseAction);
@@ -103,6 +126,10 @@ begin
   finally
     Ini.Free;
   end;
+
+  //Disable close button
+  EnableMenuItem(GetSystemMenu(self.Handle, LongBool(False)),
+    SC_CLOSE, MF_BYCOMMAND or MF_GRAYED);
 end;
 
 end.

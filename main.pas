@@ -6,6 +6,7 @@ uses
   About,
   ConnInfo,
   Detached,
+  Shared,
   Winapi.Windows,
   Winapi.Messages,
   System.Classes,
@@ -13,19 +14,12 @@ uses
   System.Variants,
   System.SysUtils,
   Vcl.Graphics,
-  Vcl.Controls, Vcl.Forms, Vcl.Dialogs, Vcl.ComCtrls, Vcl.OleCtrls, MSTSCLib_TLB,
+  Vcl.Controls, Vcl.Forms,
+  Vcl.Dialogs,
+  Vcl.ComCtrls, Vcl.OleCtrls, MSTSCLib_TLB,
   Vcl.StdCtrls, Vcl.Grids, inifiles, Vcl.Menus, VirtualTrees, Vcl.ExtCtrls;
 
 type
-  PNodeRec = ^TNodeRec;
-  TNodeRec = record
-    Name: string;
-    HostOrIP : string;
-    Domain: string;
-    Username: string;
-    Password: string;
-  end;
-
   TFormMain = class(TForm)
     PageControlMain: TPageControl;
     TabSheetMain: TTabSheet;
@@ -67,7 +61,9 @@ type
   private
     { Private declarations }
     FRecentNodeData : TNodeRec;
-    procedure ConnectToServer(node: PNodeRec); overload;
+    FAddHostSelected : Boolean;
+
+    procedure ConnectToServer;
     function GetInputHostInfo: Boolean;
 
     //Add About dialog box
@@ -160,20 +156,49 @@ end;
 function TFormMain.GetInputHostInfo: Boolean;
 var
   Name, HostnameOrIp, Domain, Username, Password: string;
+  cbState : TCheckBoxState;
   ret : Boolean;
 begin
   ret := false;
+
+  if (VST.FocusedNode = nil)
+  or (FAddHostSelected = true)
+  then
+  begin
+    FormConnInfo.CheckBoxInherit.State := cbGrayed;
+    FormConnInfo.CheckBoxInherit.Enabled := false;
+    FormConnInfo.EditDomain.Enabled := true;
+    FormConnInfo.EditUsername.Enabled := true;
+    FormConnInfo.EditPassword.Enabled := true;
+  end
+  else
+  begin
+    FormConnInfo.CheckBoxInherit.State := cbChecked;
+    FormConnInfo.CheckBoxInherit.Enabled := true;
+    FormConnInfo.EditDomain.Text := '';
+    FormConnInfo.EditDomain.Enabled := false;
+    FormConnInfo.EditUsername.Text := '';
+    FormConnInfo.EditUsername.Enabled := false;
+    FormConnInfo.EditPassword.Text := '';
+    FormConnInfo.EditPassword.Enabled := false;
+
+    if VST.FocusedNode.Parent = nil then
+      FormConnInfo.CheckBoxInherit.Enabled := false;
+
+  end;
 
   if FormConnInfo.ShowModal = mrOk then
   begin
     Name := FormConnInfo.EditName.Text;
     HostnameOrIp := FormConnInfo.EditHostnameOrIp.Text;
+    cbState := FormConnInfo.CheckBoxInherit.State;
     Domain := FormConnInfo.EditDomain.Text;
     Username := FormConnInfo.EditUsername.Text;
     Password := FormConnInfo.EditPassword.Text;
 
     FRecentNodeData.Name := Name;
     FRecentNodeData.HostOrIP := HostnameOrIp;
+    FRecentNodeData.Inherit := cbState;
     FRecentNodeData.Domain := Domain;
     FRecentNodeData.Username := Username;
     FRecentNodeData.Password := Password;
@@ -184,6 +209,7 @@ end;
 
 procedure TFormMain.PopupMenuVST_AddHostClick(Sender: TObject);
 begin
+  FAddHostSelected := true;
   if GetInputHostInfo = true then
   begin
     with VST do
@@ -208,9 +234,13 @@ end;
 
 procedure TFormMain.PopupMenuVST_DeleteMIClick(Sender: TObject);
 begin
-  with VST do
+  if VCL.Dialogs.MessageDlg('Delete nodes?',
+    mtConfirmation, [mbYes, mbNo], 0, mbYes) = mrYes then
   begin
-    DeleteNode(FocusedNode);
+    with VST do
+    begin
+      DeleteNode(FocusedNode);
+    end;
   end;
 end;
 
@@ -222,14 +252,43 @@ begin
 
   FormConnInfo.EditName.Text := Data.Name;
   FormConnInfo.EditHostnameOrIp.Text := Data.HostOrIP;
-  FormConnInfo.EditDomain.Text := Data.Domain;
-  FormConnInfo.EditUsername.Text := Data.Username;
-  FormConnInfo.EditPassword.Text := Data.Password;
+  FormConnInfo.CheckBoxInherit.State := Data.Inherit;
+
+  if VST.FocusedNode.Parent = VST.FocusedNode.Parent.NextSibling then //this is a root node
+  begin
+    FormConnInfo.CheckBoxInherit.Enabled := false;
+    FormConnInfo.CheckBoxInherit.AllowGrayed := true;
+  end
+  else
+    FormConnInfo.CheckBoxInherit.AllowGrayed := false;
+
+  if (FormConnInfo.CheckBoxInherit.State = cbUnchecked)
+  or (FormConnInfo.CheckBoxInherit.State = cbGrayed)
+  then
+  begin
+    FormConnInfo.EditDomain.Text := Data.Domain;
+    FormConnInfo.EditUsername.Text := Data.Username;
+    FormConnInfo.EditPassword.Text := Data.Password;
+
+    FormConnInfo.EditDomain.Enabled := true;
+    FormConnInfo.EditUsername.Enabled := true;
+    FormConnInfo.EditPassword.Enabled := true;
+  end
+  else
+  begin
+    FormConnInfo.EditDomain.Text := '';
+    FormConnInfo.EditDomain.Enabled := false;
+    FormConnInfo.EditUsername.Text := '';
+    FormConnInfo.EditUsername.Enabled := false;
+    FormConnInfo.EditPassword.Text := '';
+    FormConnInfo.EditPassword.Enabled := false;
+  end;
 
   if FormConnInfo.ShowModal = mrOk then
   begin
     Data.Name := FormConnInfo.EditName.Text;
     Data.HostOrIP := FormConnInfo.EditHostnameOrIp.Text;
+    Data.Inherit := FormConnInfo.CheckBoxInherit.State;
     Data.Domain := FormConnInfo.EditDomain.Text;
     Data.Username := FormConnInfo.EditUsername.Text;
     Data.Password := FormConnInfo.EditPassword.Text;
@@ -239,14 +298,26 @@ begin
 end;
 
 procedure TFormMain.PopupMenuRDP_CloseTabMIClick(Sender: TObject);
+var
+  I : Integer;
 begin
+  //Need to clean-up the tags
+  for I := 0 to PageControlMain.ActivePage.ControlCount-1 do
+  begin
+    if PageControlMain.ActivePage.Controls[I].ClassName = 'TMsRdpClient9NotSafeForScripting' then
+    begin
+      TNodeInformation(PageControlMain.ActivePage.Controls[I].Tag).Free;
+      break;
+    end;
+  end;
+
   PageControlMain.ActivePage.Free;
 end;
 
 procedure TFormMain.PopupMenuRDP_DetachMIClick(Sender: TObject);
 var
   I: Integer;
-  node : PNodeRec;
+  node : TNodeInformation;
   as7: IMsRdpClientAdvancedSettings7;
 begin
   node := nil;
@@ -255,7 +326,7 @@ begin
   begin
     if PageControlMain.ActivePage.Controls[I].ClassName = 'TMsRdpClient9NotSafeForScripting' then
     begin
-      node := PNodeRec(PageControlMain.ActivePage.Controls[I].Tag);
+      node := TNodeInformation(PageControlMain.ActivePage.Controls[I].Tag);
       break;
     end;
   end;
@@ -285,23 +356,37 @@ begin
   PageControlMain.ActivePage.Free;
 end;
 
-procedure TFormMain.ConnectToServer(node: PNodeRec);
+procedure TFormMain.ConnectToServer;
 var
-  host : string;
-  domain : string;
-  username: string;
-  password: string;
-  as7 : IMsRdpClientAdvancedSettings7;
+  Data, DataNext: PNodeRec;
+  LData : TNodeRec;
+  vn : PVirtualNode;
   TabSheet : TTabSheet;
   rdp : TMsRdpClient9NotSafeForScripting;
+  ni : TNodeInformation;
 begin
-  host := node.HostOrIP;
-  domain := node.Domain;
-  username := node.Username;
-  password := node.Password;
+  with VST do
+  begin
+    Data := GetNodeData(FocusedNode);
+    LData := Data^;
+    if Data.Inherit = cbChecked then
+    begin
+      vn := FocusedNode;
+      repeat
+        vn := vn.Parent;
+        DataNext := GetNodeData(vn);
+      until DataNext.Inherit <> cbChecked;
+      LData.Name := Data.Name;
+      LData.HostOrIP := Data.HostOrIP;
+      LData.Inherit := Data.Inherit;
+      LData.Domain := DataNext.Domain;
+      LData.Username := DataNext.Username;
+      LData.Password := DataNext.Password;
+    end;
+  end;
 
   TabSheet := TTabSheet.Create(PageControlMain);
-  TabSheet.Caption := node.Name;
+  TabSheet.Caption := LData.Name;
   TabSheet.PageControl := PageControlMain;
   TabSheet.PopupMenu := PopupMenuRDP;
 
@@ -309,15 +394,22 @@ begin
   rdp.Parent := TabSheet;
   rdp.Align := alClient;
 
-  rdp.Server := host;
-  rdp.Domain := domain;
-  rdp.UserName := username;
-  if Length(password)>0 then
-    rdp.AdvancedSettings9.ClearTextPassword := password;
+  rdp.Server := LData.HostOrIP;
+  rdp.Domain := LData.Domain;
+  rdp.UserName := LData.Username;
+  if Length(LData.Password)>0 then
+    rdp.AdvancedSettings9.ClearTextPassword := LData.Password;
   rdp.SecuredSettings3.KeyboardHookMode := 1;
-  as7 := rdp.AdvancedSettings as IMsRdpClientAdvancedSettings7;
-  as7.EnableCredSspSupport := true;
-  rdp.Tag := Integer(node); //Store NodeRec for detaching
+  rdp.AdvancedSettings7.EnableCredSspSupport := true;
+
+  ni := TNodeInformation.Create;
+  ni.Name := LData.Name;
+  ni.HostOrIp := LData.HostOrIP;
+  ni.Inherit := LData.Inherit;
+  ni.Domain := LData.Domain;
+  ni.Username := LData.Username;
+  ni.Password := LData.Password;
+  rdp.Tag := Integer(ni); //Store NodeRec for detaching
   rdp.Connect;
   PageControlMain.ActivePage := TabSheet;
 end;
@@ -327,30 +419,28 @@ procedure TFormMain.VSTContextPopup(Sender: TObject; MousePos: TPoint;
 var
   aHitTest : THitInfo;
 begin
+  FAddHostSelected := false;
+
   (Sender as TVirtualStringTree).GetHitTestInfoAt(MousePos.X, MousePos.Y, true, aHitTest);
   if Assigned(aHitTest.HitNode) then
   begin
     PopupMenuVST_AddHost.Enabled := false;
     PopupMenuVST_AddSubHost.Enabled := true;
     PopupMenuVST_EditMI.Enabled := true;
+    PopupMenuVST_DeleteMI.Enabled := true;
   end
   else
   begin
     PopupMenuVST_AddHost.Enabled := true;
-    PopupMenuVST_AddSubHost.Enabled := true;
+    PopupMenuVST_AddSubHost.Enabled := false;
     PopupMenuVST_EditMI.Enabled := false;
+    PopupMenuVST_DeleteMI.Enabled := false;
   end;
 end;
 
 procedure TFormMain.VSTDblClick(Sender: TObject);
-var
-  Data: PNodeRec;
 begin
-  with VST do
-  begin
-    Data := GetNodeData(FocusedNode);
-    ConnectToServer(Data);
-  end;
+  ConnectToServer;
 end;
 
 procedure TFormMain.VSTFreeNode(Sender: TBaseVirtualTree; Node: PVirtualNode);
@@ -387,6 +477,7 @@ begin
     // appears asynchronously, which means when the node is displayed not when it is added.
     Data.Name := self.FRecentNodeData.Name;
     Data.HostOrIP := self.FRecentNodeData.HostOrIP;
+    Data.Inherit := self.FRecentNodeData.Inherit;
     Data.Domain := self.FRecentNodeData.Domain;
     Data.Username := self.FRecentNodeData.Username;
     Data.Password := self.FRecentNodeData.Password;
@@ -394,18 +485,11 @@ begin
 end;
 
 procedure TFormMain.VSTKeyPress(Sender: TObject; var Key: Char);
-var
-  Data: PNodeRec;
 begin
   if ord(Key) = VK_RETURN then
   begin
-    with VST do
-    begin
-      Data := GetNodeData(FocusedNode);
-      ConnectToServer(Data);
-    end;
+    ConnectToServer;
   end;
-
 end;
 
 procedure TFormMain.VSTLoadNode(Sender: TBaseVirtualTree; Node: PVirtualNode;
@@ -414,7 +498,6 @@ var
   Data: PNodeRec;
   Len: Integer;
 begin
-
   Data := VST.GetNodeData(Node);
 
   Stream.ReadBuffer(Len, SizeOf(Len));
@@ -423,19 +506,21 @@ begin
 
   Stream.ReadBuffer(Len, SizeOf(Len));
   SetLength(Data^.HostOrIP, Len);
-  Stream.read(PChar(Data^.HostOrIP)^, Len*SizeOf(Char));
+  Stream.ReadBuffer(PChar(Data^.HostOrIP)^, Len*SizeOf(Char));
+
+  Stream.ReadBuffer(Data^.Inherit, SizeOf(TCheckBoxState));
 
   Stream.ReadBuffer(Len, SizeOf(Len));
   SetLength(Data^.Domain, Len);
-  Stream.read(PChar(Data^.Domain)^, Len*SizeOf(Char));
+  Stream.ReadBuffer(PChar(Data^.Domain)^, Len*SizeOf(Char));
 
   Stream.ReadBuffer(Len, SizeOf(Len));
   SetLength(Data^.Username, Len);
-  Stream.read(PChar(Data^.Username)^, Len*SizeOf(Char));
+  Stream.ReadBuffer(PChar(Data^.Username)^, Len*SizeOf(Char));
 
   Stream.ReadBuffer(Len, SizeOf(Len));
   SetLength(Data^.Password, Len);
-  Stream.read(PChar(Data^.Password)^, Len*SizeOf(Char));
+  Stream.ReadBuffer(PChar(Data^.Password)^, Len*SizeOf(Char));
 end;
 
 procedure TFormMain.VSTSaveNode(Sender: TBaseVirtualTree; Node: PVirtualNode;
@@ -453,6 +538,8 @@ begin
   Len := Length(Data^.HostOrIP);
   Stream.WriteBuffer(Len, SizeOf(Len));
   Stream.WriteBuffer(PChar(Data^.HostOrIP)^, Len*SizeOf(Char));
+
+  Stream.WriteBuffer(Data^.Inherit, SizeOf(TCheckBoxState));
 
   Len := Length(Data^.Domain);
   Stream.WriteBuffer(Len, SizeOf(Len));
