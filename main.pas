@@ -14,7 +14,9 @@ uses
   System.Variants,
   System.SysUtils,
   Vcl.Graphics,
-  Vcl.Controls, Vcl.Forms, Vcl.Dialogs, Vcl.ComCtrls, Vcl.OleCtrls, MSTSCLib_TLB,
+  Vcl.Controls, Vcl.Forms,
+  Vcl.Dialogs,
+  Vcl.ComCtrls, Vcl.OleCtrls, MSTSCLib_TLB,
   Vcl.StdCtrls, Vcl.Grids, inifiles, Vcl.Menus, VirtualTrees, Vcl.ExtCtrls;
 
 type
@@ -227,9 +229,13 @@ end;
 
 procedure TFormMain.PopupMenuVST_DeleteMIClick(Sender: TObject);
 begin
-  with VST do
+  if VCL.Dialogs.MessageDlg('Delete nodes?',
+    mtConfirmation, [mbYes, mbNo], 0, mbYes) = mrYes then
   begin
-    DeleteNode(FocusedNode);
+    with VST do
+    begin
+      DeleteNode(FocusedNode);
+    end;
   end;
 end;
 
