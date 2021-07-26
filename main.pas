@@ -21,6 +21,7 @@ type
   TNodeRec = record
     Name: string;
     HostOrIP : string;
+    Inherit : TCheckBoxState;
     Domain: string;
     Username: string;
     Password: string;
@@ -160,20 +161,44 @@ end;
 function TFormMain.GetInputHostInfo: Boolean;
 var
   Name, HostnameOrIp, Domain, Username, Password: string;
+  cbState : TCheckBoxState;
   ret : Boolean;
 begin
   ret := false;
+
+  if VST.FocusedNode = nil then
+  begin
+    FormConnInfo.CheckBoxInherit.State := cbGrayed;
+    FormConnInfo.CheckBoxInherit.Enabled := false;
+  end
+  else
+  begin
+    FormConnInfo.CheckBoxInherit.State := cbChecked;
+    FormConnInfo.CheckBoxInherit.Enabled := true;
+    FormConnInfo.EditDomain.Text := '';
+    FormConnInfo.EditDomain.Enabled := false;
+    FormConnInfo.EditUsername.Text := '';
+    FormConnInfo.EditUsername.Enabled := false;
+    FormConnInfo.EditPassword.Text := '';
+    FormConnInfo.EditPassword.Enabled := false;
+
+    if VST.FocusedNode.Parent = nil then
+      FormConnInfo.CheckBoxInherit.Enabled := false;
+
+  end;
 
   if FormConnInfo.ShowModal = mrOk then
   begin
     Name := FormConnInfo.EditName.Text;
     HostnameOrIp := FormConnInfo.EditHostnameOrIp.Text;
+    cbState := FormConnInfo.CheckBoxInherit.State;
     Domain := FormConnInfo.EditDomain.Text;
     Username := FormConnInfo.EditUsername.Text;
     Password := FormConnInfo.EditPassword.Text;
 
     FRecentNodeData.Name := Name;
     FRecentNodeData.HostOrIP := HostnameOrIp;
+    FRecentNodeData.Inherit := cbState;
     FRecentNodeData.Domain := Domain;
     FRecentNodeData.Username := Username;
     FRecentNodeData.Password := Password;
@@ -222,14 +247,33 @@ begin
 
   FormConnInfo.EditName.Text := Data.Name;
   FormConnInfo.EditHostnameOrIp.Text := Data.HostOrIP;
-  FormConnInfo.EditDomain.Text := Data.Domain;
-  FormConnInfo.EditUsername.Text := Data.Username;
-  FormConnInfo.EditPassword.Text := Data.Password;
+  FormConnInfo.CheckBoxInherit.State := Data.Inherit;
+
+  if (FormConnInfo.CheckBoxInherit.State = cbUnchecked)
+  or (FormConnInfo.CheckBoxInherit.State = cbGrayed)
+  then
+  begin
+    FormConnInfo.EditDomain.Text := Data.Domain;
+    FormConnInfo.EditUsername.Text := Data.Username;
+    FormConnInfo.EditPassword.Text := Data.Password;
+    if VST.FocusedNode.Parent = VST.FocusedNode.Parent.NextSibling then //this is a root node
+      FormConnInfo.CheckBoxInherit.Enabled := false;
+  end
+  else
+  begin
+    FormConnInfo.EditDomain.Text := '';
+    FormConnInfo.EditDomain.Enabled := false;
+    FormConnInfo.EditUsername.Text := '';
+    FormConnInfo.EditUsername.Enabled := false;
+    FormConnInfo.EditPassword.Text := '';
+    FormConnInfo.EditPassword.Enabled := false;
+  end;
 
   if FormConnInfo.ShowModal = mrOk then
   begin
     Data.Name := FormConnInfo.EditName.Text;
     Data.HostOrIP := FormConnInfo.EditHostnameOrIp.Text;
+    Data.Inherit := FormConnInfo.CheckBoxInherit.State;
     Data.Domain := FormConnInfo.EditDomain.Text;
     Data.Username := FormConnInfo.EditUsername.Text;
     Data.Password := FormConnInfo.EditPassword.Text;
@@ -389,6 +433,7 @@ begin
     // appears asynchronously, which means when the node is displayed not when it is added.
     Data.Name := self.FRecentNodeData.Name;
     Data.HostOrIP := self.FRecentNodeData.HostOrIP;
+    Data.Inherit := self.FRecentNodeData.Inherit;
     Data.Domain := self.FRecentNodeData.Domain;
     Data.Username := self.FRecentNodeData.Username;
     Data.Password := self.FRecentNodeData.Password;
@@ -416,7 +461,6 @@ var
   Data: PNodeRec;
   Len: Integer;
 begin
-
   Data := VST.GetNodeData(Node);
 
   Stream.ReadBuffer(Len, SizeOf(Len));
@@ -425,19 +469,21 @@ begin
 
   Stream.ReadBuffer(Len, SizeOf(Len));
   SetLength(Data^.HostOrIP, Len);
-  Stream.read(PChar(Data^.HostOrIP)^, Len*SizeOf(Char));
+  Stream.ReadBuffer(PChar(Data^.HostOrIP)^, Len*SizeOf(Char));
+
+  Stream.ReadBuffer(Data^.Inherit, SizeOf(TCheckBoxState));
 
   Stream.ReadBuffer(Len, SizeOf(Len));
   SetLength(Data^.Domain, Len);
-  Stream.read(PChar(Data^.Domain)^, Len*SizeOf(Char));
+  Stream.ReadBuffer(PChar(Data^.Domain)^, Len*SizeOf(Char));
 
   Stream.ReadBuffer(Len, SizeOf(Len));
   SetLength(Data^.Username, Len);
-  Stream.read(PChar(Data^.Username)^, Len*SizeOf(Char));
+  Stream.ReadBuffer(PChar(Data^.Username)^, Len*SizeOf(Char));
 
   Stream.ReadBuffer(Len, SizeOf(Len));
   SetLength(Data^.Password, Len);
-  Stream.read(PChar(Data^.Password)^, Len*SizeOf(Char));
+  Stream.ReadBuffer(PChar(Data^.Password)^, Len*SizeOf(Char));
 end;
 
 procedure TFormMain.VSTSaveNode(Sender: TBaseVirtualTree; Node: PVirtualNode;
@@ -455,6 +501,8 @@ begin
   Len := Length(Data^.HostOrIP);
   Stream.WriteBuffer(Len, SizeOf(Len));
   Stream.WriteBuffer(PChar(Data^.HostOrIP)^, Len*SizeOf(Char));
+
+  Stream.WriteBuffer(Data^.Inherit, SizeOf(TCheckBoxState));
 
   Len := Length(Data^.Domain);
   Stream.WriteBuffer(Len, SizeOf(Len));

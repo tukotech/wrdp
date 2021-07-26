@@ -109,11 +109,12 @@ object FormConnInfo: TFormConnInfo
       PasswordChar = '*'
       TabOrder = 5
     end
-    object CheckBox1: TCheckBox
+    object CheckBoxInherit: TCheckBox
       Left = 96
       Top = 62
-      Width = 97
+      Width = 49
       Height = 17
+      AllowGrayed = True
       Caption = 'Inherit'
       TabOrder = 2
     end
