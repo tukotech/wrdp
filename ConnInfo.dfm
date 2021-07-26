@@ -117,6 +117,7 @@ object FormConnInfo: TFormConnInfo
       AllowGrayed = True
       Caption = 'Inherit'
       TabOrder = 2
+      OnClick = CheckBoxInheritClick
     end
   end
   object Panel2: TPanel

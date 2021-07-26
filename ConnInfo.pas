@@ -29,6 +29,7 @@ type
     procedure ButtonSaveClick(Sender: TObject);
     procedure FormCloseQuery(Sender: TObject; var CanClose: Boolean);
     procedure ButtonCancelClick(Sender: TObject);
+    procedure CheckBoxInheritClick(Sender: TObject);
   private
     { Private declarations }
     FCancelClose : Boolean;
@@ -79,6 +80,21 @@ begin
   else
     self.FCancelClose := false;
 
+end;
+
+procedure TFormConnInfo.CheckBoxInheritClick(Sender: TObject);
+begin
+  if CheckBoxInherit.State = cbUnchecked then
+  begin
+    EditDomain.Enabled := true;
+    EditUsername.Enabled := true;
+    EditPassword.Enabled := true;
+  end else
+  begin
+    EditDomain.Enabled := false;
+    EditUsername.Enabled := false;
+    EditPassword.Enabled := false;
+  end;
 end;
 
 procedure TFormConnInfo.FormClose(Sender: TObject; var Action: TCloseAction);

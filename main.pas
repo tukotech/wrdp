@@ -161,6 +161,9 @@ begin
   begin
     FormConnInfo.CheckBoxInherit.State := cbGrayed;
     FormConnInfo.CheckBoxInherit.Enabled := false;
+    FormConnInfo.EditDomain.Enabled := true;
+    FormConnInfo.EditUsername.Enabled := true;
+    FormConnInfo.EditPassword.Enabled := true;
   end
   else
   begin
@@ -240,6 +243,14 @@ begin
   FormConnInfo.EditHostnameOrIp.Text := Data.HostOrIP;
   FormConnInfo.CheckBoxInherit.State := Data.Inherit;
 
+  if VST.FocusedNode.Parent = VST.FocusedNode.Parent.NextSibling then //this is a root node
+  begin
+    FormConnInfo.CheckBoxInherit.Enabled := false;
+    FormConnInfo.CheckBoxInherit.AllowGrayed := true;
+  end
+  else
+    FormConnInfo.CheckBoxInherit.AllowGrayed := false;
+
   if (FormConnInfo.CheckBoxInherit.State = cbUnchecked)
   or (FormConnInfo.CheckBoxInherit.State = cbGrayed)
   then
@@ -251,10 +262,6 @@ begin
     FormConnInfo.EditDomain.Enabled := true;
     FormConnInfo.EditUsername.Enabled := true;
     FormConnInfo.EditPassword.Enabled := true;
-
-
-    if VST.FocusedNode.Parent = VST.FocusedNode.Parent.NextSibling then //this is a root node
-      FormConnInfo.CheckBoxInherit.Enabled := false;
   end
   else
   begin
