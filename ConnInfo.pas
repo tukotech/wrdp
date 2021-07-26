@@ -61,7 +61,7 @@ begin
     LabelHostOrIp.Font.Color := clWindowText;
 
   if (EditUsername.GetTextLen = 0)
-  and (CheckBoxInherit.State = cbUnchecked)
+  and (CheckBoxInherit.State <> cbChecked)
   then
     LabelUsername.Font.Color := clRed
   else
