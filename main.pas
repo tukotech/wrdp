@@ -6,6 +6,7 @@ uses
   About,
   ConnInfo,
   Detached,
+  Shared,
   Winapi.Windows,
   Winapi.Messages,
   System.Classes,
@@ -17,16 +18,6 @@ uses
   Vcl.StdCtrls, Vcl.Grids, inifiles, Vcl.Menus, VirtualTrees, Vcl.ExtCtrls;
 
 type
-  PNodeRec = ^TNodeRec;
-  TNodeRec = record
-    Name: string;
-    HostOrIP : string;
-    Inherit : TCheckBoxState;
-    Domain: string;
-    Username: string;
-    Password: string;
-  end;
-
   TFormMain = class(TForm)
     PageControlMain: TPageControl;
     TabSheetMain: TTabSheet;
@@ -68,7 +59,7 @@ type
   private
     { Private declarations }
     FRecentNodeData : TNodeRec;
-    procedure ConnectToServer(node: PNodeRec); overload;
+    procedure ConnectToServer;
     function GetInputHostInfo: Boolean;
 
     //Add About dialog box
@@ -256,6 +247,12 @@ begin
     FormConnInfo.EditDomain.Text := Data.Domain;
     FormConnInfo.EditUsername.Text := Data.Username;
     FormConnInfo.EditPassword.Text := Data.Password;
+
+    FormConnInfo.EditDomain.Enabled := true;
+    FormConnInfo.EditUsername.Enabled := true;
+    FormConnInfo.EditPassword.Enabled := true;
+
+
     if VST.FocusedNode.Parent = VST.FocusedNode.Parent.NextSibling then //this is a root node
       FormConnInfo.CheckBoxInherit.Enabled := false;
   end
@@ -283,7 +280,19 @@ begin
 end;
 
 procedure TFormMain.PopupMenuRDP_CloseTabMIClick(Sender: TObject);
+var
+  I : Integer;
 begin
+  //Need to clean-up the tags
+  for I := 0 to PageControlMain.ActivePage.ControlCount-1 do
+  begin
+    if PageControlMain.ActivePage.Controls[I].ClassName = 'TMsRdpClient9NotSafeForScripting' then
+    begin
+      TNodeInformation(PageControlMain.ActivePage.Controls[I].Tag).Free;
+      break;
+    end;
+  end;
+
   PageControlMain.ActivePage.Free;
 end;
 
@@ -329,23 +338,37 @@ begin
   PageControlMain.ActivePage.Free;
 end;
 
-procedure TFormMain.ConnectToServer(node: PNodeRec);
+procedure TFormMain.ConnectToServer;
 var
-  host : string;
-  domain : string;
-  username: string;
-  password: string;
-  as7 : IMsRdpClientAdvancedSettings7;
+  Data, DataNext: PNodeRec;
+  LData : TNodeRec;
+  vn : PVirtualNode;
   TabSheet : TTabSheet;
   rdp : TMsRdpClient9NotSafeForScripting;
+  ni : TNodeInformation;
 begin
-  host := node.HostOrIP;
-  domain := node.Domain;
-  username := node.Username;
-  password := node.Password;
+  with VST do
+  begin
+    Data := GetNodeData(FocusedNode);
+    LData := Data^;
+    if Data.Inherit = cbChecked then
+    begin
+      vn := FocusedNode;
+      repeat
+        vn := vn.Parent;
+        DataNext := GetNodeData(vn);
+      until DataNext.Inherit <> cbChecked;
+      LData.Name := Data.Name;
+      LData.HostOrIP := Data.HostOrIP;
+      LData.Inherit := Data.Inherit;
+      LData.Domain := DataNext.Domain;
+      LData.Username := DataNext.Username;
+      LData.Password := DataNext.Password;
+    end;
+  end;
 
   TabSheet := TTabSheet.Create(PageControlMain);
-  TabSheet.Caption := node.Name;
+  TabSheet.Caption := LData.Name;
   TabSheet.PageControl := PageControlMain;
   TabSheet.PopupMenu := PopupMenuRDP;
 
@@ -353,15 +376,22 @@ begin
   rdp.Parent := TabSheet;
   rdp.Align := alClient;
 
-  rdp.Server := host;
-  rdp.Domain := domain;
-  rdp.UserName := username;
-  if Length(password)>0 then
-    rdp.AdvancedSettings9.ClearTextPassword := password;
+  rdp.Server := LData.HostOrIP;
+  rdp.Domain := LData.Domain;
+  rdp.UserName := LData.Username;
+  if Length(LData.Password)>0 then
+    rdp.AdvancedSettings9.ClearTextPassword := LData.Password;
   rdp.SecuredSettings3.KeyboardHookMode := 1;
-  as7 := rdp.AdvancedSettings as IMsRdpClientAdvancedSettings7;
-  as7.EnableCredSspSupport := true;
-  rdp.Tag := Integer(node); //Store NodeRec for detaching
+  rdp.AdvancedSettings7.EnableCredSspSupport := true;
+
+  ni := TNodeInformation.Create;
+  ni.Name := LData.Name;
+  ni.HostOrIp := LData.HostOrIP;
+  ni.Inherit := LData.Inherit;
+  ni.Domain := LData.Domain;
+  ni.Username := LData.Username;
+  ni.Password := LData.Password;
+  rdp.Tag := Integer(ni); //Store NodeRec for detaching
   rdp.Connect;
   PageControlMain.ActivePage := TabSheet;
 end;
@@ -389,14 +419,8 @@ begin
 end;
 
 procedure TFormMain.VSTDblClick(Sender: TObject);
-var
-  Data: PNodeRec;
 begin
-  with VST do
-  begin
-    Data := GetNodeData(FocusedNode);
-    ConnectToServer(Data);
-  end;
+  ConnectToServer;
 end;
 
 procedure TFormMain.VSTFreeNode(Sender: TBaseVirtualTree; Node: PVirtualNode);
@@ -442,17 +466,14 @@ end;
 
 procedure TFormMain.VSTKeyPress(Sender: TObject; var Key: Char);
 var
-  Data: PNodeRec;
+  Data, DataNext: PNodeRec;
+  LData : TNodeRec;
+  vn : PVirtualNode;
 begin
   if ord(Key) = VK_RETURN then
   begin
-    with VST do
-    begin
-      Data := GetNodeData(FocusedNode);
-      ConnectToServer(Data);
-    end;
+    ConnectToServer;
   end;
-
 end;
 
 procedure TFormMain.VSTLoadNode(Sender: TBaseVirtualTree; Node: PVirtualNode;
