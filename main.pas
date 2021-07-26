@@ -299,7 +299,7 @@ end;
 procedure TFormMain.PopupMenuRDP_DetachMIClick(Sender: TObject);
 var
   I: Integer;
-  node : PNodeRec;
+  node : TNodeInformation;
   as7: IMsRdpClientAdvancedSettings7;
 begin
   node := nil;
@@ -308,7 +308,7 @@ begin
   begin
     if PageControlMain.ActivePage.Controls[I].ClassName = 'TMsRdpClient9NotSafeForScripting' then
     begin
-      node := PNodeRec(PageControlMain.ActivePage.Controls[I].Tag);
+      node := TNodeInformation(PageControlMain.ActivePage.Controls[I].Tag);
       break;
     end;
   end;
@@ -465,10 +465,6 @@ begin
 end;
 
 procedure TFormMain.VSTKeyPress(Sender: TObject; var Key: Char);
-var
-  Data, DataNext: PNodeRec;
-  LData : TNodeRec;
-  vn : PVirtualNode;
 begin
   if ord(Key) = VK_RETURN then
   begin
