@@ -89,8 +89,7 @@ object FormMain: TFormMain
       Caption = '-'
     end
     object PopupMenuVST_EditMI: TMenuItem
-      Caption = '&Edit'
-      OnClick = PopupMenuVST_EditMIClick
+      Action = ActionEdit
     end
     object PopupMenuVST_DeleteMI: TMenuItem
       Action = ActionDelete
@@ -103,6 +102,11 @@ object FormMain: TFormMain
       Category = 'VSTPopup'
       Caption = 'Delete'
       OnExecute = ActionDeleteExecute
+    end
+    object ActionEdit: TAction
+      Category = 'VSTPopup'
+      Caption = 'Edit'
+      OnExecute = ActionEditExecute
     end
   end
 end
