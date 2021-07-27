@@ -30,9 +30,9 @@ object FormMain: TFormMain
       Caption = 'Main'
       object ListBoxInfo: TListBox
         Left = 0
-        Top = 432
+        Top = 528
         Width = 914
-        Height = 150
+        Height = 54
         Align = alBottom
         ItemHeight = 13
         TabOrder = 0
@@ -41,7 +41,7 @@ object FormMain: TFormMain
         Left = 0
         Top = 0
         Width = 914
-        Height = 432
+        Height = 528
         Align = alClient
         Header.AutoSizeIndex = 0
         Header.MainColumn = -1
@@ -58,6 +58,7 @@ object FormMain: TFormMain
         OnSaveNode = VSTSaveNode
         Touch.InteractiveGestures = [igPan, igPressAndTap]
         Touch.InteractiveGestureOptions = [igoPanSingleFingerHorizontal, igoPanSingleFingerVertical, igoPanInertia, igoPanGutter, igoParentPassthrough]
+        ExplicitHeight = 432
         Columns = <>
       end
     end
