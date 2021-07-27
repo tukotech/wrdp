@@ -39,6 +39,7 @@ type
     ActionDelete: TAction;
     ActionEdit: TAction;
     ActionAddSubHost: TAction;
+    ActionAddHost: TAction;
     procedure FormCreate(Sender: TObject);
     procedure FormClose(Sender: TObject; var Action: TCloseAction);
     procedure FormShow(Sender: TObject);
@@ -67,6 +68,7 @@ type
     procedure VSTKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
     procedure ActionEditExecute(Sender: TObject);
     procedure ActionAddSubHostExecute(Sender: TObject);
+    procedure ActionAddHostExecute(Sender: TObject);
   private
     { Private declarations }
     FRecentNodeData : TNodeRec;
@@ -365,6 +367,18 @@ begin
   PageControlMain.ActivePage.Free;
 end;
 
+procedure TFormMain.ActionAddHostExecute(Sender: TObject);
+begin
+  FAddHostSelected := true;
+  if GetInputHostInfo = true then
+  begin
+    with VST do
+    begin
+      RootNodeCount := RootNodeCount + 1;
+    end;
+  end;
+end;
+
 procedure TFormMain.ActionAddSubHostExecute(Sender: TObject);
 begin
   if GetInputHostInfo = true then
@@ -578,7 +592,10 @@ begin
   else if Key = VK_F2 then
     ActionEdit.Execute
   else if Key = VK_INSERT then
-    ActionAddSubHost.Execute;
+    if ssShift in Shift then
+      ActionAddHost.Execute
+    else
+      ActionAddSubHost.Execute;
 
 end;
 
