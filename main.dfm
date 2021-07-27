@@ -82,8 +82,7 @@ object FormMain: TFormMain
       OnClick = PopupMenuVST_AddHostClick
     end
     object PopupMenuVST_AddSubHost: TMenuItem
-      Caption = 'Add &Sub Host'
-      OnClick = PopupMenuVST_AddSubHostClick
+      Action = ActionAddSubHost
     end
     object N1: TMenuItem
       Caption = '-'
@@ -107,6 +106,11 @@ object FormMain: TFormMain
       Category = 'VSTPopup'
       Caption = 'Edit'
       OnExecute = ActionEditExecute
+    end
+    object ActionAddSubHost: TAction
+      Category = 'VSTPopup'
+      Caption = 'Add Sub Host'
+      OnExecute = ActionAddSubHostExecute
     end
   end
 end

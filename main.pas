@@ -38,6 +38,7 @@ type
     ActionList1: TActionList;
     ActionDelete: TAction;
     ActionEdit: TAction;
+    ActionAddSubHost: TAction;
     procedure FormCreate(Sender: TObject);
     procedure FormClose(Sender: TObject; var Action: TCloseAction);
     procedure FormShow(Sender: TObject);
@@ -65,6 +66,7 @@ type
     procedure ActionDeleteExecute(Sender: TObject);
     procedure VSTKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
     procedure ActionEditExecute(Sender: TObject);
+    procedure ActionAddSubHostExecute(Sender: TObject);
   private
     { Private declarations }
     FRecentNodeData : TNodeRec;
@@ -363,6 +365,19 @@ begin
   PageControlMain.ActivePage.Free;
 end;
 
+procedure TFormMain.ActionAddSubHostExecute(Sender: TObject);
+begin
+  if GetInputHostInfo = true then
+  begin
+    with VST do
+    begin
+      ChildCount[FocusedNode] := ChildCount[FocusedNode] + 1;
+      Expanded[FocusedNode] := True;
+      InvalidateToBottom(FocusedNode);
+    end;
+  end;
+end;
+
 procedure TFormMain.ActionDeleteExecute(Sender: TObject);
 begin
   if VCL.Dialogs.MessageDlg('Delete nodes?',
@@ -561,7 +576,9 @@ begin
   if Key = VK_DELETE then
     ActionDelete.Execute
   else if Key = VK_F2 then
-    ActionEdit.Execute;
+    ActionEdit.Execute
+  else if Key = VK_INSERT then
+    ActionAddSubHost.Execute;
 
 end;
 
