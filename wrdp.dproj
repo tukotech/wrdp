@@ -128,11 +128,10 @@
         <AppDPIAwarenessMode>PerMonitorV2</AppDPIAwarenessMode>
         <VerInfo_IncludeVerInfo>true</VerInfo_IncludeVerInfo>
         <VerInfo_MajorVer>0</VerInfo_MajorVer>
-        <VerInfo_MinorVer>2</VerInfo_MinorVer>
+        <VerInfo_MinorVer>3</VerInfo_MinorVer>
         <VerInfo_AutoIncVersion>true</VerInfo_AutoIncVersion>
-        <VerInfo_Keys>CompanyName=Tuko Tech;FileDescription=Wicked RDP;FileVersion=0.2.0.4;InternalName=Wicked RDP;LegalCopyright=© Tuko Tech;LegalTrademarks=;OriginalFilename=;ProgramID=us.tuko.$(MSBuildProjectName);ProductName=Wicked RDP;ProductVersion=0.2.0;Comments=</VerInfo_Keys>
+        <VerInfo_Keys>CompanyName=Tuko Tech;FileDescription=Wicked RDP;FileVersion=0.3.0.0;InternalName=Wicked RDP;LegalCopyright=© Tuko Tech;LegalTrademarks=;OriginalFilename=;ProgramID=us.tuko.$(MSBuildProjectName);ProductName=Wicked RDP;ProductVersion=0.3.0;Comments=</VerInfo_Keys>
         <Icon_MainIcon>icons8_Connect_Develop.ico</Icon_MainIcon>
-        <VerInfo_Build>4</VerInfo_Build>
         <UWP_DelphiLogo44>C:\Users\pe\Documents\icons8_Connect_Develop_64.png</UWP_DelphiLogo44>
         <UWP_DelphiLogo150>C:\Users\pe\Documents\icons8_Connect_Develop_48.png</UWP_DelphiLogo150>
     </PropertyGroup>

@@ -52,6 +52,7 @@ object FormMain: TFormMain
         OnFreeNode = VSTFreeNode
         OnGetText = VSTGetText
         OnInitNode = VSTInitNode
+        OnKeyDown = VSTKeyDown
         OnKeyPress = VSTKeyPress
         OnLoadNode = VSTLoadNode
         OnSaveNode = VSTSaveNode
@@ -92,8 +93,16 @@ object FormMain: TFormMain
       OnClick = PopupMenuVST_EditMIClick
     end
     object PopupMenuVST_DeleteMI: TMenuItem
-      Caption = '&Delete'
-      OnClick = PopupMenuVST_DeleteMIClick
+      Action = ActionDelete
+    end
+  end
+  object ActionList1: TActionList
+    Left = 252
+    Top = 512
+    object ActionDelete: TAction
+      Category = 'VSTPopup'
+      Caption = 'Delete'
+      OnExecute = ActionDeleteExecute
     end
   end
 end

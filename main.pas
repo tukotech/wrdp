@@ -17,7 +17,8 @@ uses
   Vcl.Controls, Vcl.Forms,
   Vcl.Dialogs,
   Vcl.ComCtrls, Vcl.OleCtrls, MSTSCLib_TLB,
-  Vcl.StdCtrls, Vcl.Grids, inifiles, Vcl.Menus, VirtualTrees, Vcl.ExtCtrls;
+  Vcl.StdCtrls, Vcl.Grids, inifiles, Vcl.Menus, VirtualTrees, Vcl.ExtCtrls,
+  System.Actions, Vcl.ActnList;
 
 type
   TFormMain = class(TForm)
@@ -34,6 +35,8 @@ type
     PopupMenuVST_EditMI: TMenuItem;
     PopupMenuVST_DeleteMI: TMenuItem;
     PopupMenuRDP_DetachMI: TMenuItem;
+    ActionList1: TActionList;
+    ActionDelete: TAction;
     procedure FormCreate(Sender: TObject);
     procedure FormClose(Sender: TObject; var Action: TCloseAction);
     procedure FormShow(Sender: TObject);
@@ -58,6 +61,8 @@ type
     procedure PopupMenuVST_EditMIClick(Sender: TObject);
     procedure PopupMenuVST_DeleteMIClick(Sender: TObject);
     procedure PopupMenuRDP_DetachMIClick(Sender: TObject);
+    procedure ActionDeleteExecute(Sender: TObject);
+    procedure VSTKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
   private
     { Private declarations }
     FRecentNodeData : TNodeRec;
@@ -356,6 +361,18 @@ begin
   PageControlMain.ActivePage.Free;
 end;
 
+procedure TFormMain.ActionDeleteExecute(Sender: TObject);
+begin
+  if VCL.Dialogs.MessageDlg('Delete nodes?',
+    mtConfirmation, [mbYes, mbNo], 0, mbYes) = mrYes then
+  begin
+    with VST do
+    begin
+      DeleteNode(FocusedNode);
+    end;
+  end;
+end;
+
 procedure TFormMain.ConnectToServer;
 var
   Data, DataNext: PNodeRec;
@@ -484,12 +501,18 @@ begin
   end;
 end;
 
+procedure TFormMain.VSTKeyDown(Sender: TObject; var Key: Word;
+  Shift: TShiftState);
+begin
+  if Key = VK_DELETE then
+    ActionDelete.Execute;
+end;
+
 procedure TFormMain.VSTKeyPress(Sender: TObject; var Key: Char);
 begin
   if ord(Key) = VK_RETURN then
-  begin
-    ConnectToServer;
-  end;
+    ConnectToServer
+
 end;
 
 procedure TFormMain.VSTLoadNode(Sender: TBaseVirtualTree; Node: PVirtualNode;
