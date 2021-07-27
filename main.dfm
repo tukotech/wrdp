@@ -36,6 +36,7 @@ object FormMain: TFormMain
         Align = alBottom
         ItemHeight = 13
         TabOrder = 0
+        Visible = False
       end
       object VST: TVirtualStringTree
         Left = 0

@@ -13,8 +13,10 @@ uses
   System.NetEncoding,
   System.Variants,
   System.SysUtils,
+  System.UITypes,
   Vcl.Graphics,
-  Vcl.Controls, Vcl.Forms,
+  Vcl.Controls,
+  Vcl.Forms,
   Vcl.Dialogs,
   Vcl.ComCtrls, Vcl.OleCtrls, MSTSCLib_TLB,
   Vcl.StdCtrls, Vcl.Grids, inifiles, Vcl.Menus, VirtualTrees, Vcl.ExtCtrls,
@@ -245,7 +247,7 @@ end;
 
 procedure TFormMain.PopupMenuVST_DeleteMIClick(Sender: TObject);
 begin
-  if VCL.Dialogs.MessageDlg('Delete nodes?',
+  if MessageDlg('Delete nodes?',
     mtConfirmation, [mbYes, mbNo], 0, mbYes) = mrYes then
   begin
     with VST do
@@ -394,7 +396,7 @@ end;
 
 procedure TFormMain.ActionDeleteExecute(Sender: TObject);
 begin
-  if VCL.Dialogs.MessageDlg('Delete nodes?',
+  if MessageDlg('Delete nodes?',
     mtConfirmation, [mbYes, mbNo], 0, mbYes) = mrYes then
   begin
     with VST do
