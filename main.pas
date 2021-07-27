@@ -13,11 +13,14 @@ uses
   System.NetEncoding,
   System.Variants,
   System.SysUtils,
+  System.UITypes,
   Vcl.Graphics,
-  Vcl.Controls, Vcl.Forms,
+  Vcl.Controls,
+  Vcl.Forms,
   Vcl.Dialogs,
   Vcl.ComCtrls, Vcl.OleCtrls, MSTSCLib_TLB,
-  Vcl.StdCtrls, Vcl.Grids, inifiles, Vcl.Menus, VirtualTrees, Vcl.ExtCtrls;
+  Vcl.StdCtrls, Vcl.Grids, inifiles, Vcl.Menus, VirtualTrees, Vcl.ExtCtrls,
+  System.Actions, Vcl.ActnList;
 
 type
   TFormMain = class(TForm)
@@ -34,6 +37,11 @@ type
     PopupMenuVST_EditMI: TMenuItem;
     PopupMenuVST_DeleteMI: TMenuItem;
     PopupMenuRDP_DetachMI: TMenuItem;
+    ActionList1: TActionList;
+    ActionDelete: TAction;
+    ActionEdit: TAction;
+    ActionAddSubHost: TAction;
+    ActionAddHost: TAction;
     procedure FormCreate(Sender: TObject);
     procedure FormClose(Sender: TObject; var Action: TCloseAction);
     procedure FormShow(Sender: TObject);
@@ -58,6 +66,11 @@ type
     procedure PopupMenuVST_EditMIClick(Sender: TObject);
     procedure PopupMenuVST_DeleteMIClick(Sender: TObject);
     procedure PopupMenuRDP_DetachMIClick(Sender: TObject);
+    procedure ActionDeleteExecute(Sender: TObject);
+    procedure VSTKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
+    procedure ActionEditExecute(Sender: TObject);
+    procedure ActionAddSubHostExecute(Sender: TObject);
+    procedure ActionAddHostExecute(Sender: TObject);
   private
     { Private declarations }
     FRecentNodeData : TNodeRec;
@@ -234,7 +247,7 @@ end;
 
 procedure TFormMain.PopupMenuVST_DeleteMIClick(Sender: TObject);
 begin
-  if VCL.Dialogs.MessageDlg('Delete nodes?',
+  if MessageDlg('Delete nodes?',
     mtConfirmation, [mbYes, mbNo], 0, mbYes) = mrYes then
   begin
     with VST do
@@ -356,6 +369,95 @@ begin
   PageControlMain.ActivePage.Free;
 end;
 
+procedure TFormMain.ActionAddHostExecute(Sender: TObject);
+begin
+  FAddHostSelected := true;
+  if GetInputHostInfo = true then
+  begin
+    with VST do
+    begin
+      RootNodeCount := RootNodeCount + 1;
+    end;
+  end;
+end;
+
+procedure TFormMain.ActionAddSubHostExecute(Sender: TObject);
+begin
+  if GetInputHostInfo = true then
+  begin
+    with VST do
+    begin
+      ChildCount[FocusedNode] := ChildCount[FocusedNode] + 1;
+      Expanded[FocusedNode] := True;
+      InvalidateToBottom(FocusedNode);
+    end;
+  end;
+end;
+
+procedure TFormMain.ActionDeleteExecute(Sender: TObject);
+begin
+  if MessageDlg('Delete nodes?',
+    mtConfirmation, [mbYes, mbNo], 0, mbYes) = mrYes then
+  begin
+    with VST do
+    begin
+      DeleteNode(FocusedNode);
+    end;
+  end;
+end;
+
+procedure TFormMain.ActionEditExecute(Sender: TObject);
+var
+  Data: PNodeRec;
+begin
+  Data := VST.GetNodeData(VST.FocusedNode);
+
+  FormConnInfo.EditName.Text := Data.Name;
+  FormConnInfo.EditHostnameOrIp.Text := Data.HostOrIP;
+  FormConnInfo.CheckBoxInherit.State := Data.Inherit;
+
+  if VST.FocusedNode.Parent = VST.FocusedNode.Parent.NextSibling then //this is a root node
+  begin
+    FormConnInfo.CheckBoxInherit.Enabled := false;
+    FormConnInfo.CheckBoxInherit.AllowGrayed := true;
+  end
+  else
+    FormConnInfo.CheckBoxInherit.AllowGrayed := false;
+
+  if (FormConnInfo.CheckBoxInherit.State = cbUnchecked)
+  or (FormConnInfo.CheckBoxInherit.State = cbGrayed)
+  then
+  begin
+    FormConnInfo.EditDomain.Text := Data.Domain;
+    FormConnInfo.EditUsername.Text := Data.Username;
+    FormConnInfo.EditPassword.Text := Data.Password;
+
+    FormConnInfo.EditDomain.Enabled := true;
+    FormConnInfo.EditUsername.Enabled := true;
+    FormConnInfo.EditPassword.Enabled := true;
+  end
+  else
+  begin
+    FormConnInfo.EditDomain.Text := '';
+    FormConnInfo.EditDomain.Enabled := false;
+    FormConnInfo.EditUsername.Text := '';
+    FormConnInfo.EditUsername.Enabled := false;
+    FormConnInfo.EditPassword.Text := '';
+    FormConnInfo.EditPassword.Enabled := false;
+  end;
+
+  if FormConnInfo.ShowModal = mrOk then
+  begin
+    Data.Name := FormConnInfo.EditName.Text;
+    Data.HostOrIP := FormConnInfo.EditHostnameOrIp.Text;
+    Data.Inherit := FormConnInfo.CheckBoxInherit.State;
+    Data.Domain := FormConnInfo.EditDomain.Text;
+    Data.Username := FormConnInfo.EditUsername.Text;
+    Data.Password := FormConnInfo.EditPassword.Text;
+
+    VST.SetNodeData(VST.FocusedNode, Data^);
+  end;
+end;
 procedure TFormMain.ConnectToServer;
 var
   Data, DataNext: PNodeRec;
@@ -484,12 +586,25 @@ begin
   end;
 end;
 
+procedure TFormMain.VSTKeyDown(Sender: TObject; var Key: Word;
+  Shift: TShiftState);
+begin
+  if Key = VK_DELETE then
+    ActionDelete.Execute
+  else if Key = VK_F2 then
+    ActionEdit.Execute
+  else if Key = VK_INSERT then
+    if ssShift in Shift then
+      ActionAddHost.Execute
+    else
+      ActionAddSubHost.Execute;
+
+end;
+
 procedure TFormMain.VSTKeyPress(Sender: TObject; var Key: Char);
 begin
   if ord(Key) = VK_RETURN then
-  begin
-    ConnectToServer;
-  end;
+    ConnectToServer
 end;
 
 procedure TFormMain.VSTLoadNode(Sender: TBaseVirtualTree; Node: PVirtualNode;

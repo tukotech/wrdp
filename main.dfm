@@ -30,18 +30,19 @@ object FormMain: TFormMain
       Caption = 'Main'
       object ListBoxInfo: TListBox
         Left = 0
-        Top = 432
+        Top = 528
         Width = 914
-        Height = 150
+        Height = 54
         Align = alBottom
         ItemHeight = 13
         TabOrder = 0
+        Visible = False
       end
       object VST: TVirtualStringTree
         Left = 0
         Top = 0
         Width = 914
-        Height = 432
+        Height = 528
         Align = alClient
         Header.AutoSizeIndex = 0
         Header.MainColumn = -1
@@ -52,11 +53,13 @@ object FormMain: TFormMain
         OnFreeNode = VSTFreeNode
         OnGetText = VSTGetText
         OnInitNode = VSTInitNode
+        OnKeyDown = VSTKeyDown
         OnKeyPress = VSTKeyPress
         OnLoadNode = VSTLoadNode
         OnSaveNode = VSTSaveNode
         Touch.InteractiveGestures = [igPan, igPressAndTap]
         Touch.InteractiveGestureOptions = [igoPanSingleFingerHorizontal, igoPanSingleFingerVertical, igoPanInertia, igoPanGutter, igoParentPassthrough]
+        ExplicitHeight = 432
         Columns = <>
       end
     end
@@ -77,23 +80,43 @@ object FormMain: TFormMain
     Left = 676
     Top = 512
     object PopupMenuVST_AddHost: TMenuItem
-      Caption = 'Add &Host'
-      OnClick = PopupMenuVST_AddHostClick
+      Action = ActionAddHost
     end
     object PopupMenuVST_AddSubHost: TMenuItem
-      Caption = 'Add &Sub Host'
-      OnClick = PopupMenuVST_AddSubHostClick
+      Action = ActionAddSubHost
     end
     object N1: TMenuItem
       Caption = '-'
     end
     object PopupMenuVST_EditMI: TMenuItem
-      Caption = '&Edit'
-      OnClick = PopupMenuVST_EditMIClick
+      Action = ActionEdit
     end
     object PopupMenuVST_DeleteMI: TMenuItem
-      Caption = '&Delete'
-      OnClick = PopupMenuVST_DeleteMIClick
+      Action = ActionDelete
+    end
+  end
+  object ActionList1: TActionList
+    Left = 252
+    Top = 512
+    object ActionDelete: TAction
+      Category = 'VSTPopup'
+      Caption = 'Delete'
+      OnExecute = ActionDeleteExecute
+    end
+    object ActionEdit: TAction
+      Category = 'VSTPopup'
+      Caption = 'Edit'
+      OnExecute = ActionEditExecute
+    end
+    object ActionAddSubHost: TAction
+      Category = 'VSTPopup'
+      Caption = 'Add Sub Host'
+      OnExecute = ActionAddSubHostExecute
+    end
+    object ActionAddHost: TAction
+      Category = 'VSTPopup'
+      Caption = 'Add Host'
+      OnExecute = ActionAddHostExecute
     end
   end
 end
