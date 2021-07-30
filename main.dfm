@@ -21,7 +21,7 @@ object FormMain: TFormMain
     Top = 0
     Width = 922
     Height = 610
-    ActivePage = TabSheet1
+    ActivePage = TabSheetMain
     Align = alClient
     PopupMenu = PopupMenuRDP
     TabOrder = 0
@@ -60,20 +60,6 @@ object FormMain: TFormMain
         Touch.InteractiveGestures = [igPan, igPressAndTap]
         Touch.InteractiveGestureOptions = [igoPanSingleFingerHorizontal, igoPanSingleFingerVertical, igoPanInertia, igoPanGutter, igoParentPassthrough]
         Columns = <>
-      end
-    end
-    object TabSheet1: TTabSheet
-      Caption = 'TabSheet1'
-      ImageIndex = 1
-      object MsRdpClient9NotSafeForScripting1: TMsRdpClient9NotSafeForScripting
-        Left = 328
-        Top = 160
-        Width = 192
-        Height = 192
-        TabOrder = 0
-        OnDisconnected = MsRdpClient9NotSafeForScripting1Disconnected
-        OnLogonError = MsRdpClient9NotSafeForScripting1LogonError
-        ControlData = {0008000008000200000000000B0000000B000000}
       end
     end
   end

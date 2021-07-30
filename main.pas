@@ -42,8 +42,6 @@ type
     ActionEdit: TAction;
     ActionAddSubHost: TAction;
     ActionAddHost: TAction;
-    TabSheet1: TTabSheet;
-    MsRdpClient9NotSafeForScripting1: TMsRdpClient9NotSafeForScripting;
     procedure FormCreate(Sender: TObject);
     procedure FormClose(Sender: TObject; var Action: TCloseAction);
     procedure FormShow(Sender: TObject);
@@ -73,9 +71,7 @@ type
     procedure ActionEditExecute(Sender: TObject);
     procedure ActionAddSubHostExecute(Sender: TObject);
     procedure ActionAddHostExecute(Sender: TObject);
-    procedure MsRdpClient9NotSafeForScripting1LogonError(ASender: TObject;
-      lError: Integer);
-    procedure MsRdpClient9NotSafeForScripting1Disconnected(ASender: TObject;
+    procedure MsRdpClient9NotSafeForScriptingDisconnected(ASender: TObject;
       discReason: Integer);
 
   private
@@ -227,24 +223,15 @@ begin
   Result := ret;
 end;
 
-procedure TFormMain.MsRdpClient9NotSafeForScripting1Disconnected(
+procedure TFormMain.MsRdpClient9NotSafeForScriptingDisconnected(
   ASender: TObject; discReason: Integer);
 var
   rdp : TMsRdpClient9NotSafeForScripting;
 begin
   rdp := ASender as TMsRdpClient9NotSafeForScripting;
-  ShowMessage(IntToStr(discReason) + ':' +
+  ShowMessage(IntToStr(discReason) + ' : ' +
     rdp.GetErrorDescription(discReason,
   rdp.ExtendedDisconnectReason));
-end;
-
-procedure TFormMain.MsRdpClient9NotSafeForScripting1LogonError(ASender: TObject;
-  lError: Integer);
-var
-  str : string;
-begin
-  str := TMsRdpClient9NotSafeForScripting(ASender).GetStatusText(lError);
-  ShowMessage(str + ':' + IntToStr(lError));
 end;
 
 procedure TFormMain.PopupMenuVST_AddHostClick(Sender: TObject);
@@ -539,8 +526,7 @@ begin
   ni.Username := LData.Username;
   ni.Password := LData.Password;
   rdp.Tag := Integer(ni); //Store NodeRec for detaching
-  rdp.OnLogonError := MsRdpClient9NotSafeForScripting1LogonError;
-  rdp.OnDisconnected := MsRdpClient9NotSafeForScripting1Disconnected;
+  rdp.OnDisconnected := MsRdpClient9NotSafeForScriptingDisconnected;
   rdp.AdvancedSettings8.BitmapPersistence := 0;
   rdp.Connect;
   PageControlMain.ActivePage := TabSheet;
