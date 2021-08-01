@@ -410,7 +410,7 @@ end;
 
 procedure TFormMain.ActionDeleteExecute(Sender: TObject);
 begin
-  if MessageDlg('Delete nodes?',
+  if MessageDlg('Delete node?',
     mtConfirmation, [mbYes, mbNo], 0, mbYes) = mrYes then
   begin
     with VST do
