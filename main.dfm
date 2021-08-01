@@ -59,7 +59,6 @@ object FormMain: TFormMain
         OnSaveNode = VSTSaveNode
         Touch.InteractiveGestures = [igPan, igPressAndTap]
         Touch.InteractiveGestureOptions = [igoPanSingleFingerHorizontal, igoPanSingleFingerVertical, igoPanInertia, igoPanGutter, igoParentPassthrough]
-        ExplicitHeight = 432
         Columns = <>
       end
     end

@@ -1,7 +1,7 @@
 package RdpControl;
 
 {$R *.res}
-{$R 'C:\Users\pe\Documents\Embarcadero\Studio\20.0\Imports\MSTSCLib_TLB.dcr'}
+{$R 'MSTSCLib_TLB.dcr'}
 {$IFDEF IMPLICITBUILDING This IFDEF should not be used by users}
 {$ALIGN 8}
 {$ASSERTIONS ON}

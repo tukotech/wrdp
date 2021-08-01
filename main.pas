@@ -71,6 +71,9 @@ type
     procedure ActionEditExecute(Sender: TObject);
     procedure ActionAddSubHostExecute(Sender: TObject);
     procedure ActionAddHostExecute(Sender: TObject);
+    procedure MsRdpClient9NotSafeForScriptingDisconnected(ASender: TObject;
+      discReason: Integer);
+
   private
     { Private declarations }
     FRecentNodeData : TNodeRec;
@@ -218,6 +221,17 @@ begin
     ret := true;
   end;
   Result := ret;
+end;
+
+procedure TFormMain.MsRdpClient9NotSafeForScriptingDisconnected(
+  ASender: TObject; discReason: Integer);
+var
+  rdp : TMsRdpClient9NotSafeForScripting;
+begin
+  rdp := ASender as TMsRdpClient9NotSafeForScripting;
+  ShowMessage(IntToStr(discReason) + ' : ' +
+    rdp.GetErrorDescription(discReason,
+  rdp.ExtendedDisconnectReason));
 end;
 
 procedure TFormMain.PopupMenuVST_AddHostClick(Sender: TObject);
@@ -396,7 +410,7 @@ end;
 
 procedure TFormMain.ActionDeleteExecute(Sender: TObject);
 begin
-  if MessageDlg('Delete nodes?',
+  if MessageDlg('Delete node?',
     mtConfirmation, [mbYes, mbNo], 0, mbYes) = mrYes then
   begin
     with VST do
@@ -512,6 +526,8 @@ begin
   ni.Username := LData.Username;
   ni.Password := LData.Password;
   rdp.Tag := Integer(ni); //Store NodeRec for detaching
+  rdp.OnDisconnected := MsRdpClient9NotSafeForScriptingDisconnected;
+  rdp.AdvancedSettings8.BitmapPersistence := 0;
   rdp.Connect;
   PageControlMain.ActivePage := TabSheet;
 end;
