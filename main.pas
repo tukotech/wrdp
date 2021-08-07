@@ -227,11 +227,11 @@ procedure TFormMain.MsRdpClient9NotSafeForScriptingDisconnected(
   ASender: TObject; discReason: Integer);
 var
   rdp : TMsRdpClient9NotSafeForScripting;
+  msg : string;
 begin
   rdp := ASender as TMsRdpClient9NotSafeForScripting;
-  ShowMessage(IntToStr(discReason) + ' : ' +
-    rdp.GetErrorDescription(discReason,
-  rdp.ExtendedDisconnectReason));
+  msg := IntToStr(discReason) + ' : ' + rdp.GetErrorDescription(discReason, rdp.ExtendedDisconnectReason) + ' : ' + TTabSheet(rdp.Parent).Caption;
+  TTabSheet(rdp.Parent).Caption := '[x]' + TTabSheet(rdp.Parent).Caption;
 end;
 
 procedure TFormMain.PopupMenuVST_AddHostClick(Sender: TObject);
