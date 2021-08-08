@@ -94,6 +94,12 @@ object FormMain: TFormMain
     object PopupMenuVST_DeleteMI: TMenuItem
       Action = ActionDelete
     end
+    object N2: TMenuItem
+      Caption = '-'
+    end
+    object ConnectF31: TMenuItem
+      Action = ActionConnect
+    end
   end
   object ActionList1: TActionList
     Left = 252
@@ -132,6 +138,12 @@ object FormMain: TFormMain
       Category = 'Tab'
       Caption = 'Detach'
       OnExecute = ActionTabDetachExecute
+    end
+    object ActionConnect: TAction
+      Category = 'VSTPopup'
+      Caption = 'Connect'
+      ShortCut = 114
+      OnExecute = ActionConnectExecute
     end
   end
 end

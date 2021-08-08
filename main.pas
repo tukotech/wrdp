@@ -47,6 +47,9 @@ type
     ActionTabClose: TAction;
     ActionTabDetach: TAction;
     Reconnect1: TMenuItem;
+    ActionConnect: TAction;
+    N2: TMenuItem;
+    ConnectF31: TMenuItem;
     procedure FormCreate(Sender: TObject);
     procedure FormClose(Sender: TObject; var Action: TCloseAction);
     procedure FormShow(Sender: TObject);
@@ -80,6 +83,7 @@ type
     procedure ActionTabDetachExecute(Sender: TObject);
     procedure ActionTabReconnectExecute(Sender: TObject);
     procedure MsRdpClient9NotSafeForScriptingConnected(Sender: TObject);
+    procedure ActionConnectExecute(Sender: TObject);
 
   private
     { Private declarations }
@@ -385,6 +389,11 @@ begin
       InvalidateToBottom(FocusedNode);
     end;
   end;
+end;
+
+procedure TFormMain.ActionConnectExecute(Sender: TObject);
+begin
+  ShowMessage('Connect');
 end;
 
 procedure TFormMain.ActionDeleteExecute(Sender: TObject);
