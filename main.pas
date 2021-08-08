@@ -42,12 +42,15 @@ type
     ActionEdit: TAction;
     ActionAddSubHost: TAction;
     ActionAddHost: TAction;
+    ActionTabReconnect: TAction;
+    ActionTabClose: TAction;
+    ActionTabDetach: TAction;
+    Reconnect1: TMenuItem;
     procedure FormCreate(Sender: TObject);
     procedure FormClose(Sender: TObject; var Action: TCloseAction);
     procedure FormShow(Sender: TObject);
     procedure PageControlMainContextPopup(Sender: TObject; MousePos: TPoint;
       var Handled: Boolean);
-    procedure PopupMenuRDP_CloseTabMIClick(Sender: TObject);
     procedure PopupMenuVST_AddHostClick(Sender: TObject);
     procedure VSTGetText(Sender: TBaseVirtualTree; Node: PVirtualNode;
       Column: TColumnIndex; TextType: TVSTTextType; var CellText: string);
@@ -65,7 +68,6 @@ type
     procedure PopupMenuVST_AddSubHostClick(Sender: TObject);
     procedure PopupMenuVST_EditMIClick(Sender: TObject);
     procedure PopupMenuVST_DeleteMIClick(Sender: TObject);
-    procedure PopupMenuRDP_DetachMIClick(Sender: TObject);
     procedure ActionDeleteExecute(Sender: TObject);
     procedure VSTKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
     procedure ActionEditExecute(Sender: TObject);
@@ -73,6 +75,9 @@ type
     procedure ActionAddHostExecute(Sender: TObject);
     procedure MsRdpClient9NotSafeForScriptingDisconnected(ASender: TObject;
       discReason: Integer);
+    procedure ActionTabCloseExecute(Sender: TObject);
+    procedure ActionTabDetachExecute(Sender: TObject);
+    procedure ActionTabReconnectExecute(Sender: TObject);
 
   private
     { Private declarations }
@@ -149,23 +154,23 @@ end;
 
 procedure TFormMain.PageControlMainContextPopup(Sender: TObject;
   MousePos: TPoint; var Handled: Boolean);
+var
+  ControlAtCursor: TControl;
+  caption : string;
+  i : integer;
 begin
+  //Only show popup on tab instead of the client area
   with Sender as TPageControl do begin
+    i := IndexOfTabAt(MousePos.X, MousePos.Y);
     if [htOnItem] * GetHitTestInfoAt(MousePos.X, MousePos.Y) <> [] then
-      PopupMenu := PopupMenuRDP
-    else
-      PopupMenu := nil;
-  end;
-
-  if PageControlMain.ActivePage = TabSheetMain then
-  begin
-    PopupMenuRDP_CloseTabMI.Enabled := false;
-    PopupMenuRDP_DetachMI.Enabled := false;
-  end
-  else
-  begin
-    PopupMenuRDP_CloseTabMI.Enabled := true;
-    PopupMenuRDP_DetachMI.Enabled := true;
+    begin
+      if i > 0 then
+        PopupMenu := PopupMenuRDP
+      else
+      begin
+        PopupMenu := nil;
+      end
+    end
   end;
 end;
 
@@ -324,65 +329,6 @@ begin
   end;
 end;
 
-procedure TFormMain.PopupMenuRDP_CloseTabMIClick(Sender: TObject);
-var
-  I : Integer;
-begin
-  //Need to clean-up the tags
-  for I := 0 to PageControlMain.ActivePage.ControlCount-1 do
-  begin
-    if PageControlMain.ActivePage.Controls[I].ClassName = 'TMsRdpClient9NotSafeForScripting' then
-    begin
-      TNodeInformation(PageControlMain.ActivePage.Controls[I].Tag).Free;
-      break;
-    end;
-  end;
-
-  PageControlMain.ActivePage.Free;
-end;
-
-procedure TFormMain.PopupMenuRDP_DetachMIClick(Sender: TObject);
-var
-  I: Integer;
-  node : TNodeInformation;
-  as7: IMsRdpClientAdvancedSettings7;
-begin
-  node := nil;
-
-  for I := 0 to PageControlMain.ActivePage.ControlCount-1 do
-  begin
-    if PageControlMain.ActivePage.Controls[I].ClassName = 'TMsRdpClient9NotSafeForScripting' then
-    begin
-      node := TNodeInformation(PageControlMain.ActivePage.Controls[I].Tag);
-      break;
-    end;
-  end;
-
-  if FormDetached.Rdp.Connected = 1 then
-  begin
-    FormDetached.Rdp.Disconnect;
-  end;
-
-  FormDetached.Rdp.DesktopWidth := FormDetached.ClientWidth;
-  FormDetached.Rdp.DesktopHeight := FormDetached.ClientHeight;
-
-  FormDetached.Rdp.Server := node.HostOrIP;
-  FormDetached.Rdp.Domain := node.Domain;
-  FormDetached.Rdp.UserName := node.Username;
-  FormDetached.Rdp.Server := node.HostOrIP;
-  if Length(node.password)>0 then
-    FormDetached.Rdp.AdvancedSettings9.ClearTextPassword := node.password;
-  FormDetached.Rdp.SecuredSettings3.KeyboardHookMode := 1;
-  as7 := FormDetached.Rdp.AdvancedSettings as IMsRdpClientAdvancedSettings7;
-  as7.EnableCredSspSupport := true;
-  as7.SmartSizing := true;
-  FormDetached.Rdp.Connect;
-
-  FormDetached.Caption := node.Name;
-  FormDetached.Show;
-  PageControlMain.ActivePage.Free;
-end;
-
 procedure TFormMain.ActionAddHostExecute(Sender: TObject);
 begin
   FAddHostSelected := true;
@@ -472,6 +418,71 @@ begin
     VST.SetNodeData(VST.FocusedNode, Data^);
   end;
 end;
+
+procedure TFormMain.ActionTabCloseExecute(Sender: TObject);
+var
+  I : Integer;
+begin
+  //Need to clean-up the tags
+  for I := 0 to PageControlMain.ActivePage.ControlCount-1 do
+  begin
+    if PageControlMain.ActivePage.Controls[I].ClassName = 'TMsRdpClient9NotSafeForScripting' then
+    begin
+      TNodeInformation(PageControlMain.ActivePage.Controls[I].Tag).Free;
+      break;
+    end;
+  end;
+
+  PageControlMain.ActivePage.Free;
+end;
+
+procedure TFormMain.ActionTabDetachExecute(Sender: TObject);
+var
+  I: Integer;
+  node : TNodeInformation;
+  as7: IMsRdpClientAdvancedSettings7;
+begin
+  node := nil;
+
+  for I := 0 to PageControlMain.ActivePage.ControlCount-1 do
+  begin
+    if PageControlMain.ActivePage.Controls[I].ClassName = 'TMsRdpClient9NotSafeForScripting' then
+    begin
+      node := TNodeInformation(PageControlMain.ActivePage.Controls[I].Tag);
+      break;
+    end;
+  end;
+
+  if FormDetached.Rdp.Connected = 1 then
+  begin
+    FormDetached.Rdp.Disconnect;
+  end;
+
+  FormDetached.Rdp.DesktopWidth := FormDetached.ClientWidth;
+  FormDetached.Rdp.DesktopHeight := FormDetached.ClientHeight;
+
+  FormDetached.Rdp.Server := node.HostOrIP;
+  FormDetached.Rdp.Domain := node.Domain;
+  FormDetached.Rdp.UserName := node.Username;
+  FormDetached.Rdp.Server := node.HostOrIP;
+  if Length(node.password)>0 then
+    FormDetached.Rdp.AdvancedSettings9.ClearTextPassword := node.password;
+  FormDetached.Rdp.SecuredSettings3.KeyboardHookMode := 1;
+  as7 := FormDetached.Rdp.AdvancedSettings as IMsRdpClientAdvancedSettings7;
+  as7.EnableCredSspSupport := true;
+  as7.SmartSizing := true;
+  FormDetached.Rdp.Connect;
+
+  FormDetached.Caption := node.Name;
+  FormDetached.Show;
+  PageControlMain.ActivePage.Free;
+end;
+
+procedure TFormMain.ActionTabReconnectExecute(Sender: TObject);
+begin
+  ShowMessage('Reconnect');
+end;
+
 procedure TFormMain.ConnectToServer;
 var
   Data, DataNext: PNodeRec;
