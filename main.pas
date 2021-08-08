@@ -393,7 +393,7 @@ end;
 
 procedure TFormMain.ActionConnectExecute(Sender: TObject);
 begin
-  ShowMessage('Connect');
+  ConnectToServer;
 end;
 
 procedure TFormMain.ActionDeleteExecute(Sender: TObject);
@@ -603,6 +603,7 @@ begin
     PopupMenuVST_AddSubHost.Enabled := true;
     PopupMenuVST_EditMI.Enabled := true;
     PopupMenuVST_DeleteMI.Enabled := true;
+    ActionConnect.Enabled := true;
   end
   else
   begin
@@ -610,6 +611,7 @@ begin
     PopupMenuVST_AddSubHost.Enabled := false;
     PopupMenuVST_EditMI.Enabled := false;
     PopupMenuVST_DeleteMI.Enabled := false;
+    ActionConnect.Enabled := false;
   end;
 end;
 
