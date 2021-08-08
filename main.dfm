@@ -67,12 +67,13 @@ object FormMain: TFormMain
     Left = 508
     Top = 504
     object PopupMenuRDP_CloseTabMI: TMenuItem
-      Caption = 'Close'
-      OnClick = PopupMenuRDP_CloseTabMIClick
+      Action = ActionTabClose
     end
     object PopupMenuRDP_DetachMI: TMenuItem
-      Caption = 'Detach'
-      OnClick = PopupMenuRDP_DetachMIClick
+      Action = ActionTabDetach
+    end
+    object Reconnect1: TMenuItem
+      Action = ActionTabReconnect
     end
   end
   object PopupMenuVST: TPopupMenu
@@ -116,6 +117,21 @@ object FormMain: TFormMain
       Category = 'VSTPopup'
       Caption = 'Add Host'
       OnExecute = ActionAddHostExecute
+    end
+    object ActionTabReconnect: TAction
+      Category = 'Tab'
+      Caption = 'Reconnect'
+      OnExecute = ActionTabReconnectExecute
+    end
+    object ActionTabClose: TAction
+      Category = 'Tab'
+      Caption = 'Close'
+      OnExecute = ActionTabCloseExecute
+    end
+    object ActionTabDetach: TAction
+      Category = 'Tab'
+      Caption = 'Detach'
+      OnExecute = ActionTabDetachExecute
     end
   end
 end
