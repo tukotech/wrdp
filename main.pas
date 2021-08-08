@@ -79,11 +79,13 @@ type
     procedure ActionTabCloseExecute(Sender: TObject);
     procedure ActionTabDetachExecute(Sender: TObject);
     procedure ActionTabReconnectExecute(Sender: TObject);
+    procedure MsRdpClient9NotSafeForScriptingConnected(Sender: TObject);
 
   private
     { Private declarations }
     FRecentNodeData : TNodeRec;
     FAddHostSelected : Boolean;
+    FPopupMenuSelectedRDP : TMsRdpClient9NotSafeForScripting;
 
     procedure ConnectToServer;
     function GetInputHostInfo: Boolean;
@@ -161,6 +163,7 @@ var
   i : integer;
   controlIndex : integer;
 begin
+  IsRdpConnected := false;
   //Only show popup on tab instead of the client area
   with Sender as TPageControl do begin
     i := IndexOfTabAt(MousePos.X, MousePos.Y);
@@ -170,17 +173,19 @@ begin
       begin
         PopupMenu := PopupMenuRDP;
         IsDisconnected := ContainsText(Pages[i].Caption, '[x]');
-        ActionTabReconnect.Visible := IsDisconnected;
+
 
         for controlIndex := 0 to Pages[i].ControlCount-1 do
         begin
           if Pages[i].Controls[controlIndex].ClassName = 'TMsRdpClient9NotSafeForScripting' then
           begin
-            IsRdpConnected := TMsRdpClient9NotSafeForScripting(Pages[i].Controls[controlIndex]).Connected = 1;
+            FPopupMenuSelectedRDP := TMsRdpClient9NotSafeForScripting(Pages[i].Controls[controlIndex]);
+            IsRdpConnected := FPopupMenuSelectedRDP.Connected = 1;
             break;
           end;
         end;
         ActionTabDetach.Visible := (Not IsDisconnected) and (IsRdpConnected);
+        ActionTabReconnect.Visible := IsDisconnected or (Not IsRdpConnected);
       end
       else
         PopupMenu := nil;
@@ -240,6 +245,21 @@ begin
     ret := true;
   end;
   Result := ret;
+end;
+
+procedure TFormMain.MsRdpClient9NotSafeForScriptingConnected(Sender: TObject);
+var
+  node : TNodeInformation;
+  rdp : TMsRdpClient9NotSafeForScripting;
+begin
+  rdp := Sender as TMsRdpClient9NotSafeForScripting;
+  if Assigned(rdp) then
+  begin
+    node := TNodeInformation(rdp.Tag);
+    if Assigned(node) then
+      TTabSheet((Sender as TControl).Parent).Caption := node.Name;
+  end;
+//
 end;
 
 procedure TFormMain.MsRdpClient9NotSafeForScriptingDisconnected(
@@ -494,7 +514,10 @@ end;
 
 procedure TFormMain.ActionTabReconnectExecute(Sender: TObject);
 begin
-  ShowMessage('Reconnect');
+  if FPopupMenuSelectedRDP.Connected=1 then
+    FPopupMenuSelectedRDP.Reconnect(FPopupMenuSelectedRDP.Parent.ClientWidth,FPopupMenuSelectedRDP.Parent.ClientHeight)
+  else
+    FPopupMenuSelectedRDP.Connect;
 end;
 
 procedure TFormMain.ConnectToServer;
@@ -552,6 +575,7 @@ begin
   ni.Password := LData.Password;
   rdp.Tag := Integer(ni); //Store NodeRec for detaching
   rdp.OnDisconnected := MsRdpClient9NotSafeForScriptingDisconnected;
+  rdp.OnConnected := MsRdpClient9NotSafeForScriptingConnected;
   rdp.AdvancedSettings8.BitmapPersistence := 0;
   rdp.Connect;
   PageControlMain.ActivePage := TabSheet;
