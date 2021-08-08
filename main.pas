@@ -7,6 +7,7 @@ uses
   ConnInfo,
   Detached,
   Shared,
+  StrUtils,
   Winapi.Windows,
   Winapi.Messages,
   System.Classes,
@@ -155,9 +156,10 @@ end;
 procedure TFormMain.PageControlMainContextPopup(Sender: TObject;
   MousePos: TPoint; var Handled: Boolean);
 var
-  ControlAtCursor: TControl;
-  caption : string;
+  IsDisconnected : Boolean;
+  IsRdpConnected : Boolean;
   i : integer;
+  controlIndex : integer;
 begin
   //Only show popup on tab instead of the client area
   with Sender as TPageControl do begin
@@ -165,11 +167,23 @@ begin
     if [htOnItem] * GetHitTestInfoAt(MousePos.X, MousePos.Y) <> [] then
     begin
       if i > 0 then
-        PopupMenu := PopupMenuRDP
-      else
       begin
-        PopupMenu := nil;
+        PopupMenu := PopupMenuRDP;
+        IsDisconnected := ContainsText(Pages[i].Caption, '[x]');
+        ActionTabReconnect.Visible := IsDisconnected;
+
+        for controlIndex := 0 to Pages[i].ControlCount-1 do
+        begin
+          if Pages[i].Controls[controlIndex].ClassName = 'TMsRdpClient9NotSafeForScripting' then
+          begin
+            IsRdpConnected := TMsRdpClient9NotSafeForScripting(Pages[i].Controls[controlIndex]).Connected = 1;
+            break;
+          end;
+        end;
+        ActionTabDetach.Visible := (Not IsDisconnected) and (IsRdpConnected);
       end
+      else
+        PopupMenu := nil;
     end
   end;
 end;
