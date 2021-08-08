@@ -185,7 +185,6 @@ begin
           end;
         end;
         ActionTabDetach.Visible := (Not IsDisconnected) and (IsRdpConnected);
-        ActionTabReconnect.Visible := IsDisconnected or (Not IsRdpConnected);
       end
       else
         PopupMenu := nil;
