@@ -107,10 +107,10 @@
         <DCC_RemoteDebug>false</DCC_RemoteDebug>
         <AppEnableRuntimeThemes>true</AppEnableRuntimeThemes>
         <AppDPIAwarenessMode>PerMonitorV2</AppDPIAwarenessMode>
-        <VerInfo_Keys>CompanyName=Tuko Tech;FileDescription=Wicked RDP;FileVersion=0.6.0.3;InternalName=Wicked RDP;LegalCopyright=© Tuko Tech;LegalTrademarks=;OriginalFilename=;ProgramID=us.tuko.$(MSBuildProjectName);ProductName=Wicked RDP;ProductVersion=0.6.0;Comments=</VerInfo_Keys>
+        <VerInfo_Keys>CompanyName=Tuko Tech;FileDescription=Wicked RDP;FileVersion=0.7.0.0;InternalName=Wicked RDP;LegalCopyright=© Tuko Tech;LegalTrademarks=;OriginalFilename=;ProgramID=us.tuko.$(MSBuildProjectName);ProductName=Wicked RDP;ProductVersion=0.7.0;Comments=</VerInfo_Keys>
         <Icon_MainIcon>images\icons\icons8_Connect_Develop.ico</Icon_MainIcon>
-        <VerInfo_Build>3</VerInfo_Build>
         <UWP_DelphiLogo44>images\png\icons8_Connect_Develop_48.png</UWP_DelphiLogo44>
+        <VerInfo_MinorVer>7</VerInfo_MinorVer>
         <UWP_DelphiLogo150>images\png\icons8_Connect_Develop_64.png</UWP_DelphiLogo150>
     </PropertyGroup>
     <PropertyGroup Condition="'$(Cfg_1_Win64)'!=''">
@@ -126,9 +126,10 @@
     <PropertyGroup Condition="'$(Cfg_2_Win32)'!=''">
         <AppEnableRuntimeThemes>true</AppEnableRuntimeThemes>
         <AppDPIAwarenessMode>PerMonitorV2</AppDPIAwarenessMode>
+        <VerInfo_Keys>CompanyName=Tuko Tech;FileDescription=Wicked RDP;FileVersion=0.7.0.1;InternalName=Wicked RDP;LegalCopyright=© Tuko Tech;LegalTrademarks=;OriginalFilename=;ProgramID=us.tuko.$(MSBuildProjectName);ProductName=Wicked RDP;ProductVersion=0.7.0;Comments=</VerInfo_Keys>
         <VerInfo_Build>1</VerInfo_Build>
-        <VerInfo_Keys>CompanyName=Tuko Tech;FileDescription=Wicked RDP;FileVersion=0.6.0.1;InternalName=Wicked RDP;LegalCopyright=© Tuko Tech;LegalTrademarks=;OriginalFilename=;ProgramID=us.tuko.$(MSBuildProjectName);ProductName=Wicked RDP;ProductVersion=0.6.0;Comments=</VerInfo_Keys>
         <Icon_MainIcon>images\icons\icons8_Connect_Develop.ico</Icon_MainIcon>
+        <VerInfo_MinorVer>7</VerInfo_MinorVer>
         <UWP_DelphiLogo44>images\png\icons8_Connect_Develop_48.png</UWP_DelphiLogo44>
         <UWP_DelphiLogo150>images\png\icons8_Connect_Develop_64.png</UWP_DelphiLogo150>
     </PropertyGroup>

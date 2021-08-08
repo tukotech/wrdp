@@ -47,6 +47,9 @@ type
     ActionTabClose: TAction;
     ActionTabDetach: TAction;
     Reconnect1: TMenuItem;
+    ActionConnect: TAction;
+    N2: TMenuItem;
+    ConnectF31: TMenuItem;
     procedure FormCreate(Sender: TObject);
     procedure FormClose(Sender: TObject; var Action: TCloseAction);
     procedure FormShow(Sender: TObject);
@@ -80,6 +83,7 @@ type
     procedure ActionTabDetachExecute(Sender: TObject);
     procedure ActionTabReconnectExecute(Sender: TObject);
     procedure MsRdpClient9NotSafeForScriptingConnected(Sender: TObject);
+    procedure ActionConnectExecute(Sender: TObject);
 
   private
     { Private declarations }
@@ -387,6 +391,11 @@ begin
   end;
 end;
 
+procedure TFormMain.ActionConnectExecute(Sender: TObject);
+begin
+  ConnectToServer;
+end;
+
 procedure TFormMain.ActionDeleteExecute(Sender: TObject);
 begin
   if MessageDlg('Delete node?',
@@ -594,6 +603,7 @@ begin
     PopupMenuVST_AddSubHost.Enabled := true;
     PopupMenuVST_EditMI.Enabled := true;
     PopupMenuVST_DeleteMI.Enabled := true;
+    ActionConnect.Enabled := true;
   end
   else
   begin
@@ -601,6 +611,7 @@ begin
     PopupMenuVST_AddSubHost.Enabled := false;
     PopupMenuVST_EditMI.Enabled := false;
     PopupMenuVST_DeleteMI.Enabled := false;
+    ActionConnect.Enabled := false;
   end;
 end;
 
