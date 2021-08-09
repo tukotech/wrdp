@@ -84,6 +84,8 @@ type
     procedure ActionTabReconnectExecute(Sender: TObject);
     procedure MsRdpClient9NotSafeForScriptingConnected(Sender: TObject);
     procedure ActionConnectExecute(Sender: TObject);
+    procedure MsRdpClient9NotSafeForScriptingFocusReleased(ASender: TObject;
+      iDirection: Integer);
 
   private
     { Private declarations }
@@ -248,6 +250,12 @@ begin
     ret := true;
   end;
   Result := ret;
+end;
+
+procedure TFormMain.MsRdpClient9NotSafeForScriptingFocusReleased(
+  ASender: TObject; iDirection: Integer);
+begin
+  PageControlMain.SetFocus; //This focuses the active tab, should now be able to switch to other applications
 end;
 
 procedure TFormMain.MsRdpClient9NotSafeForScriptingConnected(Sender: TObject);
@@ -584,6 +592,7 @@ begin
   rdp.Tag := Integer(ni); //Store NodeRec for detaching
   rdp.OnDisconnected := MsRdpClient9NotSafeForScriptingDisconnected;
   rdp.OnConnected := MsRdpClient9NotSafeForScriptingConnected;
+  rdp.OnFocusReleased := MsRdpClient9NotSafeForScriptingFocusReleased;
   rdp.AdvancedSettings8.BitmapPersistence := 0;
   rdp.Connect;
   PageControlMain.ActivePage := TabSheet;
