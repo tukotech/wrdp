@@ -50,6 +50,7 @@ type
     ActionConnect: TAction;
     N2: TMenuItem;
     ConnectF31: TMenuItem;
+    ActionSaveCfg: TAction;
     procedure FormCreate(Sender: TObject);
     procedure FormClose(Sender: TObject; var Action: TCloseAction);
     procedure FormShow(Sender: TObject);
@@ -86,6 +87,7 @@ type
     procedure ActionConnectExecute(Sender: TObject);
     procedure MsRdpClient9NotSafeForScriptingFocusReleased(ASender: TObject;
       iDirection: Integer);
+    procedure ActionSaveCfgExecute(Sender: TObject);
 
   private
     { Private declarations }
@@ -122,8 +124,6 @@ begin
   finally
      Ini.Free;
   end;
-
-  VST.SaveToFile('VST.cfg');
 end;
 
 procedure TFormMain.FormCreate(Sender: TObject);
@@ -247,6 +247,7 @@ begin
     FRecentNodeData.Domain := Domain;
     FRecentNodeData.Username := Username;
     FRecentNodeData.Password := Password;
+    ActionSaveCfg.Execute;
     ret := true;
   end;
   Result := ret;
@@ -412,6 +413,7 @@ begin
     with VST do
     begin
       DeleteNode(FocusedNode);
+      ActionSaveCfg.Execute;
     end;
   end;
 end;
@@ -466,7 +468,13 @@ begin
     Data.Password := FormConnInfo.EditPassword.Text;
 
     VST.SetNodeData(VST.FocusedNode, Data^);
+    ActionSaveCfg.Execute;
   end;
+end;
+
+procedure TFormMain.ActionSaveCfgExecute(Sender: TObject);
+begin
+  VST.SaveToFile('VST.cfg');
 end;
 
 procedure TFormMain.ActionTabCloseExecute(Sender: TObject);
@@ -651,6 +659,7 @@ begin
     CellText := Data.Name;
 end;
 
+//TODO: Is this method used at all? Data is never consumed
 procedure TFormMain.VSTInitNode(Sender: TBaseVirtualTree; ParentNode,
   Node: PVirtualNode; var InitialStates: TVirtualNodeInitStates);
 var
