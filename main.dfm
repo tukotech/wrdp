@@ -145,5 +145,10 @@ object FormMain: TFormMain
       ShortCut = 114
       OnExecute = ActionConnectExecute
     end
+    object ActionSaveCfg: TAction
+      Category = 'VSTGeneral'
+      Caption = 'Save'
+      OnExecute = ActionSaveCfgExecute
+    end
   end
 end
