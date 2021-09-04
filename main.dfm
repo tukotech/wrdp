@@ -48,6 +48,7 @@ object FormMain: TFormMain
         Header.MainColumn = -1
         PopupMenu = PopupMenuVST
         TabOrder = 1
+        OnCompareNodes = VSTCompareNodes
         OnContextPopup = VSTContextPopup
         OnDblClick = VSTDblClick
         OnFreeNode = VSTFreeNode
