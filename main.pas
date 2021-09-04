@@ -126,6 +126,7 @@ begin
   finally
      Ini.Free;
   end;
+
 end;
 
 procedure TFormMain.FormCreate(Sender: TObject);
@@ -616,7 +617,7 @@ var
 begin
   Data1 := VST.GetNodeData(Node1);
   Data2 := VST.GetNodeData(Node2);
-  if Data1.Name < Data2.Name then
+  if LowerCase(Data1.Name) < LowerCase(Data2.Name) then
     Result := -1
   else
     Result := 1;
@@ -692,6 +693,7 @@ begin
     Data.Domain := self.FRecentNodeData.Domain;
     Data.Username := self.FRecentNodeData.Username;
     Data.Password := self.FRecentNodeData.Password;
+      ActionSaveCfg.Execute;
   end;
 end;
 
