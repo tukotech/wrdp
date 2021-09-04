@@ -659,7 +659,7 @@ begin
     CellText := Data.Name;
 end;
 
-//TODO: Is this method used at all? Data is never consumed
+//This method is called when a node is added, e.g., adding a host/sub-host
 procedure TFormMain.VSTInitNode(Sender: TBaseVirtualTree; ParentNode,
   Node: PVirtualNode; var InitialStates: TVirtualNodeInitStates);
 var
