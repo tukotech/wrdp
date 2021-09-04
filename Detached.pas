@@ -16,6 +16,8 @@ type
     { Private declarations }
   public
     { Public declarations }
+  protected
+    procedure CreateParams(var Params: TCreateParams) ; override;
   end;
 
 var
@@ -24,6 +26,12 @@ var
 implementation
 
 {$R *.dfm}
+procedure TFormDetached.CreateParams(var Params: TCreateParams) ;
+begin
+  inherited;
+  Params.ExStyle := Params.ExStyle or WS_EX_APPWINDOW;
+  Params.WndParent := GetDesktopWindow;
+end;
 
 procedure TFormDetached.FormClose(Sender: TObject; var Action: TCloseAction);
 var
