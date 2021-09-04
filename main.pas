@@ -88,6 +88,8 @@ type
     procedure MsRdpClient9NotSafeForScriptingFocusReleased(ASender: TObject;
       iDirection: Integer);
     procedure ActionSaveCfgExecute(Sender: TObject);
+    procedure VSTCompareNodes(Sender: TBaseVirtualTree; Node1,
+      Node2: PVirtualNode; Column: TColumnIndex; var Result: Integer);
 
   private
     { Private declarations }
@@ -152,6 +154,7 @@ begin
     VST.LoadFromFile('VST.cfg')
   else
     VST.RootNodeCount := 0;
+
 end;
 
 procedure TFormMain.FormShow(Sender: TObject);
@@ -604,6 +607,19 @@ begin
   rdp.AdvancedSettings8.BitmapPersistence := 0;
   rdp.Connect;
   PageControlMain.ActivePage := TabSheet;
+end;
+
+procedure TFormMain.VSTCompareNodes(Sender: TBaseVirtualTree; Node1,
+  Node2: PVirtualNode; Column: TColumnIndex; var Result: Integer);
+var
+  Data1, Data2: PNodeRec;
+begin
+  Data1 := VST.GetNodeData(Node1);
+  Data2 := VST.GetNodeData(Node2);
+  if Data1.Name < Data2.Name then
+    Result := -1
+  else
+    Result := 1;
 end;
 
 procedure TFormMain.VSTContextPopup(Sender: TObject; MousePos: TPoint;
