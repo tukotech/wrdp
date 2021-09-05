@@ -46,6 +46,7 @@ object FormMain: TFormMain
         Align = alClient
         Header.AutoSizeIndex = 0
         Header.MainColumn = -1
+        IncrementalSearch = isAll
         PopupMenu = PopupMenuVST
         TabOrder = 1
         OnCompareNodes = VSTCompareNodes
@@ -53,6 +54,7 @@ object FormMain: TFormMain
         OnDblClick = VSTDblClick
         OnFreeNode = VSTFreeNode
         OnGetText = VSTGetText
+        OnIncrementalSearch = VSTIncrementalSearch
         OnInitNode = VSTInitNode
         OnKeyDown = VSTKeyDown
         OnKeyPress = VSTKeyPress

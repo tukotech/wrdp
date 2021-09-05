@@ -90,6 +90,8 @@ type
     procedure ActionSaveCfgExecute(Sender: TObject);
     procedure VSTCompareNodes(Sender: TBaseVirtualTree; Node1,
       Node2: PVirtualNode; Column: TColumnIndex; var Result: Integer);
+    procedure VSTIncrementalSearch(Sender: TBaseVirtualTree; Node: PVirtualNode;
+      const SearchText: string; var Result: Integer);
 
   private
     { Private declarations }
@@ -111,6 +113,8 @@ var
   FormMain: TFormMain;
 
 implementation
+uses
+  Math;
 
 {$R *.dfm}
 const
@@ -677,6 +681,21 @@ begin
 end;
 
 //This method is called when a node is added, e.g., adding a host/sub-host
+procedure TFormMain.VSTIncrementalSearch(Sender: TBaseVirtualTree;
+  Node: PVirtualNode; const SearchText: string; var Result: Integer);
+var
+  Data: PNodeRec;
+begin
+  with Sender do
+  begin
+    Data := GetNodeData(Node);
+    if ContainsText(Data.Name, SearchText) then
+      Result := 0
+    else
+      Result := 1;
+  end
+end;
+
 procedure TFormMain.VSTInitNode(Sender: TBaseVirtualTree; ParentNode,
   Node: PVirtualNode; var InitialStates: TVirtualNodeInitStates);
 var
