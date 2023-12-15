@@ -775,6 +775,7 @@ begin
   SetLength(Data^.HostOrIP, Len);
   Stream.ReadBuffer(PChar(Data^.HostOrIP)^, Len*SizeOf(Char));
 
+  Stream.ReadBuffer(Data^.Port, SizeOf(Integer));
   Stream.ReadBuffer(Data^.Inherit, SizeOf(TCheckBoxState));
 
   Stream.ReadBuffer(Len, SizeOf(Len));
