@@ -622,6 +622,7 @@ begin
   ni := TNodeInformation.Create;
   ni.Name := LData.Name;
   ni.HostOrIp := LData.HostOrIP;
+  ni.Port := LData.Port;
   ni.Inherit := LData.Inherit;
   ni.Domain := LData.Domain;
   ni.Username := LData.Username;
