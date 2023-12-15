@@ -209,7 +209,7 @@ function TFormMain.GetInputHostInfo: Boolean;
 var
   Name, HostnameOrIp, Domain, Username, Password: string;
   Port: integer;
-  cbState : TCheckBoxState;
+  cbInherit, cbAdmin : TCheckBoxState;
   ret : Boolean;
 begin
   ret := false;
@@ -245,7 +245,8 @@ begin
     Name := FormConnInfo.EditName.Text;
     HostnameOrIp := FormConnInfo.EditHostnameOrIp.Text;
     Port := StrToInt(FormConnInfo.EditPort.Text);
-    cbState := FormConnInfo.CheckBoxInherit.State;
+    cbInherit := FormConnInfo.CheckBoxInherit.State;
+    cbAdmin := FormConnInfo.CheckBoxAdmin.State;
     Domain := FormConnInfo.EditDomain.Text;
     Username := FormConnInfo.EditUsername.Text;
     Password := FormConnInfo.EditPassword.Text;
@@ -253,7 +254,8 @@ begin
     FRecentNodeData.Name := Name;
     FRecentNodeData.HostOrIP := HostnameOrIp;
     FRecentNodeData.Port := Port;
-    FRecentNodeData.Inherit := cbState;
+    FRecentNodeData.Inherit := cbInherit;
+    FRecentNodeData.Admin := cbAdmin;
     FRecentNodeData.Domain := Domain;
     FRecentNodeData.Username := Username;
     FRecentNodeData.Password := Password;
@@ -436,16 +438,10 @@ begin
 
   FormConnInfo.EditName.Text := Data.Name;
   FormConnInfo.EditHostnameOrIp.Text := Data.HostOrIP;
-  //This for handling VST.cfg data from 0.12 to 0.13
-  if Data.Port = 0 then
-  begin
-    FormConnInfo.EditPort.Text := '3389';
-  end else
-  begin
-    FormConnInfo.EditPort.Text := IntToStr(Data.Port);
-  end;
-
+  FormConnInfo.EditPort.Text := IntToStr(Data.Port);
   FormConnInfo.CheckBoxInherit.State := Data.Inherit;
+  FormConnInfo.CheckBoxAdmin.State := Data.Admin;
+
 
   if VST.FocusedNode.Parent = VST.FocusedNode.Parent.NextSibling then //this is a root node
   begin
@@ -483,6 +479,7 @@ begin
     Data.HostOrIP := FormConnInfo.EditHostnameOrIp.Text;
     Data.Port := StrToInt(FormConnInfo.EditPort.Text);
     Data.Inherit := FormConnInfo.CheckBoxInherit.State;
+    Data.Admin := FormConnInfo.CheckBoxAdmin.State;
     Data.Domain := FormConnInfo.EditDomain.Text;
     Data.Username := FormConnInfo.EditUsername.Text;
     Data.Password := FormConnInfo.EditPassword.Text;
@@ -540,10 +537,10 @@ begin
   FormDetached.Rdp.DesktopHeight := FormDetached.ClientHeight;
 
   FormDetached.Rdp.Server := node.HostOrIP;
-  if node.Port > 0 then
-  begin
-    FormDetached.Rdp.AdvancedSettings8.RDPPort := node.Port;
-  end;
+  FormDetached.Rdp.AdvancedSettings8.RDPPort := node.Port;
+  if node.Admin = TCheckBoxState.cbChecked then
+    FormDetached.Rdp.AdvancedSettings8.ConnectToAdministerServer := true;
+
   FormDetached.Rdp.Domain := node.Domain;
   FormDetached.Rdp.UserName := node.Username;
   FormDetached.Rdp.Server := node.HostOrIP;
@@ -592,6 +589,7 @@ begin
       LData.HostOrIP := Data.HostOrIP;
       LData.Port := Data.Port;
       LData.Inherit := Data.Inherit;
+      LData.Admin := Data.Admin;
       LData.Domain := DataNext.Domain;
       LData.Username := DataNext.Username;
       LData.Password := DataNext.Password;
@@ -609,10 +607,9 @@ begin
 
   rdp.Server := LData.HostOrIP;
   rdp.Domain := LData.Domain;
-  if LData.Port > 0 then
-  begin
-    rdp.AdvancedSettings8.RDPPort := LData.Port;
-  end;
+  rdp.AdvancedSettings8.RDPPort := LData.Port;
+  if LData.Admin = TCheckBoxState.cbChecked then
+    rdp.AdvancedSettings8.ConnectToAdministerServer := true;
   rdp.UserName := LData.Username;
   if Length(LData.Password)>0 then
     rdp.AdvancedSettings9.ClearTextPassword := LData.Password;
@@ -624,6 +621,7 @@ begin
   ni.HostOrIp := LData.HostOrIP;
   ni.Port := LData.Port;
   ni.Inherit := LData.Inherit;
+  ni.Admin := Data.Admin;
   ni.Domain := LData.Domain;
   ni.Username := LData.Username;
   ni.Password := LData.Password;
@@ -732,6 +730,7 @@ begin
     Data.HostOrIP := self.FRecentNodeData.HostOrIP;
     Data.Port := self.FRecentNodeData.Port;
     Data.Inherit := self.FRecentNodeData.Inherit;
+    Data.Admin := self.FRecentNodeData.Admin;
     Data.Domain := self.FRecentNodeData.Domain;
     Data.Username := self.FRecentNodeData.Username;
     Data.Password := self.FRecentNodeData.Password;
@@ -778,6 +777,7 @@ begin
 
   Stream.ReadBuffer(Data^.Port, SizeOf(Integer));
   Stream.ReadBuffer(Data^.Inherit, SizeOf(TCheckBoxState));
+  Stream.ReadBuffer(Data^.Admin, SizeOf(TCheckBoxState));
 
   Stream.ReadBuffer(Len, SizeOf(Len));
   SetLength(Data^.Domain, Len);
@@ -811,6 +811,7 @@ begin
   Stream.WriteBuffer(Data^.Port, SizeOf(Integer));
 
   Stream.WriteBuffer(Data^.Inherit, SizeOf(TCheckBoxState));
+  Stream.WriteBuffer(Data^.Admin, SizeOf(TCheckBoxState));
 
   Len := Length(Data^.Domain);
   Stream.WriteBuffer(Len, SizeOf(Len));
