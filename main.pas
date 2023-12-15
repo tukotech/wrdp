@@ -209,6 +209,7 @@ end;
 function TFormMain.GetInputHostInfo: Boolean;
 var
   Name, HostnameOrIp, Domain, Username, Password: string;
+  Port: integer;
   cbState : TCheckBoxState;
   ret : Boolean;
 begin
@@ -244,6 +245,7 @@ begin
   begin
     Name := FormConnInfo.EditName.Text;
     HostnameOrIp := FormConnInfo.EditHostnameOrIp.Text;
+    Port := StrToInt(FormConnInfo.EditPort.Text);
     cbState := FormConnInfo.CheckBoxInherit.State;
     Domain := FormConnInfo.EditDomain.Text;
     Username := FormConnInfo.EditUsername.Text;
@@ -251,6 +253,7 @@ begin
 
     FRecentNodeData.Name := Name;
     FRecentNodeData.HostOrIP := HostnameOrIp;
+    FRecentNodeData.Port := Port;
     FRecentNodeData.Inherit := cbState;
     FRecentNodeData.Domain := Domain;
     FRecentNodeData.Username := Username;
@@ -434,6 +437,15 @@ begin
 
   FormConnInfo.EditName.Text := Data.Name;
   FormConnInfo.EditHostnameOrIp.Text := Data.HostOrIP;
+  //This for handling VST.cfg data from 0.12 to 0.13
+  if Data.Port = 0 then
+  begin
+    FormConnInfo.EditPort.Text := '3389';
+  end else
+  begin
+    FormConnInfo.EditPort.Text := IntToStr(Data.Port);
+  end;
+
   FormConnInfo.CheckBoxInherit.State := Data.Inherit;
 
   if VST.FocusedNode.Parent = VST.FocusedNode.Parent.NextSibling then //this is a root node
@@ -470,6 +482,7 @@ begin
   begin
     Data.Name := FormConnInfo.EditName.Text;
     Data.HostOrIP := FormConnInfo.EditHostnameOrIp.Text;
+    Data.Port := StrToInt(FormConnInfo.EditPort.Text);
     Data.Inherit := FormConnInfo.CheckBoxInherit.State;
     Data.Domain := FormConnInfo.EditDomain.Text;
     Data.Username := FormConnInfo.EditUsername.Text;
@@ -574,6 +587,7 @@ begin
       until DataNext.Inherit <> cbChecked;
       LData.Name := Data.Name;
       LData.HostOrIP := Data.HostOrIP;
+      LData.Port := Data.Port;
       LData.Inherit := Data.Inherit;
       LData.Domain := DataNext.Domain;
       LData.Username := DataNext.Username;
@@ -592,6 +606,10 @@ begin
 
   rdp.Server := LData.HostOrIP;
   rdp.Domain := LData.Domain;
+  if LData.Port > 0 then
+  begin
+    rdp.AdvancedSettings8.RDPPort := LData.Port;
+  end;
   rdp.UserName := LData.Username;
   if Length(LData.Password)>0 then
     rdp.AdvancedSettings9.ClearTextPassword := LData.Password;
@@ -708,6 +726,7 @@ begin
     // appears asynchronously, which means when the node is displayed not when it is added.
     Data.Name := self.FRecentNodeData.Name;
     Data.HostOrIP := self.FRecentNodeData.HostOrIP;
+    Data.Port := self.FRecentNodeData.Port;
     Data.Inherit := self.FRecentNodeData.Inherit;
     Data.Domain := self.FRecentNodeData.Domain;
     Data.Username := self.FRecentNodeData.Username;

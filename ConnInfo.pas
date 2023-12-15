@@ -24,6 +24,8 @@ type
     ButtonCancel: TButton;
     ButtonSave: TButton;
     CheckBoxInherit: TCheckBox;
+    EditPort: TEdit;
+    LabelPort: TLabel;
     procedure FormCreate(Sender: TObject);
     procedure FormClose(Sender: TObject; var Action: TCloseAction);
     procedure ButtonSaveClick(Sender: TObject);

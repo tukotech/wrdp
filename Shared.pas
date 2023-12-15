@@ -9,6 +9,7 @@ type
   TNodeRec = record
     Name: string;
     HostOrIP : string;
+    Port: Integer;
     Inherit : TCheckBoxState;
     Domain: string;
     Username: string;

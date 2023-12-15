@@ -2,7 +2,7 @@ object FormConnInfo: TFormConnInfo
   Left = 0
   Top = 0
   Caption = 'Connection Info'
-  ClientHeight = 212
+  ClientHeight = 241
   ClientWidth = 276
   Color = clBtnFace
   Font.Charset = DEFAULT_CHARSET
@@ -10,23 +10,21 @@ object FormConnInfo: TFormConnInfo
   Font.Height = -11
   Font.Name = 'Tahoma'
   Font.Style = []
-  OldCreateOrder = False
   OnClose = FormClose
   OnCloseQuery = FormCloseQuery
   OnCreate = FormCreate
-  PixelsPerInch = 96
   TextHeight = 13
   object Panel1: TPanel
     Left = 0
     Top = 0
     Width = 276
-    Height = 171
+    Height = 200
     Align = alClient
     TabOrder = 0
-    ExplicitHeight = 152
+    ExplicitHeight = 221
     DesignSize = (
       276
-      171)
+      200)
     object Label1: TLabel
       Left = 59
       Top = 11
@@ -49,86 +47,106 @@ object FormConnInfo: TFormConnInfo
     end
     object Label3: TLabel
       Left = 51
-      Top = 88
+      Top = 115
       Width = 39
       Height = 13
       Caption = 'Domain:'
     end
     object LabelUsername: TLabel
       Left = 38
-      Top = 115
+      Top = 142
       Width = 52
       Height = 13
       Caption = 'Username:'
     end
     object Label5: TLabel
       Left = 40
-      Top = 142
+      Top = 169
       Width = 50
       Height = 13
       Caption = 'Password:'
     end
+    object LabelPort: TLabel
+      Left = 66
+      Top = 66
+      Width = 24
+      Height = 13
+      Caption = 'Port:'
+    end
     object EditName: TEdit
       Left = 96
       Top = 8
-      Width = 176
+      Width = 172
       Height = 21
       Anchors = [akLeft, akTop, akRight]
       TabOrder = 0
+      ExplicitWidth = 168
     end
     object EditHostnameOrIp: TEdit
       Left = 96
       Top = 35
-      Width = 176
+      Width = 172
       Height = 21
       Anchors = [akLeft, akTop, akRight]
       TabOrder = 1
+      ExplicitWidth = 168
     end
     object EditDomain: TEdit
       Left = 96
-      Top = 85
-      Width = 176
-      Height = 21
-      Anchors = [akLeft, akTop, akRight]
-      TabOrder = 3
-    end
-    object EditUsername: TEdit
-      Left = 96
       Top = 112
-      Width = 176
+      Width = 172
       Height = 21
       Anchors = [akLeft, akTop, akRight]
       TabOrder = 4
     end
-    object EditPassword: TEdit
+    object EditUsername: TEdit
       Left = 96
       Top = 139
-      Width = 176
+      Width = 172
+      Height = 21
+      Anchors = [akLeft, akTop, akRight]
+      TabOrder = 5
+    end
+    object EditPassword: TEdit
+      Left = 96
+      Top = 166
+      Width = 172
       Height = 21
       Anchors = [akLeft, akTop, akRight]
       PasswordChar = '*'
-      TabOrder = 5
+      TabOrder = 6
     end
     object CheckBoxInherit: TCheckBox
       Left = 96
-      Top = 62
+      Top = 89
       Width = 49
       Height = 17
       AllowGrayed = True
       Caption = 'Inherit'
-      TabOrder = 2
+      TabOrder = 3
       OnClick = CheckBoxInheritClick
+    end
+    object EditPort: TEdit
+      Left = 96
+      Top = 62
+      Width = 172
+      Height = 21
+      Anchors = [akLeft, akTop, akRight]
+      NumbersOnly = True
+      TabOrder = 2
+      Text = '3389'
     end
   end
   object Panel2: TPanel
     Left = 0
-    Top = 171
+    Top = 200
     Width = 276
     Height = 41
     Margins.Top = 5
     Align = alBottom
     TabOrder = 1
-    ExplicitTop = 152
+    ExplicitTop = 170
+    ExplicitWidth = 272
     object ButtonCancel: TButton
       AlignWithMargins = True
       Left = 116
@@ -140,6 +158,7 @@ object FormConnInfo: TFormConnInfo
       Caption = '&Cancel'
       TabOrder = 0
       OnClick = ButtonCancelClick
+      ExplicitLeft = 112
     end
     object ButtonSave: TButton
       AlignWithMargins = True
@@ -152,6 +171,7 @@ object FormConnInfo: TFormConnInfo
       Default = True
       TabOrder = 1
       OnClick = ButtonSaveClick
+      ExplicitLeft = 193
     end
   end
 end

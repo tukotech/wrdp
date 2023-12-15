@@ -10,11 +10,9 @@ object FormMain: TFormMain
   Font.Height = -11
   Font.Name = 'Tahoma'
   Font.Style = []
-  OldCreateOrder = False
   OnClose = FormClose
   OnCreate = FormCreate
   OnShow = FormShow
-  PixelsPerInch = 96
   TextHeight = 13
   object PageControlMain: TPageControl
     Left = 0
@@ -26,6 +24,8 @@ object FormMain: TFormMain
     PopupMenu = PopupMenuRDP
     TabOrder = 0
     OnContextPopup = PageControlMainContextPopup
+    ExplicitWidth = 918
+    ExplicitHeight = 609
     object TabSheetMain: TTabSheet
       Caption = 'Main'
       object ListBoxInfo: TListBox
@@ -37,6 +37,8 @@ object FormMain: TFormMain
         ItemHeight = 13
         TabOrder = 0
         Visible = False
+        ExplicitTop = 527
+        ExplicitWidth = 910
       end
       object VST: TVirtualStringTree
         Left = 0
@@ -44,6 +46,23 @@ object FormMain: TFormMain
         Width = 914
         Height = 528
         Align = alClient
+        Colors.BorderColor = 15987699
+        Colors.DisabledColor = clGray
+        Colors.DropMarkColor = 15385233
+        Colors.DropTargetColor = 15385233
+        Colors.DropTargetBorderColor = 15385233
+        Colors.FocusedSelectionColor = 15385233
+        Colors.FocusedSelectionBorderColor = 15385233
+        Colors.GridLineColor = 15987699
+        Colors.HeaderHotColor = clBlack
+        Colors.HotColor = clBlack
+        Colors.SelectionRectangleBlendColor = 15385233
+        Colors.SelectionRectangleBorderColor = 15385233
+        Colors.SelectionTextColor = clBlack
+        Colors.TreeLineColor = 9471874
+        Colors.UnfocusedColor = clGray
+        Colors.UnfocusedSelectionColor = clWhite
+        Colors.UnfocusedSelectionBorderColor = clWhite
         Header.AutoSizeIndex = 0
         Header.MainColumn = -1
         IncrementalSearch = isAll
