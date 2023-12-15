@@ -437,7 +437,15 @@ begin
 
   FormConnInfo.EditName.Text := Data.Name;
   FormConnInfo.EditHostnameOrIp.Text := Data.HostOrIP;
-  FormConnInfo.EditPort.Text := IntToStr(Data.Port);
+  //This for upgrading data from 0.12 to 0.13
+  if Data.Port = 0 then
+  begin
+    FormConnInfo.EditPort.Text := '3389';
+  end else
+  begin
+    FormConnInfo.EditPort.Text := IntToStr(Data.Port);
+  end;
+
   FormConnInfo.CheckBoxInherit.State := Data.Inherit;
 
   if VST.FocusedNode.Parent = VST.FocusedNode.Parent.NextSibling then //this is a root node
