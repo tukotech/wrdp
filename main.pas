@@ -165,7 +165,6 @@ end;
 procedure TFormMain.FormShow(Sender: TObject);
 begin
   PageControlMain.ActivePage := TabSheetMain;
-//  sgConnectionInfo.SetFocus;
   VST.SetFocus;
 end;
 
@@ -541,6 +540,10 @@ begin
   FormDetached.Rdp.DesktopHeight := FormDetached.ClientHeight;
 
   FormDetached.Rdp.Server := node.HostOrIP;
+  if node.Port > 0 then
+  begin
+    FormDetached.Rdp.AdvancedSettings8.RDPPort := node.Port;
+  end;
   FormDetached.Rdp.Domain := node.Domain;
   FormDetached.Rdp.UserName := node.Username;
   FormDetached.Rdp.Server := node.HostOrIP;
@@ -802,6 +805,8 @@ begin
   Len := Length(Data^.HostOrIP);
   Stream.WriteBuffer(Len, SizeOf(Len));
   Stream.WriteBuffer(PChar(Data^.HostOrIP)^, Len*SizeOf(Char));
+
+  Stream.WriteBuffer(Data^.Port, SizeOf(Integer));
 
   Stream.WriteBuffer(Data^.Inherit, SizeOf(TCheckBoxState));
 

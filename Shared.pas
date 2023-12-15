@@ -20,6 +20,7 @@ type
     private
       FName: string;
       FHostOrIP : string;
+      FPort : Integer;
       FInherit : TCheckBoxState;
       FDomain: string;
       FUsername: string;
@@ -27,6 +28,7 @@ type
     public
       property Name: string read FName write Fname;
       property HostOrIp: string read FHostOrIP write FHostOrIP;
+      property Port: Integer read FPort write FPort;
       property Inherit: TCheckBoxState read FInherit write FInherit;
       property Domain: string read FDomain write FDomain;
       property Username: string read FUsername write FUsername;
