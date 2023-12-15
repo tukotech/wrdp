@@ -437,6 +437,7 @@ begin
 
   FormConnInfo.EditName.Text := Data.Name;
   FormConnInfo.EditHostnameOrIp.Text := Data.HostOrIP;
+  FormConnInfo.EditPort.Text := IntToStr(Data.Port);
   FormConnInfo.CheckBoxInherit.State := Data.Inherit;
 
   if VST.FocusedNode.Parent = VST.FocusedNode.Parent.NextSibling then //this is a root node
@@ -473,6 +474,7 @@ begin
   begin
     Data.Name := FormConnInfo.EditName.Text;
     Data.HostOrIP := FormConnInfo.EditHostnameOrIp.Text;
+    Data.Port := StrToInt(FormConnInfo.EditPort.Text);
     Data.Inherit := FormConnInfo.CheckBoxInherit.State;
     Data.Domain := FormConnInfo.EditDomain.Text;
     Data.Username := FormConnInfo.EditUsername.Text;

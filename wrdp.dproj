@@ -5,7 +5,7 @@
         <FrameworkType>VCL</FrameworkType>
         <MainSource>wrdp.dpr</MainSource>
         <Base>True</Base>
-        <Config Condition="'$(Config)'==''">Release</Config>
+        <Config Condition="'$(Config)'==''">Debug</Config>
         <Platform Condition="'$(Platform)'==''">Win32</Platform>
         <TargetedPlatforms>3</TargetedPlatforms>
         <AppType>Application</AppType>
@@ -106,13 +106,13 @@
     </PropertyGroup>
     <PropertyGroup Condition="'$(Cfg_1_Win32)'!=''">
         <DCC_RemoteDebug>false</DCC_RemoteDebug>
-        <AppEnableRuntimeThemes>true</AppEnableRuntimeThemes>
         <AppDPIAwarenessMode>PerMonitorV2</AppDPIAwarenessMode>
-        <VerInfo_Keys>CompanyName=Tuko Tech;FileDescription=Wicked RDP;FileVersion=0.12.0.0;InternalName=Wicked RDP;LegalCopyright=© Tuko Tech;LegalTrademarks=;OriginalFilename=;ProgramID=us.tuko.$(MSBuildProjectName);ProductName=Wicked RDP;ProductVersion=0.12.0;Comments=</VerInfo_Keys>
+        <VerInfo_Keys>CompanyName=Tuko Tech;FileDescription=Wicked RDP;FileVersion=0.12.0.1;InternalName=Wicked RDP;LegalCopyright=© Tuko Tech;LegalTrademarks=;OriginalFilename=;ProgramID=us.tuko.$(MSBuildProjectName);ProductName=Wicked RDP;ProductVersion=0.12.0;Comments=</VerInfo_Keys>
         <Icon_MainIcon>images\icons\icons8_Connect_Develop.ico</Icon_MainIcon>
         <UWP_DelphiLogo44>images\png\icons8_Connect_Develop_48.png</UWP_DelphiLogo44>
         <VerInfo_MinorVer>12</VerInfo_MinorVer>
         <UWP_DelphiLogo150>images\png\icons8_Connect_Develop_64.png</UWP_DelphiLogo150>
+        <VerInfo_Build>1</VerInfo_Build>
     </PropertyGroup>
     <PropertyGroup Condition="'$(Cfg_1_Win64)'!=''">
         <AppEnableRuntimeThemes>true</AppEnableRuntimeThemes>
@@ -126,10 +126,11 @@
     </PropertyGroup>
     <PropertyGroup Condition="'$(Cfg_2_Win32)'!=''">
         <AppDPIAwarenessMode>PerMonitorV2</AppDPIAwarenessMode>
-        <VerInfo_Keys>CompanyName=Tuko Tech;FileDescription=Wicked RDP;FileVersion=0.13.0.0;InternalName=Wicked RDP;LegalCopyright=© Tuko Tech;LegalTrademarks=;OriginalFilename=;ProgramID=us.tuko.$(MSBuildProjectName);ProductName=Wicked RDP;ProductVersion=0.13.0;Comments=</VerInfo_Keys>
+        <VerInfo_Keys>CompanyName=Tuko Tech;FileDescription=Wicked RDP;FileVersion=0.13.0.1;InternalName=Wicked RDP;LegalCopyright=© Tuko Tech;LegalTrademarks=;OriginalFilename=;ProgramID=us.tuko.$(MSBuildProjectName);ProductName=Wicked RDP;ProductVersion=0.13.0;Comments=</VerInfo_Keys>
         <Icon_MainIcon>images\icons\icons8_Connect_Develop.ico</Icon_MainIcon>
         <VerInfo_MinorVer>13</VerInfo_MinorVer>
         <UWP_DelphiLogo44>images\png\icons8_Connect_Develop_48.png</UWP_DelphiLogo44>
+        <VerInfo_Build>1</VerInfo_Build>
         <UWP_DelphiLogo150>images\png\icons8_Connect_Develop_64.png</UWP_DelphiLogo150>
     </PropertyGroup>
     <PropertyGroup Condition="'$(Cfg_2_Win64)'!=''">
