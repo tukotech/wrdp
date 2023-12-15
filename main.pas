@@ -437,7 +437,7 @@ begin
 
   FormConnInfo.EditName.Text := Data.Name;
   FormConnInfo.EditHostnameOrIp.Text := Data.HostOrIP;
-  //This for upgrading data from 0.12 to 0.13
+  //This for handling VST.cfg data from 0.12 to 0.13
   if Data.Port = 0 then
   begin
     FormConnInfo.EditPort.Text := '3389';
