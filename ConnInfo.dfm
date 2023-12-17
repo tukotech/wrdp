@@ -21,7 +21,8 @@ object FormConnInfo: TFormConnInfo
     Height = 200
     Align = alClient
     TabOrder = 0
-    ExplicitHeight = 221
+    ExplicitWidth = 272
+    ExplicitHeight = 199
     DesignSize = (
       276
       200)
@@ -76,50 +77,53 @@ object FormConnInfo: TFormConnInfo
     object EditName: TEdit
       Left = 96
       Top = 8
-      Width = 172
+      Width = 168
       Height = 21
       Anchors = [akLeft, akTop, akRight]
       TabOrder = 0
-      ExplicitWidth = 168
+      ExplicitWidth = 164
     end
     object EditHostnameOrIp: TEdit
       Left = 96
       Top = 35
-      Width = 172
+      Width = 168
       Height = 21
       Anchors = [akLeft, akTop, akRight]
       TabOrder = 1
-      ExplicitWidth = 168
+      ExplicitWidth = 164
     end
     object EditDomain: TEdit
       Left = 96
       Top = 112
-      Width = 172
+      Width = 168
       Height = 21
       Anchors = [akLeft, akTop, akRight]
-      TabOrder = 4
+      TabOrder = 5
+      ExplicitWidth = 164
     end
     object EditUsername: TEdit
       Left = 96
       Top = 139
-      Width = 172
+      Width = 168
       Height = 21
       Anchors = [akLeft, akTop, akRight]
-      TabOrder = 5
+      TabOrder = 6
+      ExplicitWidth = 164
     end
     object EditPassword: TEdit
       Left = 96
       Top = 166
-      Width = 172
+      Width = 168
       Height = 21
       Anchors = [akLeft, akTop, akRight]
       PasswordChar = '*'
-      TabOrder = 6
+      TabOrder = 7
+      ExplicitWidth = 164
     end
     object CheckBoxInherit: TCheckBox
       Left = 96
       Top = 89
-      Width = 49
+      Width = 57
       Height = 17
       AllowGrayed = True
       Caption = 'Inherit'
@@ -129,12 +133,21 @@ object FormConnInfo: TFormConnInfo
     object EditPort: TEdit
       Left = 96
       Top = 62
-      Width = 172
+      Width = 168
       Height = 21
       Anchors = [akLeft, akTop, akRight]
       NumbersOnly = True
       TabOrder = 2
       Text = '3389'
+      ExplicitWidth = 164
+    end
+    object CheckBoxAdmin: TCheckBox
+      Left = 168
+      Top = 89
+      Width = 57
+      Height = 17
+      Caption = 'Admin'
+      TabOrder = 4
     end
   end
   object Panel2: TPanel
@@ -145,7 +158,7 @@ object FormConnInfo: TFormConnInfo
     Margins.Top = 5
     Align = alBottom
     TabOrder = 1
-    ExplicitTop = 170
+    ExplicitTop = 199
     ExplicitWidth = 272
     object ButtonCancel: TButton
       AlignWithMargins = True
