@@ -499,7 +499,7 @@ begin
   end;
 end;
 
-procedure ExportVSTToXML(VSTInner: TVirtualStringTree; const FileName: string);
+procedure ExportVSTToXML(VstRootNode: TVirtualStringTree; const FileName: string);
 var
   XMLDoc: IXMLDocument;
   XMLRootNode: IXMLNode;
@@ -510,14 +510,13 @@ var
     Data: PNodeRec;
     CurrentNode, BaseNode: IXMLNode;
   begin
-    // Create XML node for the VirtualStringTree node
     BaseNode := XMLParent.AddChild('Node');
 
     CurrentNode := BaseNode.AddChild('Name');
-    CurrentNode.Text := VSTInner.Text[Node, 0]; // Adjust column index
+    CurrentNode.Text := VstRootNode.Text[Node, 0];
     if CurrentNode.Text <> 'Node' then
     begin
-      Data := VSTInner.GetNodeData(Node);
+      Data := VstRootNode.GetNodeData(Node);
       CurrentNode := BaseNode.AddChild('HostOrIp');
       CurrentNode.Text := Data.HostOrIP;
       CurrentNode := BaseNode.AddChild('Port');
@@ -547,14 +546,12 @@ begin
   XMLDoc := NewXMLDocument;
   XMLRootNode := XMLDoc.AddChild('Nodes');
 
-//  ProcessNode(VSTInner.RootNode.FirstChild);
-  ProcessNode(VSTInner.RootNode, XMLRootNode);
+  ProcessNode(VstRootNode.RootNode, XMLRootNode);
   XMLDoc.SaveToFile(FileName);
 end;
 
 procedure TFormMain.ActionExportExecute(Sender: TObject);
 begin
-//  ShowMessage('Export');
   ExportVSTToXML(VST, 'nodes.xml');
 end;
 
