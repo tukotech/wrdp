@@ -117,7 +117,10 @@ var
 
 implementation
 uses
-  Math;
+  Math,
+  System.TypInfo,
+  Xml.XMLIntf,
+  Xml.XMLDoc;
 
 {$R *.dfm}
 const
@@ -438,6 +441,10 @@ var
   Data: PNodeRec;
 begin
   Data := VST.GetNodeData(VST.FocusedNode);
+  if Data = nil then
+  begin
+    ShowMessage('Data is nil');
+  end;
 
   FormConnInfo.EditName.Text := Data.Name;
   FormConnInfo.EditHostnameOrIp.Text := Data.HostOrIP;
@@ -492,9 +499,62 @@ begin
   end;
 end;
 
+procedure ExportVSTToXML(VSTInner: TVirtualStringTree; const FileName: string);
+var
+  XMLDoc: IXMLDocument;
+  RootNode, CurrentNode, BaseNode: IXMLNode;
+
+  procedure ProcessNode(Node: PVirtualNode);
+  var
+    ChildNode: PVirtualNode;
+    Data: PNodeRec;
+  begin
+    // Create XML node for the VirtualStringTree node
+    BaseNode := RootNode.AddChild('Node');
+
+    CurrentNode := BaseNode.AddChild('Name');
+    CurrentNode.Text := VSTInner.Text[Node, 0]; // Adjust column index
+    if CurrentNode.Text <> 'Node' then
+    begin
+      Data := VSTInner.GetNodeData(Node);
+      CurrentNode := BaseNode.AddChild('HostOrIp');
+      CurrentNode.Text := Data.HostOrIP;
+      CurrentNode := BaseNode.AddChild('Port');
+      CurrentNode.Text := IntToStr(Data.Port);
+      CurrentNode := BaseNode.AddChild('Inherit');
+      CurrentNode.Text := GetEnumName(TypeInfo(TCheckBoxState), Ord(Data.Inherit));
+      CurrentNode := BaseNode.AddChild('Admin');
+      CurrentNode.Text := GetEnumName(TypeInfo(TCheckBoxState), Ord(Data.Admin));
+      CurrentNode := BaseNode.AddChild('Domain');
+      CurrentNode.Text := Data.Domain;
+      CurrentNode := BaseNode.AddChild('Username');
+      CurrentNode.Text := Data.Username;
+      CurrentNode := BaseNode.AddChild('Password');
+      CurrentNode.Text := Data.Password;
+    end;
+
+    // Recursively process child nodes
+    ChildNode := Node.FirstChild;
+    while ChildNode <> nil do
+    begin
+      ProcessNode(ChildNode);
+      ChildNode := ChildNode.NextSibling;
+    end;
+  end;
+
+begin
+  XMLDoc := NewXMLDocument;
+  RootNode := XMLDoc.AddChild('Nodes');
+
+//  ProcessNode(VSTInner.RootNode.FirstChild);
+  ProcessNode(VSTInner.RootNode);
+  XMLDoc.SaveToFile(FileName);
+end;
+
 procedure TFormMain.ActionExportExecute(Sender: TObject);
 begin
-  ShowMessage('Export');
+//  ShowMessage('Export');
+  ExportVSTToXML(VST, 'nodes.xml');
 end;
 
 procedure TFormMain.ActionSaveCfgExecute(Sender: TObject);
