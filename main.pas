@@ -51,6 +51,8 @@ type
     N2: TMenuItem;
     ConnectF31: TMenuItem;
     ActionSaveCfg: TAction;
+    ActionExport: TAction;
+    Export1: TMenuItem;
     procedure FormCreate(Sender: TObject);
     procedure FormClose(Sender: TObject; var Action: TCloseAction);
     procedure FormShow(Sender: TObject);
@@ -92,6 +94,7 @@ type
       Node2: PVirtualNode; Column: TColumnIndex; var Result: Integer);
     procedure VSTIncrementalSearch(Sender: TBaseVirtualTree; Node: PVirtualNode;
       const SearchText: string; var Result: Integer);
+    procedure ActionExportExecute(Sender: TObject);
 
   private
     { Private declarations }
@@ -489,6 +492,11 @@ begin
   end;
 end;
 
+procedure TFormMain.ActionExportExecute(Sender: TObject);
+begin
+  ShowMessage('Export');
+end;
+
 procedure TFormMain.ActionSaveCfgExecute(Sender: TObject);
 begin
   VST.SaveToFile('VST.cfg');
@@ -662,6 +670,7 @@ begin
     PopupMenuVST_EditMI.Enabled := true;
     PopupMenuVST_DeleteMI.Enabled := true;
     ActionConnect.Enabled := true;
+    ActionExport.Visible  := false;
   end
   else
   begin
@@ -670,6 +679,7 @@ begin
     PopupMenuVST_EditMI.Enabled := false;
     PopupMenuVST_DeleteMI.Enabled := false;
     ActionConnect.Enabled := false;
+    ActionExport.Visible  := true;
   end;
 end;
 
