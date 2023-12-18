@@ -51,6 +51,8 @@ type
     N2: TMenuItem;
     ConnectF31: TMenuItem;
     ActionSaveCfg: TAction;
+    ActionExport: TAction;
+    Export1: TMenuItem;
     procedure FormCreate(Sender: TObject);
     procedure FormClose(Sender: TObject; var Action: TCloseAction);
     procedure FormShow(Sender: TObject);
@@ -92,6 +94,7 @@ type
       Node2: PVirtualNode; Column: TColumnIndex; var Result: Integer);
     procedure VSTIncrementalSearch(Sender: TBaseVirtualTree; Node: PVirtualNode;
       const SearchText: string; var Result: Integer);
+    procedure ActionExportExecute(Sender: TObject);
 
   private
     { Private declarations }
@@ -114,7 +117,10 @@ var
 
 implementation
 uses
-  Math;
+  Math,
+  System.TypInfo,
+  Xml.XMLIntf,
+  Xml.XMLDoc;
 
 {$R *.dfm}
 const
@@ -435,6 +441,10 @@ var
   Data: PNodeRec;
 begin
   Data := VST.GetNodeData(VST.FocusedNode);
+  if Data = nil then
+  begin
+    ShowMessage('Data is nil');
+  end;
 
   FormConnInfo.EditName.Text := Data.Name;
   FormConnInfo.EditHostnameOrIp.Text := Data.HostOrIP;
@@ -487,6 +497,62 @@ begin
     VST.SetNodeData(VST.FocusedNode, Data^);
     ActionSaveCfg.Execute;
   end;
+end;
+
+procedure ExportVSTToXML(VstRootNode: TVirtualStringTree; const FileName: string);
+var
+  XMLDoc: IXMLDocument;
+  XMLRootNode: IXMLNode;
+
+  procedure ProcessNode(Node: PVirtualNode; XMLParent: IXMLNode);
+  var
+    ChildNode: PVirtualNode;
+    Data: PNodeRec;
+    CurrentNode, BaseNode: IXMLNode;
+  begin
+    BaseNode := XMLParent.AddChild('Node');
+
+    CurrentNode := BaseNode.AddChild('Name');
+    CurrentNode.Text := VstRootNode.Text[Node, 0];
+    if CurrentNode.Text <> 'Node' then
+    begin
+      Data := VstRootNode.GetNodeData(Node);
+      CurrentNode := BaseNode.AddChild('HostOrIp');
+      CurrentNode.Text := Data.HostOrIP;
+      CurrentNode := BaseNode.AddChild('Port');
+      CurrentNode.Text := IntToStr(Data.Port);
+      CurrentNode := BaseNode.AddChild('Inherit');
+      CurrentNode.Text := GetEnumName(TypeInfo(TCheckBoxState), Ord(Data.Inherit));
+      CurrentNode := BaseNode.AddChild('Admin');
+      CurrentNode.Text := GetEnumName(TypeInfo(TCheckBoxState), Ord(Data.Admin));
+      CurrentNode := BaseNode.AddChild('Domain');
+      CurrentNode.Text := Data.Domain;
+      CurrentNode := BaseNode.AddChild('Username');
+      CurrentNode.Text := Data.Username;
+      CurrentNode := BaseNode.AddChild('Password');
+      CurrentNode.Text := Data.Password;
+    end;
+
+    // Recursively process child nodes
+    ChildNode := Node.FirstChild;
+    while ChildNode <> nil do
+    begin
+      ProcessNode(ChildNode, BaseNode);
+      ChildNode := ChildNode.NextSibling;
+    end;
+  end;
+
+begin
+  XMLDoc := NewXMLDocument;
+  XMLRootNode := XMLDoc.AddChild('Nodes');
+
+  ProcessNode(VstRootNode.RootNode, XMLRootNode);
+  XMLDoc.SaveToFile(FileName);
+end;
+
+procedure TFormMain.ActionExportExecute(Sender: TObject);
+begin
+  ExportVSTToXML(VST, 'nodes.xml');
 end;
 
 procedure TFormMain.ActionSaveCfgExecute(Sender: TObject);
@@ -662,6 +728,7 @@ begin
     PopupMenuVST_EditMI.Enabled := true;
     PopupMenuVST_DeleteMI.Enabled := true;
     ActionConnect.Enabled := true;
+    ActionExport.Visible  := false;
   end
   else
   begin
@@ -670,6 +737,7 @@ begin
     PopupMenuVST_EditMI.Enabled := false;
     PopupMenuVST_DeleteMI.Enabled := false;
     ActionConnect.Enabled := false;
+    ActionExport.Visible  := true;
   end;
 end;
 

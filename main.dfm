@@ -122,6 +122,9 @@ object FormMain: TFormMain
     object ConnectF31: TMenuItem
       Action = ActionConnect
     end
+    object Export1: TMenuItem
+      Action = ActionExport
+    end
   end
   object ActionList1: TActionList
     Left = 252
@@ -171,6 +174,11 @@ object FormMain: TFormMain
       Category = 'VSTGeneral'
       Caption = 'Save'
       OnExecute = ActionSaveCfgExecute
+    end
+    object ActionExport: TAction
+      Category = 'VSTPopup'
+      Caption = 'Export'
+      OnExecute = ActionExportExecute
     end
   end
 end
