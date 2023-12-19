@@ -510,13 +510,15 @@ var
     Data: PNodeRec;
     CurrentNode, BaseNode: IXMLNode;
   begin
-    BaseNode := XMLParent.AddChild('Node');
-
-    CurrentNode := BaseNode.AddChild('Name');
-    CurrentNode.Text := VstRootNode.Text[Node, 0];
-    if CurrentNode.Text <> 'Node' then
+    BaseNode := XMLParent;
+//    CurrentNode := BaseNode.AddChild('Name');
+//    CurrentNode.Text := VstRootNode.Text[Node, 0];
+    if VstRootNode.Text[Node, 0] <> 'Node' then
     begin
+      BaseNode := XMLParent.AddChild('Node');
       Data := VstRootNode.GetNodeData(Node);
+      CurrentNode := BaseNode.AddChild('Name');
+      CurrentNode.Text := Data.Name;
       CurrentNode := BaseNode.AddChild('HostOrIp');
       CurrentNode.Text := Data.HostOrIP;
       CurrentNode := BaseNode.AddChild('Port');
