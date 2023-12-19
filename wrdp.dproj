@@ -57,6 +57,7 @@
         <Cfg_2>true</Cfg_2>
         <Base>true</Base>
     </PropertyGroup>
+    <Import Project="C:\Users\u1\Documents\wrdp.optset" Condition="'$(Base)'!='' And Exists('C:\Users\u1\Documents\wrdp.optset')"/>
     <PropertyGroup Condition="'$(Base)'!=''">
         <DCC_DcuOutput>.\$(Platform)\$(Config)</DCC_DcuOutput>
         <DCC_ExeOutput>.\$(Platform)\$(Config)</DCC_ExeOutput>
@@ -70,31 +71,33 @@
         <UWP_DelphiLogo44>$(BDS)\bin\Artwork\Windows\UWP\delphi_UwpDefault_44.png</UWP_DelphiLogo44>
         <UWP_DelphiLogo150>$(BDS)\bin\Artwork\Windows\UWP\delphi_UwpDefault_150.png</UWP_DelphiLogo150>
         <SanitizedProjectName>wrdp</SanitizedProjectName>
-        <VerInfo_Locale>1033</VerInfo_Locale>
-        <VerInfo_Keys>CompanyName=Tuko Tech;FileDescription=$(MSBuildProjectName);FileVersion=0.15.0.0;InternalName=Wicked RDP;LegalCopyright=;LegalTrademarks=;OriginalFilename=;ProgramID=us.tuko.$(MSBuildProjectName);ProductName=Wicked RDP;ProductVersion=0.15.0;Comments=</VerInfo_Keys>
-        <VerInfo_IncludeVerInfo>true</VerInfo_IncludeVerInfo>
-        <VerInfo_MajorVer>0</VerInfo_MajorVer>
-        <VerInfo_MinorVer>15</VerInfo_MinorVer>
-        <VerInfo_AutoIncVersion>true</VerInfo_AutoIncVersion>
+        <CfgDependentOn>C:\Users\u1\Documents\wrdp.optset</CfgDependentOn>
     </PropertyGroup>
     <PropertyGroup Condition="'$(Base_Win32)'!=''">
         <DCC_UsePackage>DBXSqliteDriver;IndyIPCommon;RESTComponents;bindcompdbx;DBXInterBaseDriver;vcl;IndyIPServer;vclactnband;vclFireDAC;IndySystem;tethering;svnui;dsnapcon;FireDACADSDriver;FireDACMSAccDriver;fmxFireDAC;vclimg;FireDAC;vcltouch;vcldb;bindcompfmx;svn;FireDACSqliteDriver;FireDACPgDriver;inetdb;soaprtl;DbxCommonDriver;fmx;FireDACIBDriver;fmxdae;xmlrtl;soapmidas;fmxobj;vclwinx;rtl;DbxClientDriver;CustomIPTransport;vcldsnap;dbexpress;IndyCore;vclx;bindcomp;appanalytics;dsnap;FireDACCommon;IndyIPClient;bindcompvcl;RESTBackendComponents;VCLRESTComponents;soapserver;dbxcds;VclSmp;adortl;vclie;bindengine;DBXMySQLDriver;CloudService;dsnapxml;FireDACMySQLDriver;dbrtl;IndyProtocols;inetdbxpress;FireDACCommonODBC;FireDACCommonDriver;inet;fmxase;$(DCC_UsePackage)</DCC_UsePackage>
         <DCC_Namespace>Winapi;System.Win;Data.Win;Datasnap.Win;Web.Win;Soap.Win;Xml.Win;Bde;$(DCC_Namespace)</DCC_Namespace>
         <BT_BuildType>Debug</BT_BuildType>
-        <VerInfo_Keys>CompanyName=;FileDescription=$(MSBuildProjectName);FileVersion=0.8.0.0;InternalName=;LegalCopyright=;LegalTrademarks=;OriginalFilename=;ProgramID=com.embarcadero.$(MSBuildProjectName);ProductName=$(MSBuildProjectName);ProductVersion=1.0.0.0;Comments=</VerInfo_Keys>
+        <VerInfo_Keys>CompanyName=;FileDescription=$(MSBuildProjectName);FileVersion=0.16.0.0;InternalName=;LegalCopyright=;LegalTrademarks=;OriginalFilename=;ProgramID=com.embarcadero.$(MSBuildProjectName);ProductName=$(MSBuildProjectName);ProductVersion=1.0.0.0;Comments=</VerInfo_Keys>
         <Icon_MainIcon>images\icons\icons8_Connect_Develop.ico</Icon_MainIcon>
         <Manifest_File>$(BDS)\bin\default_app.manifest</Manifest_File>
         <UWP_DelphiLogo44>images\png\icons8_Connect_Develop_48.png</UWP_DelphiLogo44>
         <UWP_DelphiLogo150>images\png\icons8_Connect_Develop_64.png</UWP_DelphiLogo150>
-        <VerInfo_MinorVer>8</VerInfo_MinorVer>
+        <VerInfo_MinorVer>16</VerInfo_MinorVer>
+        <AppDPIAwarenessMode>none</AppDPIAwarenessMode>
+        <VerInfo_IncludeVerInfo>true</VerInfo_IncludeVerInfo>
+        <VerInfo_MajorVer>0</VerInfo_MajorVer>
+        <VerInfo_AutoIncVersion>true</VerInfo_AutoIncVersion>
+        <VerInfo_Locale>1033</VerInfo_Locale>
     </PropertyGroup>
     <PropertyGroup Condition="'$(Base_Win64)'!=''">
         <DCC_UsePackage>DBXSqliteDriver;IndyIPCommon;RESTComponents;bindcompdbx;DBXInterBaseDriver;vcl;IndyIPServer;vclactnband;vclFireDAC;IndySystem;tethering;dsnapcon;FireDACADSDriver;FireDACMSAccDriver;fmxFireDAC;vclimg;FireDAC;vcltouch;vcldb;bindcompfmx;FireDACSqliteDriver;FireDACPgDriver;inetdb;soaprtl;DbxCommonDriver;fmx;FireDACIBDriver;fmxdae;xmlrtl;soapmidas;fmxobj;vclwinx;rtl;DbxClientDriver;CustomIPTransport;vcldsnap;dbexpress;IndyCore;vclx;bindcomp;appanalytics;dsnap;FireDACCommon;IndyIPClient;bindcompvcl;RESTBackendComponents;VCLRESTComponents;soapserver;dbxcds;VclSmp;adortl;vclie;bindengine;DBXMySQLDriver;CloudService;dsnapxml;FireDACMySQLDriver;dbrtl;IndyProtocols;inetdbxpress;FireDACCommonODBC;FireDACCommonDriver;inet;fmxase;$(DCC_UsePackage)</DCC_UsePackage>
         <DCC_Namespace>Winapi;System.Win;Data.Win;Datasnap.Win;Web.Win;Soap.Win;Xml.Win;$(DCC_Namespace)</DCC_Namespace>
         <BT_BuildType>Debug</BT_BuildType>
-        <VerInfo_IncludeVerInfo>true</VerInfo_IncludeVerInfo>
         <VerInfo_Keys>CompanyName=;FileDescription=$(MSBuildProjectName);FileVersion=1.0.0.0;InternalName=;LegalCopyright=;LegalTrademarks=;OriginalFilename=;ProgramID=com.embarcadero.$(MSBuildProjectName);ProductName=$(MSBuildProjectName);ProductVersion=1.0.0.0;Comments=</VerInfo_Keys>
+        <VerInfo_MajorVer>1</VerInfo_MajorVer>
         <Manifest_File>$(BDS)\bin\default_app.manifest</Manifest_File>
+        <VerInfo_MinorVer>0</VerInfo_MinorVer>
+        <AppDPIAwarenessMode>none</AppDPIAwarenessMode>
     </PropertyGroup>
     <PropertyGroup Condition="'$(Cfg_1)'!=''">
         <DCC_Define>DEBUG;$(DCC_Define)</DCC_Define>
@@ -107,10 +110,9 @@
     <PropertyGroup Condition="'$(Cfg_1_Win32)'!=''">
         <DCC_RemoteDebug>false</DCC_RemoteDebug>
         <AppDPIAwarenessMode>PerMonitorV2</AppDPIAwarenessMode>
-        <VerInfo_Keys>CompanyName=Tuko Tech;FileDescription=Wicked RDP;FileVersion=0.15.0.0;InternalName=Wicked RDP;LegalCopyright=© Tuko Tech;LegalTrademarks=;OriginalFilename=;ProgramID=us.tuko.$(MSBuildProjectName);ProductName=Wicked RDP;ProductVersion=0.15.0;Comments=</VerInfo_Keys>
+        <VerInfo_Keys>CompanyName=Tuko Tech;FileDescription=Wicked RDP;FileVersion=0.16.0.0;InternalName=Wicked RDP;LegalCopyright=© Tuko Tech;LegalTrademarks=;OriginalFilename=;ProgramID=us.tuko.$(MSBuildProjectName);ProductName=Wicked RDP;ProductVersion=0.16.0;Comments=</VerInfo_Keys>
         <Icon_MainIcon>images\icons\icons8_Connect_Develop.ico</Icon_MainIcon>
         <UWP_DelphiLogo44>images\png\icons8_Connect_Develop_48.png</UWP_DelphiLogo44>
-        <VerInfo_MinorVer>15</VerInfo_MinorVer>
         <UWP_DelphiLogo150>images\png\icons8_Connect_Develop_64.png</UWP_DelphiLogo150>
     </PropertyGroup>
     <PropertyGroup Condition="'$(Cfg_1_Win64)'!=''">
@@ -125,11 +127,9 @@
     </PropertyGroup>
     <PropertyGroup Condition="'$(Cfg_2_Win32)'!=''">
         <AppDPIAwarenessMode>PerMonitorV2</AppDPIAwarenessMode>
-        <VerInfo_Keys>CompanyName=Tuko Tech;FileDescription=Wicked RDP;FileVersion=0.14.0.1;InternalName=Wicked RDP;LegalCopyright=© Tuko Tech;LegalTrademarks=;OriginalFilename=;ProgramID=us.tuko.$(MSBuildProjectName);ProductName=Wicked RDP;ProductVersion=0.14.0;Comments=</VerInfo_Keys>
+        <VerInfo_Keys>CompanyName=Tuko Tech;FileDescription=Wicked RDP;FileVersion=0.16.0.0;InternalName=Wicked RDP;LegalCopyright=© Tuko Tech;LegalTrademarks=;OriginalFilename=;ProgramID=us.tuko.$(MSBuildProjectName);ProductName=Wicked RDP;ProductVersion=0.16.0;Comments=</VerInfo_Keys>
         <Icon_MainIcon>images\icons\icons8_Connect_Develop.ico</Icon_MainIcon>
-        <VerInfo_MinorVer>14</VerInfo_MinorVer>
         <UWP_DelphiLogo44>images\png\icons8_Connect_Develop_48.png</UWP_DelphiLogo44>
-        <VerInfo_Build>1</VerInfo_Build>
         <UWP_DelphiLogo150>images\png\icons8_Connect_Develop_64.png</UWP_DelphiLogo150>
     </PropertyGroup>
     <PropertyGroup Condition="'$(Cfg_2_Win64)'!=''">
@@ -160,6 +160,7 @@
         <DCCReference Include="Shared.pas"/>
         <BuildConfiguration Include="Base">
             <Key>Base</Key>
+            <DependentOn>C:\Users\u1\Documents\wrdp.optset</DependentOn>
         </BuildConfiguration>
         <BuildConfiguration Include="Debug">
             <Key>Cfg_1</Key>
