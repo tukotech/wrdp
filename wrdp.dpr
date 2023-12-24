@@ -7,7 +7,8 @@ uses
   ConnInfo in 'ConnInfo.pas' {FormConnInfo},
   About in 'About.pas' {FormAbout},
   Detached in 'Detached.pas' {FormDetached},
-  Shared in 'Shared.pas';
+  Shared in 'Shared.pas',
+  ImportXml in 'ImportXml.pas';
 
 {$R *.res}
 

@@ -53,6 +53,8 @@ type
     ActionSaveCfg: TAction;
     ActionExport: TAction;
     Export1: TMenuItem;
+    ActionImport: TAction;
+    Import1: TMenuItem;
     procedure FormCreate(Sender: TObject);
     procedure FormClose(Sender: TObject; var Action: TCloseAction);
     procedure FormShow(Sender: TObject);
@@ -95,15 +97,21 @@ type
     procedure VSTIncrementalSearch(Sender: TBaseVirtualTree; Node: PVirtualNode;
       const SearchText: string; var Result: Integer);
     procedure ActionExportExecute(Sender: TObject);
+    procedure ActionImportExecute(Sender: TObject);
 
   private
     { Private declarations }
     FRecentNodeData : TNodeRec;
     FAddHostSelected : Boolean;
     FPopupMenuSelectedRDP : TMsRdpClient9NotSafeForScripting;
+    FImportInProgress: Boolean;
+    FSaveInProgress: Boolean;
+    FVstNodesPreLoaded: Boolean; //import pre-loads all the nodes
 
     procedure ConnectToServer;
     function GetInputHostInfo: Boolean;
+
+    function NodeUpdateCallback(Data: TStringList; Node: PVirtualNode) : PVirtualNode;
 
     //Add About dialog box
     procedure WMSysCommand(var Msg: TWMSysCommand); message WM_SYSCOMMAND;
@@ -117,6 +125,7 @@ var
 
 implementation
 uses
+  ImportXml,
   Math,
   System.TypInfo,
   Xml.XMLIntf,
@@ -125,6 +134,53 @@ uses
 {$R *.dfm}
 const
   SC_AboutMenuItem = WM_USER + 1;
+
+function TFormMain.NodeUpdateCallback(Data: TStringList; Node: PVirtualNode): PVirtualNode;
+var
+  NewNode: PVirtualNode;
+  VstData: PNodeRec;
+
+  function StringToCheckBoxState(const Str: string): TCheckBoxState;
+  var
+    ret: TCheckBoxState;
+  begin
+    ret := TCheckBoxState.cbUnchecked;
+
+    if Str = 'cbUnchecked' then
+      ret := TCheckBoxState.cbUnchecked
+    else if Str = 'cbChecked' then
+      ret := TCheckBoxState.cbChecked
+    else if Str = 'cbGrayed' then
+      ret := TCheckBoxState.cbGrayed;
+
+    Result := ret;
+  end;
+
+begin
+  OutputDebugString(PWideChar('Unit2: ' + Data.Values['Name']));
+
+  with VST do
+  begin
+//    ChildCount[Node] := ChildCount[Node] + 1;
+//    Expanded[Node] := True;
+    NewNode := VST.AddChild(Node);
+
+    VstData := VST.GetNodeData(NewNode);
+    FRecentNodeData.Name := Data.Values['Name'];
+    FRecentNodeData.HostOrIP := Data.Values['HostOrIP'];
+    FRecentNodeData.Port := Data.Values['Port'].ToInteger();
+    FRecentNodeData.Inherit := StringToCheckBoxState(Data.Values['Inherit']);
+    FRecentNodeData.Admin := StringToCheckBoxState(Data.Values['Admin']);
+    FRecentNodeData.Domain := Data.Values['Domain'];
+    FRecentNodeData.Username := Data.Values['Username'];
+    FRecentNodeData.Password := Data.Values['Password'];
+
+    VstData := @FRecentNodeData;
+    VST.SetNodeData(NewNode, VstData^);
+  end;
+
+  Result := NewNode;
+end;
 
 procedure TFormMain.FormClose(Sender: TObject; var Action: TCloseAction);
 var
@@ -136,13 +192,17 @@ begin
   finally
      Ini.Free;
   end;
-
+  ActionSaveCfg.Execute;
 end;
 
 procedure TFormMain.FormCreate(Sender: TObject);
 var
   Ini : TIniFile;
 begin
+  FImportInProgress := false;
+  FSaveInProgress := false;
+  FVstNodesPreLoaded := false;
+
   AppendMenu(GetSystemMenu(Handle, FALSE), MF_SEPARATOR, 0, '');
   AppendMenu(GetSystemMenu(Handle, FALSE),
              MF_STRING,
@@ -557,9 +617,25 @@ begin
   ExportVSTToXML(VST, 'nodes.xml');
 end;
 
+procedure TFormMain.ActionImportExecute(Sender: TObject);
+begin
+  FImportInProgress := true;
+  VST.BeginUpdate;
+  ImportXmlToVst('C:\g\wrdp\Win32\Debug\nodes.xml', NodeUpdateCallback, VST.RootNode);
+  VST.EndUpdate;
+  FImportInProgress := false;
+  FVstNodesPreLoaded := true;
+end;
+
 procedure TFormMain.ActionSaveCfgExecute(Sender: TObject);
 begin
-  VST.SaveToFile('VST.cfg');
+  if FImportInProgress = false then
+    if FSaveInProgress = false then
+    begin
+      FSaveInProgress := true;
+      VST.SaveToFile('VST.cfg');
+      FSaveInProgress := false;
+    end;
 end;
 
 procedure TFormMain.ActionTabCloseExecute(Sender: TObject);
@@ -731,6 +807,7 @@ begin
     PopupMenuVST_DeleteMI.Enabled := true;
     ActionConnect.Enabled := true;
     ActionExport.Visible  := false;
+    ActionImport.Visible  := false;
   end
   else
   begin
@@ -739,7 +816,16 @@ begin
     PopupMenuVST_EditMI.Enabled := false;
     PopupMenuVST_DeleteMI.Enabled := false;
     ActionConnect.Enabled := false;
-    ActionExport.Visible  := true;
+    if VST.TotalCount = 0 then
+    begin
+      ActionExport.Visible := false;
+      ActionImport.Visible := true;
+    end
+    else
+    begin
+      ActionExport.Visible  := true;
+      ActionImport.Visible := false;
+    end;
   end;
 end;
 
@@ -796,15 +882,18 @@ begin
     Data := GetNodeData(Node);
     // Construct a node caption. This event is triggered once for each node but
     // appears asynchronously, which means when the node is displayed not when it is added.
-    Data.Name := self.FRecentNodeData.Name;
-    Data.HostOrIP := self.FRecentNodeData.HostOrIP;
-    Data.Port := self.FRecentNodeData.Port;
-    Data.Inherit := self.FRecentNodeData.Inherit;
-    Data.Admin := self.FRecentNodeData.Admin;
-    Data.Domain := self.FRecentNodeData.Domain;
-    Data.Username := self.FRecentNodeData.Username;
-    Data.Password := self.FRecentNodeData.Password;
-      ActionSaveCfg.Execute;
+    if FVstNodesPreLoaded = false then
+    begin
+      Data.Name := self.FRecentNodeData.Name;
+      Data.HostOrIP := self.FRecentNodeData.HostOrIP;
+      Data.Port := self.FRecentNodeData.Port;
+      Data.Inherit := self.FRecentNodeData.Inherit;
+      Data.Admin := self.FRecentNodeData.Admin;
+      Data.Domain := self.FRecentNodeData.Domain;
+      Data.Username := self.FRecentNodeData.Username;
+      Data.Password := self.FRecentNodeData.Password;
+    end;
+    ActionSaveCfg.Execute;
   end;
 end;
 

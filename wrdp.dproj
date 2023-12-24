@@ -158,6 +158,7 @@
             <FormType>dfm</FormType>
         </DCCReference>
         <DCCReference Include="Shared.pas"/>
+        <DCCReference Include="ImportXml.pas"/>
         <BuildConfiguration Include="Base">
             <Key>Base</Key>
             <DependentOn>C:\Users\u1\Documents\wrdp.optset</DependentOn>
@@ -186,6 +187,12 @@
             </Delphi.Personality>
             <Deployment Version="4">
                 <DeployFile LocalName="Win32\Debug\wrdp.exe" Configuration="Debug" Class="ProjectOutput"/>
+                <DeployFile LocalName="Win32\Debug\wrdp.exe" Configuration="Debug" Class="ProjectOutput">
+                    <Platform Name="Win32">
+                        <RemoteName>wrdp.exe</RemoteName>
+                        <Overwrite>true</Overwrite>
+                    </Platform>
+                </DeployFile>
                 <DeployFile LocalName="Win32\Release\wrdp.exe" Configuration="Release" Class="ProjectOutput"/>
                 <DeployFile LocalName="images\png\icons8_Connect_Develop_48.png" Configuration="Debug" Class="UWP_DelphiLogo44"/>
                 <DeployFile LocalName="images\png\icons8_Connect_Develop_48.png" Configuration="Release" Class="UWP_DelphiLogo44"/>
