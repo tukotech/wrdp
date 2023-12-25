@@ -125,6 +125,9 @@ object FormMain: TFormMain
     object Export1: TMenuItem
       Action = ActionExport
     end
+    object Import1: TMenuItem
+      Action = ActionImport
+    end
   end
   object ActionList1: TActionList
     Left = 252
@@ -179,6 +182,11 @@ object FormMain: TFormMain
       Category = 'VSTPopup'
       Caption = 'Export'
       OnExecute = ActionExportExecute
+    end
+    object ActionImport: TAction
+      Category = 'VSTPopup'
+      Caption = 'Import'
+      OnExecute = ActionImportExecute
     end
   end
 end
