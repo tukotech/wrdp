@@ -101,9 +101,10 @@ begin
   if Frdp.Connected = 1 then
   begin
     Frdp.Disconnect;
-    Frdp.DesktopWidth := FormDetached.ClientWidth;
-    Frdp.DesktopHeight := FormDetached.ClientHeight;
   end;
+
+  Frdp.DesktopWidth := FormDetached.ClientWidth;
+  Frdp.DesktopHeight := FormDetached.ClientHeight;
 
   Frdp.Server := node.HostOrIP;
   Frdp.AdvancedSettings8.RDPPort := node.Port;
