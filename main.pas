@@ -672,30 +672,7 @@ begin
     end;
   end;
 
-  if FormDetached.Rdp.Connected = 1 then
-  begin
-    FormDetached.Rdp.Disconnect;
-  end;
-
-  FormDetached.Rdp.DesktopWidth := FormDetached.ClientWidth;
-  FormDetached.Rdp.DesktopHeight := FormDetached.ClientHeight;
-
-  FormDetached.Rdp.Server := node.HostOrIP;
-  FormDetached.Rdp.AdvancedSettings8.RDPPort := node.Port;
-  if node.Admin = TCheckBoxState.cbChecked then
-    FormDetached.Rdp.AdvancedSettings8.ConnectToAdministerServer := true;
-
-  FormDetached.Rdp.Domain := node.Domain;
-  FormDetached.Rdp.UserName := node.Username;
-  FormDetached.Rdp.Server := node.HostOrIP;
-  if Length(node.password)>0 then
-    FormDetached.Rdp.AdvancedSettings9.ClearTextPassword := node.password;
-  FormDetached.Rdp.SecuredSettings3.KeyboardHookMode := 1;
-  as7 := FormDetached.Rdp.AdvancedSettings as IMsRdpClientAdvancedSettings7;
-  as7.EnableCredSspSupport := true;
-  as7.SmartSizing := true;
-  FormDetached.Rdp.Connect;
-
+  FormDetached.RdpConnect(node);
   FormDetached.Caption := node.Name;
   FormDetached.Show;
   PageControlMain.ActivePage.Free;
