@@ -55,6 +55,8 @@ type
     Export1: TMenuItem;
     ActionImport: TAction;
     Import1: TMenuItem;
+    ActionConnectDetached: TAction;
+    ConnectDetached1: TMenuItem;
     procedure FormCreate(Sender: TObject);
     procedure FormClose(Sender: TObject; var Action: TCloseAction);
     procedure FormShow(Sender: TObject);
@@ -98,6 +100,7 @@ type
       const SearchText: string; var Result: Integer);
     procedure ActionExportExecute(Sender: TObject);
     procedure ActionImportExecute(Sender: TObject);
+    procedure ActionConnectDetachedExecute(Sender: TObject);
 
   private
     { Private declarations }
@@ -478,6 +481,11 @@ begin
   end;
 end;
 
+procedure TFormMain.ActionConnectDetachedExecute(Sender: TObject);
+begin
+  ShowMessage('test');
+end;
+
 procedure TFormMain.ActionConnectExecute(Sender: TObject);
 begin
   ConnectToServer;
@@ -783,6 +791,7 @@ begin
     PopupMenuVST_EditMI.Enabled := true;
     PopupMenuVST_DeleteMI.Enabled := true;
     ActionConnect.Enabled := true;
+    ActionConnectDetached.Enabled := true;
     ActionExport.Visible  := false;
     ActionImport.Visible  := false;
   end
@@ -793,6 +802,7 @@ begin
     PopupMenuVST_EditMI.Enabled := false;
     PopupMenuVST_DeleteMI.Enabled := false;
     ActionConnect.Enabled := false;
+    ActionConnectDetached.Enabled := false;
     if VST.TotalCount = 0 then
     begin
       ActionExport.Visible := false;
