@@ -122,6 +122,9 @@ object FormMain: TFormMain
     object ConnectF31: TMenuItem
       Action = ActionConnect
     end
+    object ConnectDetached1: TMenuItem
+      Action = ActionConnectDetached
+    end
     object Export1: TMenuItem
       Action = ActionExport
     end
@@ -187,6 +190,12 @@ object FormMain: TFormMain
       Category = 'VSTPopup'
       Caption = 'Import'
       OnExecute = ActionImportExecute
+    end
+    object ActionConnectDetached: TAction
+      Category = 'VSTPopup'
+      Caption = 'Connect Detached'
+      ShortCut = 8306
+      OnExecute = ActionConnectDetachedExecute
     end
   end
 end

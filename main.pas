@@ -24,6 +24,8 @@ uses
   System.Actions, Vcl.ActnList;
 
 type
+  TConnectMode = (cmNormal, cmDetached);
+
   TFormMain = class(TForm)
     PageControlMain: TPageControl;
     TabSheetMain: TTabSheet;
@@ -55,6 +57,8 @@ type
     Export1: TMenuItem;
     ActionImport: TAction;
     Import1: TMenuItem;
+    ActionConnectDetached: TAction;
+    ConnectDetached1: TMenuItem;
     procedure FormCreate(Sender: TObject);
     procedure FormClose(Sender: TObject; var Action: TCloseAction);
     procedure FormShow(Sender: TObject);
@@ -98,6 +102,7 @@ type
       const SearchText: string; var Result: Integer);
     procedure ActionExportExecute(Sender: TObject);
     procedure ActionImportExecute(Sender: TObject);
+    procedure ActionConnectDetachedExecute(Sender: TObject);
 
   private
     { Private declarations }
@@ -108,7 +113,7 @@ type
     FSaveInProgress: Boolean;
     FVstNodesPreLoaded: Boolean; //import pre-loads all the nodes
 
-    procedure ConnectToServer;
+    procedure ConnectToServer(Mode: TConnectMode);
     function GetInputHostInfo: Boolean;
 
     function NodeUpdateCallback(Data: TStringList; Node: PVirtualNode) : PVirtualNode;
@@ -161,8 +166,6 @@ begin
 
   with VST do
   begin
-//    ChildCount[Node] := ChildCount[Node] + 1;
-//    Expanded[Node] := True;
     NewNode := VST.AddChild(Node);
 
     VstData := VST.GetNodeData(NewNode);
@@ -478,9 +481,14 @@ begin
   end;
 end;
 
+procedure TFormMain.ActionConnectDetachedExecute(Sender: TObject);
+begin
+  ConnectToServer(TConnectMode.cmDetached);
+end;
+
 procedure TFormMain.ActionConnectExecute(Sender: TObject);
 begin
-  ConnectToServer;
+  ConnectToServer(TConnectMode.cmNormal);
 end;
 
 procedure TFormMain.ActionDeleteExecute(Sender: TObject);
@@ -659,7 +667,6 @@ procedure TFormMain.ActionTabDetachExecute(Sender: TObject);
 var
   I: Integer;
   node : TNodeInformation;
-  as7: IMsRdpClientAdvancedSettings7;
 begin
   node := nil;
 
@@ -686,7 +693,7 @@ begin
     FPopupMenuSelectedRDP.Connect;
 end;
 
-procedure TFormMain.ConnectToServer;
+procedure TFormMain.ConnectToServer(Mode: TConnectMode);
 var
   Data, DataNext: PNodeRec;
   LData : TNodeRec;
@@ -717,26 +724,6 @@ begin
     end;
   end;
 
-  TabSheet := TTabSheet.Create(PageControlMain);
-  TabSheet.Caption := LData.Name;
-  TabSheet.PageControl := PageControlMain;
-  TabSheet.PopupMenu := PopupMenuRDP;
-
-  rdp := TMsRdpClient9NotSafeForScripting.Create(TabSheet);
-  rdp.Parent := TabSheet;
-  rdp.Align := alClient;
-
-  rdp.Server := LData.HostOrIP;
-  rdp.Domain := LData.Domain;
-  rdp.AdvancedSettings8.RDPPort := LData.Port;
-  if LData.Admin = TCheckBoxState.cbChecked then
-    rdp.AdvancedSettings8.ConnectToAdministerServer := true;
-  rdp.UserName := LData.Username;
-  if Length(LData.Password)>0 then
-    rdp.AdvancedSettings9.ClearTextPassword := LData.Password;
-  rdp.SecuredSettings3.KeyboardHookMode := 1;
-  rdp.AdvancedSettings7.EnableCredSspSupport := true;
-
   ni := TNodeInformation.Create;
   ni.Name := LData.Name;
   ni.HostOrIp := LData.HostOrIP;
@@ -746,13 +733,43 @@ begin
   ni.Domain := LData.Domain;
   ni.Username := LData.Username;
   ni.Password := LData.Password;
-  rdp.Tag := Integer(ni); //Store NodeRec for detaching
-  rdp.OnDisconnected := MsRdpClient9NotSafeForScriptingDisconnected;
-  rdp.OnConnected := MsRdpClient9NotSafeForScriptingConnected;
-  rdp.OnFocusReleased := MsRdpClient9NotSafeForScriptingFocusReleased;
-  rdp.AdvancedSettings8.BitmapPersistence := 0;
-  rdp.Connect;
-  PageControlMain.ActivePage := TabSheet;
+
+  if Mode = TConnectMode.cmNormal then
+  begin
+    TabSheet := TTabSheet.Create(PageControlMain);
+    TabSheet.Caption := LData.Name;
+    TabSheet.PageControl := PageControlMain;
+    TabSheet.PopupMenu := PopupMenuRDP;
+
+    rdp := TMsRdpClient9NotSafeForScripting.Create(TabSheet);
+    rdp.Parent := TabSheet;
+    rdp.Align := alClient;
+
+    rdp.Server := LData.HostOrIP;
+    rdp.Domain := LData.Domain;
+    rdp.AdvancedSettings8.RDPPort := LData.Port;
+    if LData.Admin = TCheckBoxState.cbChecked then
+      rdp.AdvancedSettings8.ConnectToAdministerServer := true;
+    rdp.UserName := LData.Username;
+    if Length(LData.Password)>0 then
+      rdp.AdvancedSettings9.ClearTextPassword := LData.Password;
+    rdp.SecuredSettings3.KeyboardHookMode := 1;
+    rdp.AdvancedSettings7.EnableCredSspSupport := true;
+
+    rdp.Tag := Integer(ni); //Store NodeRec for detaching
+    rdp.OnDisconnected := MsRdpClient9NotSafeForScriptingDisconnected;
+    rdp.OnConnected := MsRdpClient9NotSafeForScriptingConnected;
+    rdp.OnFocusReleased := MsRdpClient9NotSafeForScriptingFocusReleased;
+    rdp.AdvancedSettings8.BitmapPersistence := 0;
+    rdp.Connect;
+    PageControlMain.ActivePage := TabSheet;
+  end
+  else
+  begin
+    FormDetached.RdpConnect(ni);
+    FormDetached.Caption := ni.Name;
+    FormDetached.Show;
+  end;
 end;
 
 procedure TFormMain.VSTCompareNodes(Sender: TBaseVirtualTree; Node1,
@@ -783,6 +800,7 @@ begin
     PopupMenuVST_EditMI.Enabled := true;
     PopupMenuVST_DeleteMI.Enabled := true;
     ActionConnect.Enabled := true;
+    ActionConnectDetached.Enabled := true;
     ActionExport.Visible  := false;
     ActionImport.Visible  := false;
   end
@@ -793,6 +811,7 @@ begin
     PopupMenuVST_EditMI.Enabled := false;
     PopupMenuVST_DeleteMI.Enabled := false;
     ActionConnect.Enabled := false;
+    ActionConnectDetached.Enabled := false;
     if VST.TotalCount = 0 then
     begin
       ActionExport.Visible := false;
@@ -808,7 +827,7 @@ end;
 
 procedure TFormMain.VSTDblClick(Sender: TObject);
 begin
-  ConnectToServer;
+  ConnectToServer(TConnectMode.cmNormal);
 end;
 
 procedure TFormMain.VSTFreeNode(Sender: TBaseVirtualTree; Node: PVirtualNode);
@@ -892,7 +911,7 @@ end;
 procedure TFormMain.VSTKeyPress(Sender: TObject; var Key: Char);
 begin
   if ord(Key) = VK_RETURN then
-    ConnectToServer
+    ConnectToServer(TConnectMode.cmNormal);
 end;
 
 procedure TFormMain.VSTLoadNode(Sender: TBaseVirtualTree; Node: PVirtualNode;

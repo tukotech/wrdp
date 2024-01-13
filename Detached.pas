@@ -22,6 +22,8 @@ type
     procedure FormCreate(Sender: TObject);
     procedure FormClose(Sender: TObject; var Action: TCloseAction);
     procedure FormResize(Sender: TObject);
+    procedure MsRdpClient9NotSafeForScriptingDisconnected(ASender: TObject;
+      discReason: Integer);
   private
     { Private declarations }
     Frdp : TMsRdpClient9NotSafeForScripting;
@@ -97,39 +99,62 @@ end;
 
 procedure TFormDetached.RdpConnect(node : TNodeInformation);
 begin
+  //Need to destroy Rdp object before it can be reused
+  if Frdp <> nil then
+  begin
+    if Frdp.Connected = 1 then
+    begin
+      Frdp.Disconnect;
+      FreeAndNil(Frdp);
+    end;
+  end;
+
   if Frdp = nil then
   begin
     Frdp := TMsRdpClient9NotSafeForScripting.Create(FormDetached);
     Frdp.Parent := FormDetached;
     Frdp.Align := alClient;
+    Frdp.OnDisconnected := MsRdpClient9NotSafeForScriptingDisconnected;
   end;
 
-  if Frdp.Connected = 1 then
-  begin
-    Frdp.Disconnect;
+  try
+    Frdp.DesktopWidth := FormDetached.ClientWidth;
+    Frdp.DesktopHeight := FormDetached.ClientHeight;
+
+    Frdp.Server := node.HostOrIP;
+    Frdp.AdvancedSettings8.RDPPort := node.Port;
+    if node.Admin = TCheckBoxState.cbChecked then
+      Frdp.AdvancedSettings8.ConnectToAdministerServer := true;
+
+    Frdp.Domain := node.Domain;
+    Frdp.UserName := node.Username;
+    Frdp.Server := node.HostOrIP;
+    if Length(node.password)>0 then
+      Frdp.AdvancedSettings9.ClearTextPassword := node.password;
+    Frdp.SecuredSettings3.KeyboardHookMode := 1;
+    with Frdp.AdvancedSettings as IMsRdpClientAdvancedSettings7 do
+    begin
+      EnableCredSspSupport := true;
+      SmartSizing := true;
+    end;
+    Frdp.Connect;
+  except
+    On E: Exception do
+      ShowMessage(E.ClassName+' error raised, with message : '+
+        E.Message);
   end;
 
-  Frdp.DesktopWidth := FormDetached.ClientWidth;
-  Frdp.DesktopHeight := FormDetached.ClientHeight;
+end;
 
-  Frdp.Server := node.HostOrIP;
-  Frdp.AdvancedSettings8.RDPPort := node.Port;
-  if node.Admin = TCheckBoxState.cbChecked then
-    Frdp.AdvancedSettings8.ConnectToAdministerServer := true;
-
-  Frdp.Domain := node.Domain;
-  Frdp.UserName := node.Username;
-  Frdp.Server := node.HostOrIP;
-  if Length(node.password)>0 then
-    Frdp.AdvancedSettings9.ClearTextPassword := node.password;
-  Frdp.SecuredSettings3.KeyboardHookMode := 1;
-  with Frdp.AdvancedSettings as IMsRdpClientAdvancedSettings7 do
-  begin
-    EnableCredSspSupport := true;
-    SmartSizing := true;
-  end;
-  Frdp.Connect;
-
+procedure TFormDetached.MsRdpClient9NotSafeForScriptingDisconnected(
+  ASender: TObject; discReason: Integer);
+var
+  rdp : TMsRdpClient9NotSafeForScripting;
+  msg : string;
+begin
+  rdp := ASender as TMsRdpClient9NotSafeForScripting;
+  msg := IntToStr(discReason) + ' : ' + rdp.GetErrorDescription(discReason, rdp.ExtendedDisconnectReason);
+  OutputDebugString(PWideChar(msg));
 end;
 
 end.
