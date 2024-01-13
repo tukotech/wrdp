@@ -78,13 +78,19 @@ begin
 end;
 
 procedure TFormDetached.FormResize(Sender: TObject);
+var
+  w, h: Integer;
 begin
   if Frdp <> nil then
   begin
-    if FormDetached.Visible then
+    if FormDetached.Active then
     begin
-//      Frdp.DesktopWidth := FormDetached.ClientWidth;
-//      Frdp.DesktopHeight := FormDetached.ClientHeight;
+      if Frdp.Connected = 1 then
+      begin
+        w := FormDetached.ClientWidth;
+        h := FormDetached.ClientHeight;
+        Frdp.UpdateSessionDisplaySettings(w,h,w,h,0,100,100);
+      end;
     end;
   end;
 end;
