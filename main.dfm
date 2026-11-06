@@ -30,7 +30,7 @@ object FormMain: TFormMain
       Caption = 'Main'
       object ListBoxInfo: TListBox
         Left = 0
-        Top = 528
+        Top = 527
         Width = 914
         Height = 54
         Align = alBottom
@@ -42,7 +42,7 @@ object FormMain: TFormMain
         Left = 0
         Top = 0
         Width = 914
-        Height = 528
+        Height = 527
         Align = alClient
         Colors.BorderColor = 15987699
         Colors.DisabledColor = clGray
@@ -81,6 +81,7 @@ object FormMain: TFormMain
         OnSaveNode = VSTSaveNode
         Touch.InteractiveGestures = [igPan, igPressAndTap]
         Touch.InteractiveGestureOptions = [igoPanSingleFingerHorizontal, igoPanSingleFingerVertical, igoPanInertia, igoPanGutter, igoParentPassthrough]
+        ExplicitHeight = 528
         Columns = <>
       end
     end
