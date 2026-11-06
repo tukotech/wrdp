@@ -7,7 +7,7 @@ uses
   ConnInfo,
   Detached,
   Shared,
-  StrUtils,
+  System.StrUtils,
   Winapi.Windows,
   Winapi.Messages,
   System.Classes,
@@ -20,8 +20,9 @@ uses
   Vcl.Forms,
   Vcl.Dialogs,
   Vcl.ComCtrls, Vcl.OleCtrls, MSTSCLib_TLB,
-  Vcl.StdCtrls, Vcl.Grids, inifiles, Vcl.Menus, VirtualTrees, Vcl.ExtCtrls,
-  System.Actions, Vcl.ActnList;
+  Vcl.StdCtrls, Vcl.Grids, System.inifiles, Vcl.Menus, VirtualTrees, Vcl.ExtCtrls,
+  System.Actions, Vcl.ActnList, VirtualTrees.BaseAncestorVCL,
+  VirtualTrees.BaseTree, VirtualTrees.AncestorVCL;
 
 type
   TConnectMode = (cmNormal, cmDetached);
@@ -131,7 +132,7 @@ var
 implementation
 uses
   ImportXml,
-  Math,
+  System.Math,
   System.TypInfo,
   Xml.XMLIntf,
   Xml.XMLDoc;

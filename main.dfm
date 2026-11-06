@@ -24,8 +24,6 @@ object FormMain: TFormMain
     PopupMenu = PopupMenuRDP
     TabOrder = 0
     OnContextPopup = PageControlMainContextPopup
-    ExplicitWidth = 918
-    ExplicitHeight = 609
     object TabSheetMain: TTabSheet
       Caption = 'Main'
       object ListBoxInfo: TListBox
@@ -37,8 +35,6 @@ object FormMain: TFormMain
         ItemHeight = 13
         TabOrder = 0
         Visible = False
-        ExplicitTop = 527
-        ExplicitWidth = 910
       end
       object VST: TVirtualStringTree
         Left = 0
@@ -63,7 +59,9 @@ object FormMain: TFormMain
         Colors.UnfocusedColor = clGray
         Colors.UnfocusedSelectionColor = clWhite
         Colors.UnfocusedSelectionBorderColor = clWhite
+        DefaultNodeHeight = 17
         Header.AutoSizeIndex = 0
+        Header.Height = 13
         Header.MainColumn = -1
         IncrementalSearch = isAll
         PopupMenu = PopupMenuVST

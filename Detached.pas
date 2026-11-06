@@ -3,7 +3,7 @@ unit Detached;
 interface
 
 uses
-  inifiles,
+  System.inifiles,
   Winapi.Windows,
   Winapi.Messages,
   Shared,
