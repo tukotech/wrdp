@@ -19,11 +19,12 @@ object FormAbout: TFormAbout
   object Label1: TLabel
     Left = 8
     Top = 8
-    Width = 159
-    Height = 64
+    Width = 160
+    Height = 80
     Caption = 
-      'Designed using Delphi'#13#10' 11.3CE : 0.13.x to latest'#13#10' 10.4CE : 0.3' +
-      '.x to 0.12.x'#13#10' 10.3CE : 0.0.x to 0.3.x'
+      'Designed using Delphi'#13#10' 12.xCE: 0.19.x to latest'#13#10' 11.3CE : 0.13' +
+      '.x to 0.18.x'#13#10' 10.4CE : 0.3.x to 0.12.x'#13#10' 10.3CE : 0.0.x to 0.3.' +
+      'x'
     Font.Charset = DEFAULT_CHARSET
     Font.Color = clWindowText
     Font.Height = -13
@@ -33,7 +34,7 @@ object FormAbout: TFormAbout
   end
   object LabelDedication: TLabel
     Left = 8
-    Top = 78
+    Top = 94
     Width = 166
     Height = 80
     Caption = 
@@ -56,7 +57,5 @@ object FormAbout: TFormAbout
     Default = True
     ModalResult = 1
     TabOrder = 0
-    ExplicitLeft = 193
-    ExplicitTop = 162
   end
 end

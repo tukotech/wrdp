@@ -3,7 +3,7 @@ unit About;
 interface
 
 uses
-  inifiles,
+  System.inifiles,
   Winapi.Windows, Winapi.Messages, System.SysUtils, System.Variants, System.Classes, Vcl.Graphics,
   Vcl.Controls, Vcl.Forms, Vcl.Dialogs, Vcl.StdCtrls;
 
@@ -76,7 +76,7 @@ begin
     Ini.Free;
   end;
 
-  self.Caption := self.Caption + ' v:' + GetFileVersion(ParamStr(0));
+  self.Caption := self.Caption + ' v' + GetFileVersion(ParamStr(0));
 end;
 
 end.
