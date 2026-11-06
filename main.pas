@@ -22,7 +22,7 @@ uses
   Vcl.ComCtrls, Vcl.OleCtrls, MSTSCLib_TLB,
   Vcl.StdCtrls, Vcl.Grids, System.inifiles, Vcl.Menus, VirtualTrees, Vcl.ExtCtrls,
   System.Actions, Vcl.ActnList, VirtualTrees.BaseAncestorVCL,
-  VirtualTrees.BaseTree, VirtualTrees.AncestorVCL;
+  VirtualTrees.BaseTree, VirtualTrees.AncestorVCL, System.ImageList, Vcl.ImgList;
 
 type
   TConnectMode = (cmNormal, cmDetached);
@@ -60,6 +60,7 @@ type
     Import1: TMenuItem;
     ActionConnectDetached: TAction;
     ConnectDetached1: TMenuItem;
+    ImageList1: TImageList;
     procedure FormCreate(Sender: TObject);
     procedure FormClose(Sender: TObject; var Action: TCloseAction);
     procedure FormShow(Sender: TObject);
@@ -104,6 +105,7 @@ type
     procedure ActionExportExecute(Sender: TObject);
     procedure ActionImportExecute(Sender: TObject);
     procedure ActionConnectDetachedExecute(Sender: TObject);
+    procedure PageControlMainChange(Sender: TObject);
 
   private
     { Private declarations }
@@ -113,6 +115,7 @@ type
     FImportInProgress: Boolean;
     FSaveInProgress: Boolean;
     FVstNodesPreLoaded: Boolean; //import pre-loads all the nodes
+    FCurrentTab: TTabSheet;
 
     procedure ConnectToServer(Mode: TConnectMode);
     function GetInputHostInfo: Boolean;
@@ -168,8 +171,6 @@ begin
   with VST do
   begin
     NewNode := VST.AddChild(Node);
-
-    VstData := VST.GetNodeData(NewNode);
     FRecentNodeData.Name := Data.Values['Name'];
     FRecentNodeData.HostOrIP := Data.Values['HostOrIP'];
     FRecentNodeData.Port := Data.Values['Port'].ToInteger();
@@ -235,7 +236,16 @@ end;
 procedure TFormMain.FormShow(Sender: TObject);
 begin
   PageControlMain.ActivePage := TabSheetMain;
+  FCurrentTab := PageControlMain.ActivePage;
+  FCurrentTab.ImageIndex := 0;
   VST.SetFocus;
+end;
+
+procedure TFormMain.PageControlMainChange(Sender: TObject);
+begin
+  FCurrentTab.ImageIndex := 1;
+  FCurrentTab := PageControlMain.ActivePage;
+  FCurrentTab.ImageIndex := 0;
 end;
 
 procedure TFormMain.PageControlMainContextPopup(Sender: TObject;
@@ -764,6 +774,10 @@ begin
     rdp.AdvancedSettings8.BitmapPersistence := 0;
     rdp.Connect;
     PageControlMain.ActivePage := TabSheet;
+
+    FCurrentTab.ImageIndex := 1;
+    FCurrentTab := PageControlMain.ActivePage;
+    FCurrentTab.ImageIndex := 0;
   end
   else
   begin
