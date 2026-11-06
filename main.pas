@@ -144,6 +144,48 @@ uses
 const
   SC_AboutMenuItem = WM_USER + 1;
 
+procedure EnableRdpEvents(
+  Rdp: TMsRdpClient9NotSafeForScripting
+);
+var
+  ExtSettings: MSTSCLib_TLB.IMsRdpExtendedSettings;
+  V: OleVariant;
+  HR: HRESULT;
+begin
+  if not Assigned(Rdp) then
+    Exit;
+
+  // Windows 11 22H2 or later
+  if TOSVersion.Build < 22621 then
+    Exit;
+
+  // Obtain the actual Microsoft COM interface
+  HR := Rdp.ControlInterface.QueryInterface(
+    IID_IMsRdpExtendedSettings,
+    ExtSettings
+  );
+
+  if Failed(HR) then
+    raise Exception.CreateFmt(
+      'QueryInterface failed: 0x%.8x',
+      [Cardinal(HR)]
+    );
+
+  // Enable container keyboard events
+  V := True;
+
+  HR := ExtSettings.Set_Property_(
+    'AllowAxToContainerEvents',
+    V
+  );
+
+  if Failed(HR) then
+    raise Exception.CreateFmt(
+      'AllowAxToContainerEvents failed: 0x%.8x',
+      [Cardinal(HR)]
+    );
+end;
+
 function TFormMain.NodeUpdateCallback(Data: TStringList; Node: PVirtualNode): PVirtualNode;
 var
   NewNode: PVirtualNode;
@@ -753,6 +795,7 @@ begin
     TabSheet.PopupMenu := PopupMenuRDP;
 
     rdp := TMsRdpClient9NotSafeForScripting.Create(TabSheet);
+    EnableRdpEvents(rdp);
     rdp.Parent := TabSheet;
     rdp.Align := alClient;
 
